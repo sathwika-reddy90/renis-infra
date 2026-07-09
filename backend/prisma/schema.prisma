@@ -1,0 +1,377 @@
+// RENISINFRA — Prisma schema (PostgreSQL).
+// Models mirror the frontend domain and are ready for future business logic.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/**
+ * ---------------------------------- Enums ----------------------------------
+ */
+
+enum PropertyType {
+  APARTMENTS
+  VILLAS
+  PENTHOUSES
+  PLOTS
+}
+
+enum PropertyStatus {
+  NEW_LAUNCH
+  NOW_SELLING
+  READY_TO_MOVE
+  COMING_SOON
+  SOLD_OUT
+}
+
+enum GalleryCategory {
+  INTERIORS
+  EXTERIORS
+  AMENITIES
+  LIFESTYLE
+}
+
+enum BlogStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  EDITOR
+}
+
+enum InquiryStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  VISIT_SCHEDULED
+  NEGOTIATION
+  CLOSED_WON
+  CLOSED_LOST
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+  DOCUMENT
+}
+
+/**
+ * --------------------------------- Models ----------------------------------
+ */
+
+model Property {
+  id           String         @id @default(cuid())
+  slug         String         @unique
+  title        String
+  subtitle     String
+  description  String
+  location     String
+  city         String
+  state        String
+  price        Int
+  priceLabel   String
+  propertyType PropertyType
+  status       PropertyStatus @default(NEW_LAUNCH)
+  bedrooms     String
+  bathrooms    Int
+  area         String
+  possession   String
+  reraNumber   String
+  developer    String
+
+  featuredImage String
+  video         String?
+  virtualTour   String?
+  brochure      String?
+
+  masterPlan   String
+  masterLegend String[]
+
+  // Structured detail stored as JSON (arrays of objects).
+  floorPlans      Json
+  specifications  Json
+  paymentPlans    Json
+  nearbyLandmarks Json
+  overviewStats   Json
+  seo             Json
+
+  lat Float?
+  lng Float?
+
+  // Scalar arrays match the API DTO contract (image URLs & amenity names).
+  gallery   String[]
+  amenities String[]
+
+  // Optional back-relations for integrity (not embedded in the Property DTO).
+  galleryImages GalleryImage[]
+  testimonials  Testimonial[]
+  faqs          FAQ[]
+  inquiries     Inquiry[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([propertyType])
+  @@index([city])
+  @@index([slug])
+}
+
+model GalleryImage {
+  id       String          @id @default(cuid())
+  src      String
+  alt      String
+  category GalleryCategory
+  order    Int             @default(0)
+
+  propertyId String?
+  property   Property? @relation(fields: [propertyId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([category])
+  @@index([propertyId])
+}
+
+model Testimonial {
+  id       String  @id @default(cuid())
+  quote    String
+  name     String
+  role     String
+  project  String?
+  rating   Int?
+  avatar   String?
+  featured Boolean @default(false)
+
+  propertyId String?
+  property   Property? @relation(fields: [propertyId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([propertyId])
+}
+
+model TeamMember {
+  id       String  @id @default(cuid())
+  name     String
+  role     String
+  image    String
+  bio      String?
+  linkedin String?
+  twitter  String?
+  email    String?
+  order    Int     @default(0)
+
+  blogs Blog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([order])
+}
+
+model FAQ {
+  id       String @id @default(cuid())
+  question String
+  answer   String
+  category String
+  order    Int    @default(0)
+
+  propertyId String?
+  property   Property? @relation(fields: [propertyId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([category])
+  @@index([propertyId])
+}
+
+model Amenity {
+  id          String  @id @default(cuid())
+  title       String
+  description String
+  icon        String
+  category    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([category])
+}
+
+model Blog {
+  id       String   @id @default(cuid())
+  slug     String   @unique
+  title    String
+  excerpt  String
+  content  String
+  category String
+  tags     String[]
+
+  coverImage String
+  readTime   String
+
+  status      BlogStatus @default(DRAFT)
+  publishedAt DateTime?
+
+  metaTitle       String?
+  metaDescription String?
+  keywords        String[]
+
+  authorId String?
+  author   TeamMember? @relation(fields: [authorId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([publishedAt])
+  @@index([category])
+}
+
+model Inquiry {
+  id       String        @id @default(cuid())
+  name     String
+  email    String
+  phone    String
+  message  String?
+  interest String?
+  status   InquiryStatus @default(NEW)
+
+  propertyId String?
+  property   Property? @relation(fields: [propertyId], references: [id], onDelete: SetNull)
+
+  assignedToId String?
+  assignedTo   User?     @relation("InquiryAssignee", fields: [assignedToId], references: [id], onDelete: SetNull)
+  followUpDate DateTime?
+  notes        String?
+  visitDate    DateTime?
+  visitTime    String?
+
+  statusHistory InquiryStatusHistory[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([createdAt])
+  @@index([propertyId])
+  @@index([assignedToId])
+}
+
+/// Append-only log of lead status transitions, powering the CRM timeline.
+model InquiryStatusHistory {
+  id         String         @id @default(cuid())
+  inquiryId  String
+  inquiry    Inquiry        @relation(fields: [inquiryId], references: [id], onDelete: Cascade)
+  fromStatus InquiryStatus?
+  toStatus   InquiryStatus
+
+  changedById String?
+  changedBy   User?   @relation(fields: [changedById], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+
+  @@index([inquiryId])
+}
+
+model Visitor {
+  id        String   @id @default(cuid())
+  ip        String?
+  userAgent String?
+  path      String
+  referrer  String?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([path])
+}
+
+model SiteSettings {
+  id        String   @id @default(cuid())
+  siteName  String
+  phone     String
+  email     String
+  address   String
+  logo      String?
+  facebook  String?
+  instagram String?
+  linkedin  String?
+  youtube   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Media {
+  id           String    @id @default(cuid())
+  /// Storage provider that owns this file ("local", later "s3", ...).
+  provider     String    @default("local")
+  /// Provider-specific storage key/path (never exposed directly to clients).
+  key          String    @unique
+  /// Publicly reachable URL for the original file.
+  url          String
+  /// Publicly reachable URL for a generated thumbnail (images only).
+  thumbnailUrl String?
+  fileName     String
+  mimeType     String
+  type         MediaType
+  size         Int
+  width        Int?
+  height       Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([type])
+  @@index([createdAt])
+}
+
+/**
+ * ------------------------------ Auth & Access ------------------------------
+ */
+
+model User {
+  id                 String    @id @default(cuid())
+  email              String    @unique
+  name               String
+  passwordHash       String
+  role               Role      @default(EDITOR)
+  isActive           Boolean   @default(true)
+  mustChangePassword Boolean   @default(false)
+  lastLoginAt        DateTime?
+
+  refreshTokens     RefreshToken[]
+  assignedInquiries Inquiry[]              @relation("InquiryAssignee")
+  inquiryStatusLogs InquiryStatusHistory[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([role])
+}
+
+/// Opaque refresh tokens are stored hashed and rotated on every refresh.
+model RefreshToken {
+  id        String    @id @default(cuid())
+  tokenHash String    @unique
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+}
