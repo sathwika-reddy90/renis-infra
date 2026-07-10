@@ -10,7 +10,7 @@ export default function ProjectCard({ project }: { project: Project }) {
     <a href={project.href} className="group block">
       <div className="relative aspect-[4/5] w-full overflow-hidden">
         <Image
-          src={project.featuredImage}
+          src={project.featuredImage || "/images/placeholder-project.jpg"}
           alt={project.title}
           fill
           sizes="(max-width: 768px) 100vw, 33vw"

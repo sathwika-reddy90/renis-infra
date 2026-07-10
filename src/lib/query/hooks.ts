@@ -6,7 +6,7 @@ import { fetchGallery } from "@/lib/api/gallery";
 import { fetchTestimonials } from "@/lib/api/testimonials";
 import { fetchTeam } from "@/lib/api/team";
 import { fetchFaqs } from "@/lib/api/faqs";
-import { fetchBlogs } from "@/lib/api/blogs";
+import { fetchBlogs, fetchBlogBySlug } from "@/lib/api/blogs";
 import { fetchAmenities } from "@/lib/api/amenities";
 import { fetchSiteSettings } from "@/lib/api/site";
 import { submitInquiry } from "@/lib/api/contact";
@@ -65,6 +65,14 @@ export function useBlogs() {
   return useQuery({
     queryKey: queryKeys.blogs.list(),
     queryFn: ({ signal }) => fetchBlogs(signal),
+  });
+}
+
+export function useBlogBySlug(slug: string) {
+  return useQuery({
+    queryKey: queryKeys.blogs.bySlug(slug),
+    queryFn: ({ signal }) => fetchBlogBySlug(slug, signal),
+    enabled: slug.length > 0,
   });
 }
 

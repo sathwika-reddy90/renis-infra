@@ -34,7 +34,7 @@ export default function SimpleGallery({
             className="group relative aspect-[4/3] overflow-hidden"
           >
             <Image
-              src={src}
+              src={src || "/images/placeholder-project.jpg"}
               alt={`Gallery image ${i + 1}`}
               fill
               loading="lazy"

@@ -39,7 +39,7 @@ function Detail({ property, faqs }: { property: Property; faqs: FAQ[] }) {
         eyebrow="Flagship · Jubilee Hills"
         title={property.title}
         subtitle={property.location}
-        image={property.featuredImage}
+        image={property.featuredImage || "/images/placeholder-project.jpg"}
         breadcrumb={[
           { label: "Home", href: "/" },
           { label: "Projects", href: "/projects" },
@@ -126,7 +126,7 @@ function Detail({ property, faqs }: { property: Property; faqs: FAQ[] }) {
       <section className="bg-background py-24 md:py-32">
         <Container className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[1.4fr_1fr] lg:gap-16">
           <Reveal className="relative aspect-[16/10] overflow-hidden border border-line">
-            <Image src={property.masterPlan} alt="Master plan" fill sizes="(max-width: 1024px) 100vw, 60vw" className="object-cover" />
+            <Image src={property.masterPlan || "/images/placeholder-project.jpg"} alt="Master plan" fill sizes="(max-width: 1024px) 100vw, 60vw" className="object-cover" />
           </Reveal>
           <div>
             <Reveal>

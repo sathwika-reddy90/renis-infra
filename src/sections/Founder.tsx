@@ -53,7 +53,7 @@ export default function Founder() {
                 <div className="grid grid-cols-1 md:grid-cols-2">
                   <div className="relative min-h-[320px] md:min-h-[500px]">
                     <Image
-                      src={founder.image}
+                      src={founder.image || "/images/placeholder-project.jpg"}
                       alt={founder.name}
                       fill
                       sizes="(max-width: 768px) 100vw, 50vw"

@@ -1,15 +1,11 @@
+"use client";
+
 import Link from "next/link";
 import { Instagram, Facebook, Linkedin, Youtube } from "@/components/ui/SocialIcons";
 import Container from "@/components/ui/Container";
+import { useSiteSettings } from "@/lib/query/hooks";
 import { CONTACT, OFFICES } from "@/config/company";
 import { LATEST_LAUNCH } from "@/config/latestLaunch";
-
-const SOCIALS = [
-  { icon: Instagram, href: "#" },
-  { icon: Facebook, href: "#" },
-  { icon: Linkedin, href: "#" },
-  { icon: Youtube, href: "#" },
-];
 
 const PROJECT_LINKS = [
   { label: "All Projects", href: "/projects" },
@@ -19,10 +15,22 @@ const PROJECT_LINKS = [
 
 const MEDIA_LINKS = [
   { label: "Gallery", href: "/gallery" },
-  { label: "News & Events", href: "/#news" },
+  { label: "News & Events", href: "/blog" },
 ];
 
 export default function Footer() {
+  // Live from the CMS (Settings), config as the graceful fallback while
+  // loading or if the API is unreachable — same pattern as ContactCTA.
+  const { data } = useSiteSettings();
+  const contact = data ?? CONTACT;
+
+  const socials = [
+    { icon: Instagram, href: data?.instagram },
+    { icon: Facebook, href: data?.facebook },
+    { icon: Linkedin, href: data?.linkedin },
+    { icon: Youtube, href: data?.youtube },
+  ].filter((s): s is { icon: typeof Instagram; href: string } => Boolean(s.href));
+
   return (
     <footer className="border-t border-white/10 bg-ink text-white">
       <Container className="py-16">
@@ -36,17 +44,21 @@ export default function Footer() {
               Crafting landmark luxury residences where architecture,
               craftsmanship and address meet.
             </p>
-            <div className="mt-7 flex gap-3">
-              {SOCIALS.map(({ icon: Icon, href }, i) => (
-                <a
-                  key={i}
-                  href={href}
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-white/70 transition-colors duration-300 hover:border-gold hover:text-gold"
-                >
-                  <Icon size={16} />
-                </a>
-              ))}
-            </div>
+            {socials.length > 0 && (
+              <div className="mt-7 flex gap-3">
+                {socials.map(({ icon: Icon, href }, i) => (
+                  <a
+                    key={i}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-white/70 transition-colors duration-300 hover:border-gold hover:text-gold"
+                  >
+                    <Icon size={16} />
+                  </a>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Projects */}
@@ -104,15 +116,15 @@ export default function Footer() {
           <div>
             <h4 className="text-[0.72rem] uppercase tracking-[0.24em] text-gold">Get in Touch</h4>
             <ul className="mt-5 space-y-3 text-[0.92rem] text-white/65">
-              <li>{CONTACT.address}</li>
+              <li>{contact.address}</li>
               <li>
-                <a href={`tel:${CONTACT.phone.replace(/\s/g, "")}`} className="transition-colors hover:text-white">
-                  {CONTACT.phone}
+                <a href={`tel:${contact.phone.replace(/\s/g, "")}`} className="transition-colors hover:text-white">
+                  {contact.phone}
                 </a>
               </li>
               <li>
-                <a href={`mailto:${CONTACT.email}`} className="transition-colors hover:text-white">
-                  {CONTACT.email}
+                <a href={`mailto:${contact.email}`} className="transition-colors hover:text-white">
+                  {contact.email}
                 </a>
               </li>
             </ul>

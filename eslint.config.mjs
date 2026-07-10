@@ -12,6 +12,11 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Separate projects with their own lint/tsconfig — not part of the
+    // frontend app. "RENIS-INFRA/**" is an untracked, self-nested
+    // duplicate copy of this repo found sitting inside itself.
+    "backend/**",
+    "RENIS-INFRA/**",
   ]),
 ]);
 

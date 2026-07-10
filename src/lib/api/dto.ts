@@ -171,9 +171,29 @@ export interface ApiSiteSettings {
 
 /* -------------------------------- Mappers ---------------------------------- */
 
-// The flagship has a dedicated detail route; others link back to the listing.
+// The backend returns absolute URLs for CMS-uploaded media, e.g.
+// "http://localhost:4000/uploads/2026/07/x.png" (see
+// backend/src/storage/LocalStorageProvider.ts). next/image's optimizer
+// hard-blocks fetching any remote URL that resolves to a loopback/private
+// IP — a security check that can't be satisfied via `images.remotePatterns`
+// alone. Stripping the backend's own origin turns these into relative paths
+// (e.g. "/uploads/2026/07/x.png"), which next/image treats as same-origin
+// and serves via the `/uploads` rewrite in next.config.ts instead of
+// fetching remotely. External URLs (Unsplash, etc.) are left untouched.
+const API_ORIGIN = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000/api").replace(
+  /\/api\/?$/,
+  "",
+);
+
+function toLocalAsset<T extends string | undefined>(url: T): T {
+  if (!url) return url;
+  return (url.startsWith(API_ORIGIN) ? url.slice(API_ORIGIN.length) || "/" : url) as T;
+}
+
+// The flagship has a dedicated, richer detail route; every other property
+// resolves to the generic dynamic detail page.
 const detailHref = (slug: string): string =>
-  slug === "the-aureate" ? "/projects/jubilee-hills" : "/projects";
+  slug === "the-aureate" ? "/projects/jubilee-hills" : `/projects/${slug}`;
 
 export const toProject = (p: ApiProperty): Project => ({
   id: p.id,
@@ -185,7 +205,7 @@ export const toProject = (p: ApiProperty): Project => ({
   status: STATUS_LABEL[p.status],
   propertyType: TYPE_LABEL[p.propertyType],
   priceLabel: p.priceLabel,
-  featuredImage: p.featuredImage,
+  featuredImage: toLocalAsset(p.featuredImage),
   href: detailHref(p.slug),
 });
 
@@ -208,12 +228,12 @@ export const toProperty = (p: ApiProperty): Property => ({
   possession: p.possession,
   reraNumber: p.reraNumber,
   developer: p.developer,
-  featuredImage: p.featuredImage,
-  gallery: p.gallery,
+  featuredImage: toLocalAsset(p.featuredImage),
+  gallery: p.gallery.map((src) => toLocalAsset(src)),
   video: p.video,
   virtualTour: p.virtualTour,
-  floorPlans: p.floorPlans,
-  masterPlan: p.masterPlan,
+  floorPlans: p.floorPlans.map((f) => ({ ...f, image: toLocalAsset(f.image) })),
+  masterPlan: toLocalAsset(p.masterPlan),
   masterLegend: p.masterLegend,
   amenities: p.amenities,
   specifications: p.specifications,
@@ -229,7 +249,7 @@ export const toProperty = (p: ApiProperty): Property => ({
 
 export const toGalleryImage = (g: ApiGalleryImage): GalleryImage => ({
   id: g.id,
-  src: g.src,
+  src: toLocalAsset(g.src),
   alt: g.alt,
   category: GALLERY_LABEL[g.category],
 });
@@ -241,14 +261,14 @@ export const toTestimonial = (t: ApiTestimonial): Testimonial => ({
   role: t.role,
   project: t.project,
   rating: t.rating,
-  avatar: t.avatar,
+  avatar: toLocalAsset(t.avatar),
 });
 
 export const toTeamMember = (m: ApiTeamMember): TeamMember => ({
   id: m.id,
   name: m.name,
   role: m.role,
-  image: m.image,
+  image: toLocalAsset(m.image),
   bio: m.bio,
   socials:
     m.linkedin || m.twitter || m.email
@@ -280,7 +300,7 @@ export const toBlogPost = (b: ApiBlog): BlogPost => ({
   category: b.category,
   tags: b.tags,
   author: { name: "RENISINFRA" },
-  coverImage: b.coverImage,
+  coverImage: toLocalAsset(b.coverImage),
   readTime: b.readTime,
   published: Boolean(b.publishedAt),
   publishedAt: b.publishedAt ?? b.createdAt,

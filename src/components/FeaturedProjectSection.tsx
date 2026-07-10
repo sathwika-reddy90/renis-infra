@@ -36,7 +36,7 @@ export default function FeaturedProjectSection() {
               <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-16">
                 <Reveal className="relative aspect-[4/3] overflow-hidden">
                   <Image
-                    src={featured.featuredImage}
+                    src={featured.featuredImage || "/images/placeholder-project.jpg"}
                     alt={featured.title}
                     fill
                     sizes="(max-width: 1024px) 100vw, 50vw"

@@ -28,6 +28,7 @@ export const queryKeys = {
   blogs: {
     all: ["blogs"] as const,
     list: () => [...queryKeys.blogs.all, "list"] as const,
+    bySlug: (slug: string) => [...queryKeys.blogs.all, "slug", slug] as const,
   },
   amenities: {
     all: ["amenities"] as const,

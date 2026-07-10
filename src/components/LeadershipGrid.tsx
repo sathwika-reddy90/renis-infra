@@ -27,7 +27,7 @@ export default function LeadershipGrid() {
             <Reveal key={p.id} delay={(i % 4) * 0.06}>
               <div className="group relative aspect-[4/5] overflow-hidden">
                 <Image
-                  src={p.image}
+                  src={p.image || "/images/placeholder-project.jpg"}
                   alt={p.name}
                   fill
                   sizes="(max-width: 1024px) 50vw, 25vw"
