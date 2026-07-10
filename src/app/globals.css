@@ -2,12 +2,12 @@
 
 @theme inline {
   --color-background: #ffffff;
-  --color-foreground: #0e0e0e;
-  --color-ink: #0e0e0e;
-  --color-muted: #6b6b6b;
+  --color-foreground: #222222;
+  --color-ink: #0b1730;
+  --color-muted: #7a7a7a;
   --color-line: #e7e7e2;
-  --color-gold: #c8a45d;
-  --color-gold-soft: #e3d4ad;
+  --color-gold: #d4af67;
+  --color-gold-soft: #e6cd9e;
   --color-cream: #f6f4ef;
 
   --font-display: var(--font-display);
@@ -18,7 +18,7 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #0e0e0e;
+  --foreground: #222222;
 }
 
 html {

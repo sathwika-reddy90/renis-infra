@@ -33,7 +33,7 @@ export default function Navbar() {
       className={cn(
         "fixed inset-x-0 top-0 z-50 transition-all duration-500 ease-[var(--ease-lux)]",
         solid
-          ? "bg-white/95 py-3 shadow-[0_1px_0_0_var(--color-line)] backdrop-blur-md"
+          ? "bg-ink/95 py-3 shadow-[0_1px_0_0_rgba(255,255,255,0.08)] backdrop-blur-md"
           : "bg-transparent py-6",
       )}
     >
@@ -41,10 +41,7 @@ export default function Navbar() {
         {/* Logo */}
         <Link
           href="/"
-          className={cn(
-            "font-display text-2xl font-semibold tracking-[0.12em] transition-colors",
-            solid ? "text-ink" : "text-white",
-          )}
+          className="font-display text-2xl font-semibold tracking-[0.12em] text-white transition-colors"
         >
           RENIS<span className="text-gold">INFRA</span>
         </Link>
@@ -56,9 +53,8 @@ export default function Navbar() {
               key={link.href}
               href={link.href}
               className={cn(
-                "group relative text-[0.82rem] tracking-[0.06em] transition-colors duration-300",
-                solid ? "text-ink/80 hover:text-ink" : "text-white/85 hover:text-white",
-                isActive(link.href) && (solid ? "text-ink" : "text-white"),
+                "group relative text-[0.82rem] tracking-[0.06em] text-white/85 transition-colors duration-300 hover:text-white",
+                isActive(link.href) && "text-white",
               )}
             >
               {link.label}
@@ -72,8 +68,11 @@ export default function Navbar() {
           ))}
         </nav>
 
-        <div className="hidden lg:block">
-          <Button onClick={openVisitModal} variant={solid ? "ghost" : "outline"} className="px-6 py-3">
+        <div className="hidden items-center gap-3 lg:flex">
+          <Button href="/contact" variant="outline" className="px-6 py-3">
+            Contact Us
+          </Button>
+          <Button onClick={openVisitModal} variant="gold" className="px-6 py-3">
             Schedule a Visit
           </Button>
         </div>
@@ -82,7 +81,7 @@ export default function Navbar() {
         <button
           aria-label="Toggle menu"
           onClick={() => setOpen((o) => !o)}
-          className={cn("lg:hidden", solid ? "text-ink" : "text-white")}
+          className="text-white lg:hidden"
         >
           {open ? <X size={26} /> : <Menu size={26} />}
         </button>
@@ -96,7 +95,7 @@ export default function Navbar() {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-            className="overflow-hidden bg-white lg:hidden"
+            className="overflow-hidden bg-ink lg:hidden"
           >
             <Container className="flex flex-col gap-1 py-6">
               {NAV_LINKS.map((link) => (
@@ -105,20 +104,23 @@ export default function Navbar() {
                   href={link.href}
                   onClick={() => setOpen(false)}
                   className={cn(
-                    "border-b border-line py-3 text-sm tracking-[0.06em] transition-colors",
-                    isActive(link.href) ? "text-gold" : "text-ink/80",
+                    "border-b border-white/10 py-3 text-sm tracking-[0.06em] transition-colors",
+                    isActive(link.href) ? "text-gold" : "text-white/80",
                   )}
                 >
                   {link.label}
                 </Link>
               ))}
-              <div className="pt-5">
+              <div className="flex flex-col gap-3 pt-5">
+                <Button href="/contact" onClick={() => setOpen(false)} variant="outline" className="w-full">
+                  Contact Us
+                </Button>
                 <Button
                   onClick={() => {
                     setOpen(false);
                     openVisitModal();
                   }}
-                  variant="ghost"
+                  variant="gold"
                   className="w-full"
                 >
                   Schedule a Visit

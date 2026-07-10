@@ -1,63 +1,24 @@
-"use client";
-
-import { motion } from "framer-motion";
 import Container from "@/components/ui/Container";
-import SectionHeading from "@/components/ui/SectionHeading";
-import ProjectCard from "@/components/ProjectCard";
-import QueryView from "@/components/ui/QueryView";
-import Skeleton from "@/components/ui/Skeleton";
-import { useProjects } from "@/lib/query/hooks";
-import { fadeUp, stagger, viewportOnce } from "@/lib/motion";
+import Reveal from "@/components/ui/Reveal";
 
-function GridSkeleton() {
-  return (
-    <div className="mt-14 grid grid-cols-1 gap-6 md:grid-cols-3">
-      {Array.from({ length: 3 }).map((_, i) => (
-        <Skeleton key={i} className="aspect-[4/5] w-full" />
-      ))}
-    </div>
-  );
-}
-
+// Compact white intro band — heading only, sized to match the Danube
+// reference (not a full section of empty space). The projects themselves
+// are presented immediately below in the pinned GSAP scroll showcase
+// (see ProjectShowcase.tsx), not as cards in this section.
 export default function FeaturedProjects() {
-  const query = useProjects();
-
   return (
-    <section id="projects" className="bg-background py-24 md:py-32">
+    <section id="projects" className="bg-background py-16 md:py-20">
       <Container>
-        <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
-          <SectionHeading
-            align="left"
-            eyebrow="Featured Portfolio"
-            title={
-              <>
-                Signature <span className="italic text-gold">Residences</span>
-              </>
-            }
-          />
-          <p className="max-w-sm text-[0.95rem] leading-relaxed text-muted md:pb-3">
-            A curated collection of landmark developments defining Hyderabad&apos;s
-            most coveted neighbourhoods.
-          </p>
-        </div>
-
-        <QueryView query={query} skeleton={<GridSkeleton />}>
-          {(projects) => (
-            <motion.div
-              variants={stagger}
-              initial="hidden"
-              whileInView="show"
-              viewport={viewportOnce}
-              className="mt-14 grid grid-cols-1 gap-6 md:grid-cols-3"
-            >
-              {projects.slice(0, 3).map((project) => (
-                <motion.div key={project.id} variants={fadeUp}>
-                  <ProjectCard project={project} />
-                </motion.div>
-              ))}
-            </motion.div>
-          )}
-        </QueryView>
+        <Reveal className="text-center">
+          <span className="eyebrow flex items-center justify-center gap-3">
+            <span className="h-px w-8 bg-gold" />
+            Our Portfolio
+            <span className="h-px w-8 bg-gold" />
+          </span>
+          <h2 className="mx-auto mt-4 max-w-3xl font-display text-4xl font-light uppercase leading-[1.05] tracking-[0.04em] text-ink md:text-6xl">
+            Featured <span className="italic text-gold">Projects</span>
+          </h2>
+        </Reveal>
       </Container>
     </section>
   );

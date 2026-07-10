@@ -1,15 +1,19 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { Phone, Mail, MapPin } from "lucide-react";
-import Container from "@/components/ui/Container";
 import Reveal from "@/components/ui/Reveal";
-import Button from "@/components/ui/Button";
+import SectionHeading from "@/components/ui/SectionHeading";
+import EnquiryForm from "@/components/EnquiryForm";
 import { useSiteSettings } from "@/lib/query/hooks";
 import { CONTACT } from "@/config/company";
 import { fadeUp, stagger, viewportOnce } from "@/lib/motion";
 
 const tel = (phone: string) => `tel:${phone.replace(/\s/g, "")}`;
+
+const CONTACT_IMAGE =
+  "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1400&q=80";
 
 export default function ContactCTA() {
   // Live site settings when available, config as the graceful fallback.
@@ -23,64 +27,66 @@ export default function ContactCTA() {
   ];
 
   return (
-    <section id="contact" className="relative overflow-hidden bg-ink py-24 text-white md:py-32">
-      {/* Soft gold radial accents */}
-      <div className="pointer-events-none absolute -left-40 top-0 h-96 w-96 rounded-full bg-gold/10 blur-3xl" />
-      <div className="pointer-events-none absolute -right-40 bottom-0 h-96 w-96 rounded-full bg-gold/10 blur-3xl" />
+    <section id="contact" className="bg-background">
+      <div className="grid grid-cols-1 lg:grid-cols-2">
+        {/* Form */}
+        <div className="flex flex-col justify-center px-6 py-24 md:px-10 md:py-32 lg:px-16">
+          <SectionHeading
+            align="left"
+            eyebrow="Begin the Conversation"
+            title={
+              <>
+                Schedule a private viewing of your{" "}
+                <span className="italic text-gold">future address</span>.
+              </>
+            }
+            description="Complete the form and a residence advisor will be in touch within one business day."
+          />
 
-      <Container className="relative z-10 text-center">
-        <Reveal>
-          <span className="eyebrow flex items-center justify-center gap-3">
-            <span className="h-px w-8 bg-gold" />
-            Begin the Conversation
-            <span className="h-px w-8 bg-gold" />
-          </span>
-        </Reveal>
-        <Reveal delay={0.05}>
-          <h2 className="mx-auto mt-6 max-w-3xl font-display text-4xl font-light leading-[1.05] md:text-6xl">
-            Schedule a private viewing of your future address.
-          </h2>
-        </Reveal>
-        <Reveal delay={0.1}>
-          <p className="mx-auto mt-6 max-w-xl text-[1rem] leading-relaxed text-white/70">
-            Our residence advisors are available to arrange a personalised tour
-            at a time that suits you.
-          </p>
-        </Reveal>
-        <Reveal delay={0.15}>
-          <div className="mt-10 flex flex-wrap justify-center gap-4">
-            <Button href={tel(contact.phone)} variant="gold">
-              Schedule a Visit
-            </Button>
-            <Button href={`mailto:${contact.email}`} variant="outline">
-              Enquire Now
-            </Button>
-          </div>
-        </Reveal>
+          <Reveal delay={0.1} className="mt-10 max-w-lg">
+            <EnquiryForm />
+          </Reveal>
 
-        <motion.div
-          variants={stagger}
-          initial="hidden"
-          whileInView="show"
-          viewport={viewportOnce}
-          className="mx-auto mt-20 grid max-w-4xl grid-cols-1 gap-px overflow-hidden border border-white/10 bg-white/10 sm:grid-cols-3"
-        >
-          {details.map(({ icon: Icon, label, value, href }) => {
-            const inner = (
-              <div className="flex h-full flex-col items-center gap-3 bg-ink px-6 py-10 transition-colors duration-500 hover:bg-white/[0.03]">
-                <Icon size={24} strokeWidth={1.3} className="text-gold" />
-                <p className="text-[0.7rem] uppercase tracking-[0.24em] text-white/50">{label}</p>
-                <p className="text-sm text-white/85">{value}</p>
-              </div>
-            );
-            return (
-              <motion.div key={label} variants={fadeUp}>
-                {href ? <a href={href}>{inner}</a> : inner}
-              </motion.div>
-            );
-          })}
-        </motion.div>
-      </Container>
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            whileInView="show"
+            viewport={viewportOnce}
+            className="mt-14 flex flex-wrap gap-x-10 gap-y-6"
+          >
+            {details.map(({ icon: Icon, label, value, href }) => {
+              const inner = (
+                <div className="flex items-center gap-3">
+                  <span className="flex h-11 w-11 flex-none items-center justify-center rounded-full bg-cream text-gold">
+                    <Icon size={17} strokeWidth={1.4} />
+                  </span>
+                  <div>
+                    <p className="text-[0.68rem] uppercase tracking-[0.22em] text-muted">{label}</p>
+                    <p className="text-[0.92rem] text-ink">{value}</p>
+                  </div>
+                </div>
+              );
+              return (
+                <motion.div key={label} variants={fadeUp}>
+                  {href ? <a href={href}>{inner}</a> : inner}
+                </motion.div>
+              );
+            })}
+          </motion.div>
+        </div>
+
+        {/* Image */}
+        <div className="relative min-h-[360px] lg:min-h-full">
+          <Image
+            src={CONTACT_IMAGE}
+            alt="A RENISINFRA residence"
+            fill
+            sizes="(max-width: 1024px) 100vw, 50vw"
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent lg:bg-gradient-to-l" />
+        </div>
+      </div>
     </section>
   );
 }
