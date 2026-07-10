@@ -50,11 +50,10 @@ const INVEST_ICONS: Record<string, LucideIcon> = {
 
 type StatItem = { icon: LucideIcon; stat: string; label: string };
 
-// 4-column x 2-row icon/stat grid, measurements taken directly from the
-// live Danube reference (danubeproperties.com "Why Danube Properties?"
-// section, 1440px viewport): table-style rule lines (vertical between
-// columns, horizontal under row 1), icon centered per cell, number + label
-// left-aligned per cell.
+// 4-column x 2-row icon/stat grid: vertical rules between columns, one
+// horizontal rule under row 1, icon centered per cell, number + label
+// left-aligned per cell — compact sizing to match the Danube reference's
+// tight row pitch.
 function StatGrid({ items }: { items: StatItem[] }) {
   return (
     <motion.div
@@ -62,7 +61,7 @@ function StatGrid({ items }: { items: StatItem[] }) {
       initial="hidden"
       whileInView="show"
       viewport={viewportOnce}
-      className="mt-5 grid grid-cols-2 sm:grid-cols-4"
+      className="mt-8 grid grid-cols-2 sm:grid-cols-4"
     >
       {items.map(({ icon: Icon, stat, label }, i) => {
         const lastInRow = (i + 1) % 4 === 0;
@@ -72,18 +71,18 @@ function StatGrid({ items }: { items: StatItem[] }) {
             key={label}
             variants={fadeUp}
             className={cn(
-              "px-4 pb-8 pt-9 sm:px-3",
+              "px-3 py-5",
               !lastInRow && "sm:border-r sm:border-line",
               firstRow && "border-b border-line",
             )}
           >
             <div className="flex justify-center">
-              <Icon size={38} strokeWidth={1} className="text-gold" />
+              <Icon size={26} strokeWidth={1.25} className="text-gold" />
             </div>
-            <div className="mt-6 text-left font-display text-4xl font-normal text-ink">
+            <div className="mt-3 text-left font-display text-2xl font-normal text-ink sm:text-[28px]">
               <StatCounter value={stat} />
             </div>
-            <p className="mt-2 text-left text-[0.72rem] uppercase leading-snug tracking-[0.08em] text-muted">
+            <p className="mt-1 text-left text-[0.66rem] uppercase leading-snug tracking-[0.06em] text-muted">
               {label}
             </p>
           </motion.div>
@@ -97,8 +96,8 @@ function WhyColumn({ heading, items }: { heading: React.ReactNode; items: StatIt
   return (
     <div>
       <Reveal className="text-center">
-        <span className="text-[18px] font-medium uppercase tracking-[0.16em] text-gold">Why</span>
-        <h2 className="mt-2 font-display text-[40px] font-normal uppercase leading-[1.25] tracking-[0.08em] text-gold sm:text-[48px] sm:leading-[60px]">
+        <span className="text-[13px] font-medium uppercase tracking-[0.16em] text-gold">Why</span>
+        <h2 className="mt-1 whitespace-nowrap font-display text-2xl font-normal uppercase tracking-[0.03em] text-gold sm:text-3xl xl:text-[40px]">
           {heading}
         </h2>
       </Reveal>
@@ -107,25 +106,25 @@ function WhyColumn({ heading, items }: { heading: React.ReactNode; items: StatIt
   );
 }
 
-// Near-1:1 structural clone of the Danube "Why Danube Properties? / Why
-// Invest in Dubai?" section: two edge-to-edge equal columns split by a
-// single divider that runs the full section height, each with a centered
-// "Why" label + large serif heading, followed by an 8-item (4x2) icon/stat
-// grid with table rule lines. RENISINFRA copy and statistics only.
+// Structural clone of the Danube "Why Danube Properties? / Why Invest in
+// Dubai?" section: two equal columns split by a single divider running the
+// full section height, each with a centered "Why" label + one-line serif
+// heading, followed by an 8-item (4x2) icon/stat grid with table rule
+// lines. RENISINFRA copy and statistics only.
 export default function WhyRenisinfra() {
   const whyItems: StatItem[] = WHY_RENISINFRA_STATS.map((s) => ({ ...s, icon: WHY_ICONS[s.icon] }));
   const investItems: StatItem[] = INVEST_REASONS.map((r) => ({ ...r, icon: INVEST_ICONS[r.icon] }));
 
   return (
-    <section id="why" className="relative bg-background pb-9 pt-[90px] sm:pb-9">
+    <section id="why" className="relative bg-background py-16 sm:py-20">
       <div className="pointer-events-none absolute inset-y-0 left-1/2 hidden w-px -translate-x-1/2 bg-line sm:block" />
 
-      <div className="mx-auto grid max-w-[1440px] grid-cols-1 gap-16 sm:grid-cols-2 sm:gap-0">
-        <div className="px-6 sm:px-[52px]">
+      <div className="mx-auto grid max-w-[1280px] grid-cols-1 gap-14 sm:grid-cols-2 sm:gap-0">
+        <div className="px-6 sm:px-10">
           <WhyColumn heading="RENISINFRA?" items={whyItems} />
         </div>
-        <div className="px-6 sm:px-[52px]">
-          <WhyColumn heading="Invest With RENISINFRA?" items={investItems} />
+        <div className="px-6 sm:px-10">
+          <WhyColumn heading="Invest With Us?" items={investItems} />
         </div>
       </div>
     </section>

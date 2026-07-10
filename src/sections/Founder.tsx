@@ -2,30 +2,24 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { motion, AnimatePresence, type Variants } from "framer-motion";
-import { PlayCircle, X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { X } from "lucide-react";
 import Container from "@/components/ui/Container";
-import Reveal from "@/components/ui/Reveal";
-import Button from "@/components/ui/Button";
 import QueryView from "@/components/ui/QueryView";
 import Skeleton from "@/components/ui/Skeleton";
 import { useTeam } from "@/lib/query/hooks";
-import { easeLux } from "@/lib/motion";
 import type { TeamMember } from "@/types/team";
-
-const panelReveal: Variants = {
-  hidden: { opacity: 0, scale: 1.05 },
-  show: { opacity: 1, scale: 1, transition: { duration: 1.1, ease: easeLux } },
-};
 
 function FounderSkeleton() {
   return (
-    <Container className="grid grid-cols-1 items-center gap-14 lg:grid-cols-2 lg:gap-20">
-      <Skeleton className="aspect-[4/5] w-full" />
-      <div className="space-y-4">
-        <Skeleton className="h-4 w-40" />
-        <Skeleton className="h-10 w-2/3" />
-        <Skeleton className="h-24 w-full" />
+    <Container>
+      <div className="grid grid-cols-1 md:grid-cols-2">
+        <Skeleton className="h-[320px] w-full md:h-[500px]" />
+        <div className="flex flex-col justify-center gap-4 bg-white p-8 md:p-10">
+          <Skeleton className="h-4 w-56" />
+          <Skeleton className="h-10 w-40" />
+          <Skeleton className="h-11 w-52" />
+        </div>
       </div>
     </Container>
   );
@@ -34,17 +28,20 @@ function FounderSkeleton() {
 // Featured leader spotlighted on the homepage — picks whoever is tagged
 // Founder/Chairman in the live team list, falling back to the first member.
 function pickFounder(team: TeamMember[]): TeamMember | undefined {
-  return (
-    team.find((m) => /founder|chairman/i.test(m.role)) ?? team[0]
-  );
+  return team.find((m) => /founder|chairman/i.test(m.role)) ?? team[0];
 }
 
+// Structural clone of the Danube "Founder & Chairman" CTA block: light grey
+// section, image filling the left half, a white content panel filling the
+// right half (equal height, vertically centered content) with a small
+// uppercase title, a large serif name, and a dark rectangular CTA button
+// directly beneath it.
 export default function Founder() {
   const query = useTeam();
   const [watching, setWatching] = useState(false);
 
   return (
-    <section id="founder" className="bg-background py-24 md:py-32">
+    <section id="founder" className="bg-gray-50 py-16 md:py-24">
       <QueryView query={query} skeleton={<FounderSkeleton />} errorMessage="Unable to load leadership details right now.">
         {(team) => {
           const founder = pickFounder(team);
@@ -52,56 +49,32 @@ export default function Founder() {
 
           return (
             <>
-              <Container className="grid grid-cols-1 items-center gap-14 lg:grid-cols-2 lg:gap-20">
-                <div className="relative">
-                  <Reveal
-                    variants={panelReveal}
-                    className="relative aspect-[4/5] w-full overflow-hidden"
-                  >
+              <Container>
+                <div className="grid grid-cols-1 md:grid-cols-2">
+                  <div className="relative min-h-[320px] md:min-h-[500px]">
                     <Image
                       src={founder.image}
                       alt={founder.name}
                       fill
-                      sizes="(max-width: 1024px) 100vw, 50vw"
+                      sizes="(max-width: 768px) 100vw, 50vw"
                       className="object-cover"
                     />
-                  </Reveal>
-                  <div className="pointer-events-none absolute -bottom-5 -left-5 hidden h-40 w-40 border border-gold md:block" />
-                </div>
+                  </div>
 
-                <div>
-                  <Reveal>
-                    <span className="eyebrow flex items-center gap-3">
-                      <span className="h-px w-8 bg-gold" />
-                      Leadership
+                  <div className="flex flex-col justify-center bg-white p-8 md:p-10 lg:p-12">
+                    <span className="text-[15px] font-medium uppercase tracking-[0.16em] text-muted md:text-[17px]">
+                      Founder &amp; Chairman of RENISINFRA
                     </span>
-                  </Reveal>
-                  <Reveal delay={0.05}>
-                    <h2 className="mt-5 font-display text-4xl font-light leading-[1.08] md:text-5xl">
+                    <h2 className="mt-6 font-display text-4xl font-light uppercase tracking-[0.02em] text-gold md:text-5xl">
                       {founder.name}
                     </h2>
-                  </Reveal>
-                  <Reveal delay={0.08}>
-                    <p className="mt-2 text-[0.8rem] uppercase tracking-[0.2em] text-gold">
-                      {founder.role}
-                    </p>
-                  </Reveal>
-                  {founder.bio && (
-                    <Reveal delay={0.14}>
-                      <p className="mt-6 max-w-lg text-[0.98rem] leading-relaxed text-muted">
-                        {founder.bio}
-                      </p>
-                    </Reveal>
-                  )}
-
-                  <Reveal delay={0.2}>
-                    <div className="mt-9">
-                      <Button onClick={() => setWatching(true)} variant="ghost" className="gap-2.5">
-                        <PlayCircle size={18} />
-                        Watch Story
-                      </Button>
-                    </div>
-                  </Reveal>
+                    <button
+                      onClick={() => setWatching(true)}
+                      className="mt-8 w-fit bg-[#555555] px-6 py-3 text-[13px] font-medium uppercase tracking-[0.1em] text-white transition-colors duration-300 hover:bg-ink"
+                    >
+                      Watch Complete Story
+                    </button>
+                  </div>
                 </div>
               </Container>
 
