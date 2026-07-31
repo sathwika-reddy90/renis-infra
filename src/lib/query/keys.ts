@@ -8,6 +8,11 @@ export const queryKeys = {
   projects: {
     all: ["projects"] as const,
     list: () => [...queryKeys.projects.all, "list"] as const,
+    /** Filtered/paginated listing — params are part of the key for correctness. */
+    page: (params: Record<string, unknown>) =>
+      [...queryKeys.projects.all, "page", params] as const,
+    facets: () => [...queryKeys.projects.all, "facets"] as const,
+    related: (slug: string) => [...queryKeys.projects.all, "related", slug] as const,
   },
   gallery: {
     all: ["gallery"] as const,
@@ -37,5 +42,6 @@ export const queryKeys = {
   site: {
     all: ["site"] as const,
     settings: () => [...queryKeys.site.all, "settings"] as const,
+    content: () => [...queryKeys.site.all, "content"] as const,
   },
 } as const;

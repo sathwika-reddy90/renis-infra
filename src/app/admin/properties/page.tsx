@@ -12,6 +12,7 @@ import {
   TextareaField,
   SelectField,
   TagsField,
+  CheckField,
   FieldGrid,
   FormSection,
   ArrayItem,
@@ -49,6 +50,7 @@ function Fields({ form }: { form: UseFormReturn<PropertyInput> }) {
   const paymentPlans = useFieldArray({ control, name: "paymentPlans" });
   const landmarks = useFieldArray({ control, name: "nearbyLandmarks" });
   const stats = useFieldArray({ control, name: "overviewStats" });
+  const highlights = useFieldArray({ control, name: "highlights" });
 
   return (
     <>
@@ -111,10 +113,44 @@ function Fields({ form }: { form: UseFormReturn<PropertyInput> }) {
           <TextField label="RERA number" error={errors.reraNumber?.message} {...register("reraNumber")} />
           <TextField label="Developer" error={errors.developer?.message} {...register("developer")} />
         </FieldGrid>
+        <MediaPickerField
+          control={control}
+          name="developerLogo"
+          label="Developer logo (optional)"
+          hint="Shown alongside the developer name in the project specs"
+        />
+        <TagsField
+          control={control}
+          name="certifications"
+          label="Certifications"
+        />
+      </FormSection>
+
+      <FormSection
+        title="Placement"
+        description="Controls where and in what order this project appears across the site."
+      >
+        <CheckField
+          label="Feature on the homepage"
+          {...register("featured")}
+        />
+        <TextField
+          label="Display order"
+          type="number"
+          min={0}
+          hint="Lower numbers sort first; ties fall back to newest."
+          error={errors.order?.message}
+          {...register("order")}
+        />
       </FormSection>
 
       <FormSection title="Media">
         <MediaPickerField control={control} name="featuredImage" label="Featured image" />
+        <MediaPickerListField
+          control={control}
+          name="heroImages"
+          label="Hero slider images"
+        />
         <MediaPickerListField control={control} name="gallery" label="Gallery images" />
         <FieldGrid>
           <TextField label="Video URL (optional)" error={errors.video?.message} {...register("video")} />
@@ -128,13 +164,61 @@ function Fields({ form }: { form: UseFormReturn<PropertyInput> }) {
         <TagsField control={control} name="masterLegend" label="Master plan legend" />
       </FormSection>
 
+      <FormSection
+        title="Highlights"
+        description="USP cards shown near the top of the project page."
+      >
+        {highlights.fields.map((f, i) => (
+          <ArrayItem
+            key={f.id}
+            index={i}
+            title={watch(`highlights.${i}.title`)}
+            onRemove={() => highlights.remove(i)}
+            onMove={highlights.move}
+            isFirst={i === 0}
+            isLast={i === highlights.fields.length - 1}
+          >
+            <TextField
+              label="Title"
+              placeholder="Yacht-shaped clubhouse"
+              error={errors.highlights?.[i]?.title?.message}
+              {...register(`highlights.${i}.title`)}
+            />
+            <TextareaField
+              label="Description"
+              rows={2}
+              error={errors.highlights?.[i]?.description?.message}
+              {...register(`highlights.${i}.description`)}
+            />
+            <TextField
+              label="Icon key (optional)"
+              placeholder="pool"
+              error={errors.highlights?.[i]?.icon?.message}
+              {...register(`highlights.${i}.icon`)}
+            />
+          </ArrayItem>
+        ))}
+        <AddItemButton
+          label="Add highlight"
+          onClick={() => highlights.append({ title: "", description: "", icon: "" })}
+        />
+      </FormSection>
+
       <FormSection title="Amenities" description="Amenity names shown on the property page.">
         <TagsField control={control} name="amenities" label="Amenities" />
       </FormSection>
 
       <FormSection title="Overview Stats" description="Label/value pairs in the overview grid.">
         {stats.fields.map((f, i) => (
-          <ArrayItem key={f.id} index={i} onRemove={() => stats.remove(i)}>
+          <ArrayItem
+            key={f.id}
+            index={i}
+            title={watch(`overviewStats.${i}.label`)}
+            onRemove={() => stats.remove(i)}
+            onMove={stats.move}
+            isFirst={i === 0}
+            isLast={i === stats.fields.length - 1}
+          >
             <FieldGrid>
               <TextField label="Label" error={errors.overviewStats?.[i]?.label?.message} {...register(`overviewStats.${i}.label`)} />
               <TextField label="Value" error={errors.overviewStats?.[i]?.value?.message} {...register(`overviewStats.${i}.value`)} />
@@ -146,7 +230,15 @@ function Fields({ form }: { form: UseFormReturn<PropertyInput> }) {
 
       <FormSection title="Floor Plans">
         {floorPlans.fields.map((f, i) => (
-          <ArrayItem key={f.id} index={i} onRemove={() => floorPlans.remove(i)}>
+          <ArrayItem
+            key={f.id}
+            index={i}
+            title={watch(`floorPlans.${i}.type`)}
+            onRemove={() => floorPlans.remove(i)}
+            onMove={floorPlans.move}
+            isFirst={i === 0}
+            isLast={i === floorPlans.fields.length - 1}
+          >
             <FieldGrid>
               <TextField label="Type" placeholder="4 BHK Sky Residence" error={errors.floorPlans?.[i]?.type?.message} {...register(`floorPlans.${i}.type`)} />
               <TextField label="Area" placeholder="4,200 sq.ft." error={errors.floorPlans?.[i]?.area?.message} {...register(`floorPlans.${i}.area`)} />
@@ -164,7 +256,15 @@ function Fields({ form }: { form: UseFormReturn<PropertyInput> }) {
 
       <FormSection title="Specifications">
         {specifications.fields.map((f, i) => (
-          <ArrayItem key={f.id} index={i} onRemove={() => specifications.remove(i)}>
+          <ArrayItem
+            key={f.id}
+            index={i}
+            title={watch(`specifications.${i}.category`)}
+            onRemove={() => specifications.remove(i)}
+            onMove={specifications.move}
+            isFirst={i === 0}
+            isLast={i === specifications.fields.length - 1}
+          >
             <TextField label="Category" placeholder="Flooring" error={errors.specifications?.[i]?.category?.message} {...register(`specifications.${i}.category`)} />
             <TagsField control={control} name={`specifications.${i}.items`} label="Items" />
           </ArrayItem>
@@ -174,7 +274,15 @@ function Fields({ form }: { form: UseFormReturn<PropertyInput> }) {
 
       <FormSection title="Payment Plans">
         {paymentPlans.fields.map((f, i) => (
-          <ArrayItem key={f.id} index={i} onRemove={() => paymentPlans.remove(i)}>
+          <ArrayItem
+            key={f.id}
+            index={i}
+            title={watch(`paymentPlans.${i}.label`)}
+            onRemove={() => paymentPlans.remove(i)}
+            onMove={paymentPlans.move}
+            isFirst={i === 0}
+            isLast={i === paymentPlans.fields.length - 1}
+          >
             <TextField label="Label" error={errors.paymentPlans?.[i]?.label?.message} {...register(`paymentPlans.${i}.label`)} />
             <TextareaField label="Description" rows={2} error={errors.paymentPlans?.[i]?.description?.message} {...register(`paymentPlans.${i}.description`)} />
             <TextField label="Milestone (optional)" placeholder="10% on booking" error={errors.paymentPlans?.[i]?.milestone?.message} {...register(`paymentPlans.${i}.milestone`)} />
@@ -185,7 +293,15 @@ function Fields({ form }: { form: UseFormReturn<PropertyInput> }) {
 
       <FormSection title="Nearby Landmarks">
         {landmarks.fields.map((f, i) => (
-          <ArrayItem key={f.id} index={i} onRemove={() => landmarks.remove(i)}>
+          <ArrayItem
+            key={f.id}
+            index={i}
+            title={watch(`nearbyLandmarks.${i}.place`)}
+            onRemove={() => landmarks.remove(i)}
+            onMove={landmarks.move}
+            isFirst={i === 0}
+            isLast={i === landmarks.fields.length - 1}
+          >
             <FieldGrid>
               <TextField label="Place" error={errors.nearbyLandmarks?.[i]?.place?.message} {...register(`nearbyLandmarks.${i}.place`)} />
               <TextField label="Distance" placeholder="2.4 km" error={errors.nearbyLandmarks?.[i]?.distance?.message} {...register(`nearbyLandmarks.${i}.distance`)} />
@@ -227,12 +343,17 @@ const emptyProperty = (): PropertyInput =>
     possession: "",
     reraNumber: "",
     developer: "RENISINFRA",
+    developerLogo: "",
     featuredImage: "",
+    heroImages: [],
     video: "",
     virtualTour: "",
     brochure: "",
     masterPlan: "",
     masterLegend: [],
+    certifications: [],
+    featured: false,
+    order: 0,
     gallery: [],
     amenities: [],
     floorPlans: [],
@@ -240,6 +361,7 @@ const emptyProperty = (): PropertyInput =>
     paymentPlans: [],
     nearbyLandmarks: [],
     overviewStats: [],
+    highlights: [],
     lat: undefined,
     lng: undefined,
     seo: { metaTitle: "", metaDescription: "", keywords: [], ogImage: "" },
@@ -264,12 +386,17 @@ const toFormValues = (p: AdminProperty): PropertyInput =>
     possession: p.possession,
     reraNumber: p.reraNumber,
     developer: p.developer,
+    developerLogo: p.developerLogo ?? "",
     featuredImage: p.featuredImage,
+    heroImages: p.heroImages ?? [],
     video: p.video ?? "",
     virtualTour: p.virtualTour ?? "",
     brochure: p.brochure ?? "",
     masterPlan: p.masterPlan,
     masterLegend: p.masterLegend,
+    certifications: p.certifications ?? [],
+    featured: p.featured ?? false,
+    order: p.order ?? 0,
     gallery: p.gallery,
     amenities: p.amenities,
     floorPlans: p.floorPlans.map((f) => ({ ...f, id: f.id ?? "", price: f.price ?? "" })),
@@ -277,6 +404,7 @@ const toFormValues = (p: AdminProperty): PropertyInput =>
     paymentPlans: p.paymentPlans.map((pl) => ({ ...pl, id: pl.id ?? "", milestone: pl.milestone ?? "" })),
     nearbyLandmarks: p.nearbyLandmarks.map((n) => ({ ...n, category: n.category ?? "" })),
     overviewStats: p.overviewStats,
+    highlights: (p.highlights ?? []).map((h) => ({ ...h, icon: h.icon ?? "" })),
     lat: p.lat,
     lng: p.lng,
     seo: { ...p.seo, ogImage: p.seo.ogImage ?? "" },
@@ -423,16 +551,15 @@ export default function PropertiesPage() {
                 </div>
               ))}
             </div>
-            {preview.slug === "the-aureate" && (
-              <a
-                href="/projects/jubilee-hills"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-5 inline-flex items-center gap-2 text-[0.68rem] uppercase tracking-[0.18em] text-gold hover:underline"
-              >
-                Open public page <ExternalLink size={12} />
-              </a>
-            )}
+            {/* Every project now resolves through the dynamic detail route. */}
+            <a
+              href={`/projects/${preview.slug}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-5 inline-flex items-center gap-2 text-[0.68rem] uppercase tracking-[0.18em] text-gold hover:underline"
+            >
+              Open public page <ExternalLink size={12} />
+            </a>
           </div>
         )}
       </Modal>

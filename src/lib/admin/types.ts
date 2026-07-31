@@ -43,6 +43,12 @@ export interface AdminFloorPlan {
   price?: string;
 }
 
+export interface AdminHighlight {
+  title: string;
+  description: string;
+  icon?: string;
+}
+
 export interface AdminProperty extends AdminEntity {
   slug: string;
   title: string;
@@ -61,12 +67,17 @@ export interface AdminProperty extends AdminEntity {
   possession: string;
   reraNumber: string;
   developer: string;
+  developerLogo?: string;
   featuredImage: string;
+  heroImages: string[];
   video?: string;
   virtualTour?: string;
   brochure?: string;
   masterPlan: string;
   masterLegend: string[];
+  certifications: string[];
+  featured: boolean;
+  order: number;
   gallery: string[];
   amenities: string[];
   floorPlans: AdminFloorPlan[];
@@ -74,6 +85,7 @@ export interface AdminProperty extends AdminEntity {
   paymentPlans: { id?: string; label: string; description: string; milestone?: string }[];
   nearbyLandmarks: { place: string; distance: string; category?: string }[];
   overviewStats: { label: string; value: string }[];
+  highlights: AdminHighlight[];
   lat?: number;
   lng?: number;
   seo: { metaTitle: string; metaDescription: string; keywords: string[]; ogImage?: string };
@@ -181,6 +193,53 @@ export interface AdminSiteSettings extends AdminEntity {
   instagram?: string;
   linkedin?: string;
   youtube?: string;
+}
+
+/** Marketing copy singleton — mirrors backend/src/types/siteContent.ts. */
+export interface AdminSiteContent extends AdminEntity {
+  landingHero: {
+    image: string;
+    eyebrow: string;
+    headline: string;
+    headlineHighlight: string;
+    subheadline: string;
+    cta: { label: string; href: string };
+  };
+  heroSlides: {
+    category: string;
+    image: string;
+    title: string;
+    location: string;
+    cta: { label: string; href: string };
+  }[];
+  launch: {
+    eyebrow: string;
+    name: string;
+    location: string;
+    description: string;
+    image: string;
+    discoverHref: string;
+    registerHref: string;
+  };
+  whyUs: { icon: string; stat: string; label: string }[];
+  invest: { icon: string; stat: string; label: string }[];
+  about: {
+    storyTitle: string;
+    storyBody: string[];
+    visionMission: { kind: string; title: string; text: string }[];
+    whyChoose: { title: string; desc: string }[];
+    stats: { stat: string; label: string }[];
+  };
+  timeline: { year: string; title: string; text: string }[];
+  offices: { city: string; address: string; phone: string; email: string; hours: string }[];
+  ctaBands: {
+    key: string;
+    title: string;
+    description?: string;
+    image?: string;
+    cta: { label: string; href: string };
+  }[];
+  nav: { label: string; href: string }[];
 }
 
 export const MEDIA_TYPES = ["IMAGE", "VIDEO", "DOCUMENT"] as const;

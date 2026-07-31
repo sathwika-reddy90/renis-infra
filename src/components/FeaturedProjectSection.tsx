@@ -68,8 +68,8 @@ export default function FeaturedProjectSection() {
                   </Reveal>
                   <Reveal delay={0.16}>
                     <div className="mt-9 flex flex-wrap gap-4">
-                      <Button href="/projects/jubilee-hills" variant="gold">
-                        View Flagship
+                      <Button href={featured.href} variant="gold">
+                        View Residence
                       </Button>
                       <Button href="/contact" variant="ghost">
                         Enquire

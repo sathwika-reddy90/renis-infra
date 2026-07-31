@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Cormorant_Garamond, Jost } from "next/font/google";
 import "./globals.css";
 import Providers from "@/lib/query/Providers";
+import { SITE_URL } from "@/lib/siteUrl";
 
 const display = Cormorant_Garamond({
   variable: "--font-display",
@@ -17,10 +18,36 @@ const sans = Jost({
   display: "swap",
 });
 
+const TITLE = "RENISINFRA — Luxury Residences";
+const DESCRIPTION =
+  "RENISINFRA presents landmark luxury residences across Hyderabad's most sought-after addresses. Where architecture, craftsmanship and address meet.";
+
 export const metadata: Metadata = {
-  title: "RENISINFRA — Luxury Residences",
-  description:
-    "RENISINFRA crafts landmark luxury residences in Jubilee Hills and beyond. Where architecture, craftsmanship and address meet.",
+  // Lets every page express OG/canonical URLs as relative paths.
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: TITLE,
+    template: "%s | RENISINFRA",
+  },
+  description: DESCRIPTION,
+  applicationName: "RENISINFRA",
+  openGraph: {
+    type: "website",
+    siteName: "RENISINFRA",
+    title: TITLE,
+    description: DESCRIPTION,
+    locale: "en_IN",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: TITLE,
+    description: DESCRIPTION,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large" },
+  },
 };
 
 // Root layout carries fonts + query provider only; the public site and the
@@ -35,7 +62,7 @@ export default function RootLayout({
       lang="en"
       className={`${display.variable} ${sans.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-background text-ink">
+      <body className="flex min-h-full flex-col bg-background text-ink">
         <Providers>{children}</Providers>
       </body>
     </html>

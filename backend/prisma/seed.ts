@@ -1,5 +1,6 @@
 import { PrismaClient, Prisma } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import { seedProjects } from "./projects.seed";
 
 const prisma = new PrismaClient();
 
@@ -197,6 +198,10 @@ async function main() {
       },
     }),
   ]);
+
+  // The project catalogue is large enough to live in its own module, and it
+  // reads project-images.json, so it runs outside the transaction above.
+  await seedProjects(prisma);
 
   console.log("✔ Seed complete");
 }

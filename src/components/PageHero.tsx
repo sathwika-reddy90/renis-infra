@@ -22,7 +22,10 @@ export default function PageHero({
   breadcrumb?: Crumb[];
 }) {
   return (
-    <section className="relative flex min-h-[62vh] items-center overflow-hidden">
+    <section
+      data-hero-dark
+      className="relative flex min-h-[62vh] items-center overflow-hidden"
+    >
       <motion.div
         initial={{ scale: 1.12 }}
         animate={{ scale: 1 }}
@@ -50,7 +53,7 @@ export default function PageHero({
           initial={{ opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, ease: easeLux, delay: 0.32 }}
-          className="mx-auto mt-5 max-w-4xl font-display text-5xl font-light leading-[1.03] text-white md:text-6xl lg:text-7xl"
+          className="mx-auto mt-5 max-w-4xl font-display text-display-1 text-white"
         >
           {title}
         </motion.h1>
@@ -59,7 +62,7 @@ export default function PageHero({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: easeLux, delay: 0.44 }}
-            className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-white/80"
+            className="mx-auto mt-6 max-w-xl text-body-lg text-white/80"
           >
             {subtitle}
           </motion.p>

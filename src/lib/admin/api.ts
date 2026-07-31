@@ -9,6 +9,7 @@ import type {
   AdminBlog,
   AdminInquiry,
   AdminSiteSettings,
+  AdminSiteContent,
   AdminUserSummary,
   InquiryStatusHistoryEntry,
 } from "./types";
@@ -22,6 +23,7 @@ import type {
   BlogInput,
   InquiryInput,
   SiteSettingsInput,
+  SiteContentInput,
 } from "./schemas";
 
 /** Uniform CRUD surface over the existing backend REST endpoints. */
@@ -58,6 +60,16 @@ export const adminApi = {
 export const siteApi = {
   get: (signal?: AbortSignal) => apiClient.get<AdminSiteSettings>("/site", signal),
   update: (data: SiteSettingsInput) => apiClient.put<AdminSiteSettings>("/site", data),
+};
+
+/**
+ * Marketing copy is a singleton whose update is partial by group, so one tab
+ * can be saved without clobbering the others.
+ */
+export const contentApi = {
+  get: (signal?: AbortSignal) => apiClient.get<AdminSiteContent>("/content", signal),
+  update: (data: Partial<SiteContentInput>) =>
+    apiClient.patch<AdminSiteContent>("/content", data),
 };
 
 /** Read-only directory, for the lead "Assign to" picker. */

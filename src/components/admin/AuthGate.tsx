@@ -21,6 +21,7 @@ const ROUTE_RESOURCE: { prefix: string; resource: Resource }[] = [
   { prefix: "/admin/media", resource: "media" },
   { prefix: "/admin/inquiries", resource: "inquiries" },
   { prefix: "/admin/settings", resource: "settings" },
+  { prefix: "/admin/content", resource: "settings" },
 ];
 
 function routeResource(pathname: string): Resource | null {

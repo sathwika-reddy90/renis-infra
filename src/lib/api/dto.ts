@@ -10,6 +10,7 @@ import type {
   PaymentPlan,
   NearbyLandmark,
   PropertyStat,
+  PropertyHighlight,
   SEO,
 } from "@/types/property";
 import type { Project } from "@/types/project";
@@ -74,12 +75,17 @@ export interface ApiProperty {
   possession: string;
   reraNumber: string;
   developer: string;
+  developerLogo?: string;
   featuredImage: string;
+  heroImages: string[];
   video?: string;
   virtualTour?: string;
   brochure?: string;
   masterPlan: string;
   masterLegend: string[];
+  certifications: string[];
+  featured: boolean;
+  order: number;
   gallery: string[];
   amenities: string[];
   floorPlans: FloorPlan[];
@@ -87,6 +93,7 @@ export interface ApiProperty {
   paymentPlans: PaymentPlan[];
   nearbyLandmarks: NearbyLandmark[];
   overviewStats: PropertyStat[];
+  highlights: PropertyHighlight[];
   lat?: number;
   lng?: number;
   seo: SEO;
@@ -163,6 +170,7 @@ export interface ApiSiteSettings {
   phone: string;
   email: string;
   address: string;
+  logo?: string;
   facebook?: string;
   instagram?: string;
   linkedin?: string;
@@ -185,15 +193,12 @@ const API_ORIGIN = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000/ap
   "",
 );
 
-function toLocalAsset<T extends string | undefined>(url: T): T {
+export function toLocalAsset<T extends string | undefined>(url: T): T {
   if (!url) return url;
   return (url.startsWith(API_ORIGIN) ? url.slice(API_ORIGIN.length) || "/" : url) as T;
 }
 
-// The flagship has a dedicated, richer detail route; every other property
-// resolves to the generic dynamic detail page.
-const detailHref = (slug: string): string =>
-  slug === "the-aureate" ? "/projects/jubilee-hills" : `/projects/${slug}`;
+const detailHref = (slug: string): string => `/projects/${slug}`;
 
 export const toProject = (p: ApiProperty): Project => ({
   id: p.id,
@@ -205,7 +210,13 @@ export const toProject = (p: ApiProperty): Project => ({
   status: STATUS_LABEL[p.status],
   propertyType: TYPE_LABEL[p.propertyType],
   priceLabel: p.priceLabel,
+  bedrooms: p.bedrooms,
+  area: p.area,
+  possession: p.possession,
+  developer: p.developer,
   featuredImage: toLocalAsset(p.featuredImage),
+  featured: p.featured,
+  order: p.order,
   href: detailHref(p.slug),
 });
 
@@ -228,18 +239,27 @@ export const toProperty = (p: ApiProperty): Property => ({
   possession: p.possession,
   reraNumber: p.reraNumber,
   developer: p.developer,
+  developerLogo: toLocalAsset(p.developerLogo),
   featuredImage: toLocalAsset(p.featuredImage),
-  gallery: p.gallery.map((src) => toLocalAsset(src)),
+  // Falls back to the featured image so the hero slider is never empty.
+  heroImages: (p.heroImages?.length ? p.heroImages : [p.featuredImage]).map((src) =>
+    toLocalAsset(src),
+  ),
+  gallery: (p.gallery ?? []).map((src) => toLocalAsset(src)),
   video: p.video,
   virtualTour: p.virtualTour,
-  floorPlans: p.floorPlans.map((f) => ({ ...f, image: toLocalAsset(f.image) })),
+  floorPlans: (p.floorPlans ?? []).map((f) => ({ ...f, image: toLocalAsset(f.image) })),
   masterPlan: toLocalAsset(p.masterPlan),
-  masterLegend: p.masterLegend,
-  amenities: p.amenities,
-  specifications: p.specifications,
-  paymentPlans: p.paymentPlans,
-  nearbyLandmarks: p.nearbyLandmarks,
-  overviewStats: p.overviewStats,
+  masterLegend: p.masterLegend ?? [],
+  certifications: p.certifications ?? [],
+  amenities: p.amenities ?? [],
+  specifications: p.specifications ?? [],
+  paymentPlans: p.paymentPlans ?? [],
+  nearbyLandmarks: p.nearbyLandmarks ?? [],
+  overviewStats: p.overviewStats ?? [],
+  highlights: p.highlights ?? [],
+  featured: p.featured ?? false,
+  order: p.order ?? 0,
   coordinates: { lat: p.lat ?? 0, lng: p.lng ?? 0 },
   brochure: p.brochure,
   seo: p.seo,

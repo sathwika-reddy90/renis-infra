@@ -100,6 +100,7 @@ export default function BlogListingContent() {
       </section>
 
       <CtaBand
+        contentKey="blog"
         eyebrow="Stay Ahead"
         title="Never miss a launch."
         text="Speak with a residence advisor to be first in line for our next address."

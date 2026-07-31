@@ -48,6 +48,14 @@ export interface PropertyStat {
   value: string;
 }
 
+/** USP card shown in the project highlights band. */
+export interface PropertyHighlight {
+  title: string;
+  description: string;
+  /** Key into the lucide icon registry in src/lib/icons.ts. */
+  icon?: string;
+}
+
 export interface SEO {
   metaTitle: string;
   metaDescription: string;
@@ -74,13 +82,18 @@ export interface Property {
   possession: string;
   reraNumber: string;
   developer: string;
+  developerLogo?: string;
   featuredImage: string;
+  /** Hero slider images; falls back to `featuredImage` when empty. */
+  heroImages: string[];
   gallery: string[];
   video?: string;
   virtualTour?: string;
   floorPlans: FloorPlan[];
   masterPlan: string;
   masterLegend: string[];
+  /** Sustainability / wellness marks, e.g. "IGBC Platinum". */
+  certifications: string[];
   amenities: string[];
   specifications: Specification[];
   paymentPlans: PaymentPlan[];
@@ -88,6 +101,9 @@ export interface Property {
   coordinates: Coordinates;
   brochure?: string;
   overviewStats: PropertyStat[];
+  highlights: PropertyHighlight[];
+  featured: boolean;
+  order: number;
   seo: SEO;
   createdAt: string;
   updatedAt: string;

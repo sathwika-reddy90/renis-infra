@@ -134,17 +134,41 @@ export interface MediaLibraryProps {
   /** Picker mode: clicking a card selects it instead of just managing it. */
   selectable?: boolean;
   onSelect?: (item: AdminMedia) => void;
+  /**
+   * Multi-select mode: cards accumulate into a selection that is committed in
+   * one go, instead of firing `onSelect` per click. Building a 20-image
+   * gallery one modal round-trip at a time is otherwise painful.
+   */
+  multiple?: boolean;
+  onSelectMany?: (items: AdminMedia[]) => void;
 }
 
-export default function MediaLibrary({ selectable = false, onSelect }: MediaLibraryProps) {
+export default function MediaLibrary({
+  selectable = false,
+  onSelect,
+  multiple = false,
+  onSelectMany,
+}: MediaLibraryProps) {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [renaming, setRenaming] = useState<AdminMedia | null>(null);
   const [renameValue, setRenameValue] = useState("");
   const [deleting, setDeleting] = useState<AdminMedia | null>(null);
   const [dragOver, setDragOver] = useState(false);
+  // Keyed by id, but holds the whole record so a selection can span pages.
+  const [picked, setPicked] = useState<Record<string, AdminMedia>>({});
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { push } = useToast();
+
+  const pickedList = Object.values(picked);
+
+  const togglePicked = (item: AdminMedia) =>
+    setPicked((prev) => {
+      const next = { ...prev };
+      if (next[item.id]) delete next[item.id];
+      else next[item.id] = item;
+      return next;
+    });
 
   const query = useMediaLibrary({ page, limit: PAGE_SIZE, search: search || undefined });
   const { upload, rename, replace, remove } = useMediaMutations();
@@ -221,8 +245,8 @@ export default function MediaLibrary({ selectable = false, onSelect }: MediaLibr
               key={item.id}
               item={item}
               selectable={selectable}
-              selected={false}
-              onSelect={() => onSelect?.(item)}
+              selected={Boolean(picked[item.id])}
+              onSelect={() => (multiple ? togglePicked(item) : onSelect?.(item))}
               onRename={() => {
                 setRenaming(item);
                 setRenameValue(item.fileName);
@@ -237,6 +261,37 @@ export default function MediaLibrary({ selectable = false, onSelect }: MediaLibr
       <div className="flex justify-center">
         <PaginationBar page={page} pageCount={pageCount} onPage={setPage} />
       </div>
+
+      {/* Commit bar — only in multi-select picker mode. */}
+      {multiple && (
+        <div className="sticky bottom-0 flex items-center justify-between gap-3 border-t border-line bg-white/95 py-3 backdrop-blur-sm">
+          <p className="text-xs text-muted">
+            {pickedList.length === 0
+              ? "Select one or more files"
+              : `${pickedList.length} selected`}
+          </p>
+          <div className="flex gap-2">
+            <AdminButton
+              variant="ghost"
+              size="sm"
+              onClick={() => setPicked({})}
+              disabled={pickedList.length === 0}
+            >
+              Clear
+            </AdminButton>
+            <AdminButton
+              size="sm"
+              disabled={pickedList.length === 0}
+              onClick={() => {
+                onSelectMany?.(pickedList);
+                setPicked({});
+              }}
+            >
+              Insert {pickedList.length > 0 ? pickedList.length : ""}
+            </AdminButton>
+          </div>
+        </div>
+      )}
 
       {renaming && (
         <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/50 p-4">

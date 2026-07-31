@@ -298,24 +298,66 @@ export function ImageListField<T extends FieldValues>({
 export function ArrayItem({
   index,
   onRemove,
+  onMove,
+  isFirst = false,
+  isLast = false,
+  title,
   children,
 }: {
   index: number;
   onRemove: () => void;
+  /**
+   * Wire to `useFieldArray`'s `move`. Omit to hide the reorder controls —
+   * ordering matters for floor plans and highlights, not for every repeater.
+   */
+  onMove?: (from: number, to: number) => void;
+  isFirst?: boolean;
+  isLast?: boolean;
+  /** Optional summary shown beside the index, so long lists stay scannable. */
+  title?: string;
   children: ReactNode;
 }) {
   return (
     <div className="relative border border-line bg-cream/30 p-4">
-      <div className="mb-3 flex items-center justify-between">
-        <span className="text-[0.62rem] uppercase tracking-[0.2em] text-gold">#{index + 1}</span>
-        <button
-          type="button"
-          onClick={onRemove}
-          aria-label="Remove item"
-          className="text-muted transition-colors hover:text-red-600"
-        >
-          <X size={14} />
-        </button>
+      <div className="mb-3 flex items-center justify-between gap-3">
+        <span className="flex min-w-0 items-baseline gap-2">
+          <span className="flex-none text-[0.62rem] uppercase tracking-[0.2em] text-gold">
+            #{index + 1}
+          </span>
+          {title && <span className="truncate text-xs text-muted">{title}</span>}
+        </span>
+        <div className="flex flex-none items-center gap-1">
+          {onMove && (
+            <>
+              <button
+                type="button"
+                aria-label="Move up"
+                disabled={isFirst}
+                onClick={() => onMove(index, index - 1)}
+                className="p-1 text-muted transition-colors hover:text-gold disabled:cursor-not-allowed disabled:opacity-30"
+              >
+                <ArrowUp size={14} />
+              </button>
+              <button
+                type="button"
+                aria-label="Move down"
+                disabled={isLast}
+                onClick={() => onMove(index, index + 1)}
+                className="p-1 text-muted transition-colors hover:text-gold disabled:cursor-not-allowed disabled:opacity-30"
+              >
+                <ArrowDown size={14} />
+              </button>
+            </>
+          )}
+          <button
+            type="button"
+            onClick={onRemove}
+            aria-label="Remove item"
+            className="p-1 text-muted transition-colors hover:text-red-600"
+          >
+            <X size={14} />
+          </button>
+        </div>
       </div>
       <div className="space-y-3">{children}</div>
     </div>

@@ -6,6 +6,19 @@ import { PROPERTY_TYPES, PROPERTY_STATUSES, GALLERY_CATEGORIES, BLOG_STATUSES } 
 const req = (message = "Required") => z.string().min(1, message);
 const url = () => z.string().url("Enter a valid URL");
 
+/**
+ * An image reference: an absolute URL, or a root-relative path such as
+ * "/uploads/2026/07/x.jpg". Relative paths keep media portable across
+ * deployments instead of baking the current host into every row.
+ */
+const mediaUrl = (message = "Pick an image or paste a URL") =>
+  z
+    .string()
+    .min(1, message)
+    .refine((v) => v.startsWith("/") || /^https?:\/\//.test(v), {
+      message: "Must be a URL or a path starting with /",
+    });
+
 /** Treats empty strings from inputs as "not provided" for optional fields. */
 const emptyOptional = <S extends z.ZodTypeAny>(schema: S) =>
   z.preprocess(
@@ -38,13 +51,18 @@ export const propertySchema = z.object({
   possession: req(),
   reraNumber: req(),
   developer: req(),
-  featuredImage: url(),
+  developerLogo: optStr(),
+  featuredImage: mediaUrl(),
+  heroImages: z.array(mediaUrl()).default([]),
   video: optUrl(),
   virtualTour: optUrl(),
   brochure: optStr(),
-  masterPlan: req("Master plan image is required"),
+  masterPlan: mediaUrl("Master plan image is required"),
   masterLegend: z.array(z.string()).default([]),
-  gallery: z.array(url()).default([]),
+  certifications: z.array(z.string()).default([]),
+  featured: z.boolean().default(false),
+  order: intField(),
+  gallery: z.array(mediaUrl()).default([]),
   amenities: z.array(z.string()).default([]),
   floorPlans: z
     .array(
@@ -52,7 +70,7 @@ export const propertySchema = z.object({
         id: optStr(),
         type: req(),
         area: req(),
-        image: url(),
+        image: mediaUrl(),
         price: optStr(),
         details: z.array(z.string()).default([]),
       }),
@@ -68,6 +86,9 @@ export const propertySchema = z.object({
     .array(z.object({ place: req(), distance: req(), category: optStr() }))
     .default([]),
   overviewStats: z.array(z.object({ label: req(), value: req() })).default([]),
+  highlights: z
+    .array(z.object({ title: req(), description: req(), icon: optStr() }))
+    .default([]),
   lat: optNum(),
   lng: optNum(),
   seo: z.object({
@@ -158,6 +179,77 @@ export const siteSettingsSchema = z.object({
   youtube: optUrl(),
 });
 export type SiteSettingsInput = z.infer<typeof siteSettingsSchema>;
+
+/* ------------------------------- site content ------------------------------- */
+
+const ctaSchema = z.object({ label: req(), href: req() });
+
+export const siteContentSchema = z.object({
+  landingHero: z.object({
+    image: req("Pick a hero image"),
+    eyebrow: optStr(),
+    headline: req(),
+    headlineHighlight: optStr(),
+    subheadline: req(),
+    cta: ctaSchema,
+  }),
+  heroSlides: z
+    .array(
+      z.object({
+        category: req(),
+        image: req("Pick an image"),
+        title: req(),
+        location: req(),
+        cta: ctaSchema,
+      }),
+    )
+    .default([]),
+  launch: z.object({
+    eyebrow: req(),
+    name: req(),
+    location: req(),
+    description: req(),
+    image: req("Pick an image"),
+    discoverHref: req(),
+    registerHref: req(),
+  }),
+  whyUs: z.array(z.object({ icon: optStr(), stat: req(), label: req() })).default([]),
+  invest: z.array(z.object({ icon: optStr(), stat: req(), label: req() })).default([]),
+  about: z.object({
+    storyTitle: req(),
+    storyBody: z.array(z.string()).default([]),
+    visionMission: z
+      .array(z.object({ kind: req(), title: req(), text: req() }))
+      .default([]),
+    whyChoose: z.array(z.object({ title: req(), desc: req() })).default([]),
+    stats: z.array(z.object({ stat: req(), label: req() })).default([]),
+  }),
+  timeline: z.array(z.object({ year: req(), title: req(), text: req() })).default([]),
+  offices: z
+    .array(
+      z.object({
+        city: req(),
+        address: req(),
+        phone: req(),
+        email: z.string().email("Enter a valid email"),
+        hours: req(),
+      }),
+    )
+    .default([]),
+  ctaBands: z
+    .array(
+      z.object({
+        key: req(),
+        title: req(),
+        description: optStr(),
+        image: optStr(),
+        cta: ctaSchema,
+      }),
+    )
+    .default([]),
+  nav: z.array(z.object({ label: req(), href: req() })).default([]),
+});
+export type SiteContentInput = z.infer<typeof siteContentSchema>;
 
 /** Inquiry updates are inline CRM edits; creates come from the public forms. */
 export type InquiryInput = {

@@ -4,12 +4,19 @@ import Container from "@/components/ui/Container";
 import Reveal from "@/components/ui/Reveal";
 import Button from "@/components/ui/Button";
 import { useScheduleVisit } from "@/components/ScheduleVisitContext";
+import { useSiteContent } from "@/lib/query/hooks";
 
 type CtaAction = { label: string; href: string };
 
-// Reusable closing call-to-action band used across inner pages. Either action
-// can open the site-wide "Schedule a Visit" modal instead of navigating.
+/**
+ * Reusable closing call-to-action band.
+ *
+ * Pass `contentKey` to pull the copy from /admin/content → CTA Bands; the
+ * props then act as the fallback while content loads, or if an editor removes
+ * that band. Either action can open the site-wide visit modal.
+ */
 export default function CtaBand({
+  contentKey,
   eyebrow = "Begin the Conversation",
   title,
   text,
@@ -18,6 +25,7 @@ export default function CtaBand({
   primaryOpensVisitModal = false,
   secondaryOpensVisitModal = false,
 }: {
+  contentKey?: string;
   eyebrow?: string;
   title: string;
   text?: string;
@@ -27,9 +35,15 @@ export default function CtaBand({
   secondaryOpensVisitModal?: boolean;
 }) {
   const { openVisitModal } = useScheduleVisit();
+  const { data } = useSiteContent();
+
+  const managed = contentKey ? data?.ctaBands?.find((b) => b.key === contentKey) : undefined;
+  const heading = managed?.title ?? title;
+  const body = managed?.description ?? text;
+  const action: CtaAction = managed?.cta ?? primary;
 
   return (
-    <section className="relative overflow-hidden bg-ink py-24 text-white md:py-28">
+    <section className="relative overflow-hidden bg-ink py-section-sm text-white">
       <div className="pointer-events-none absolute -left-40 top-0 h-96 w-96 rounded-full bg-gold/10 blur-3xl" />
       <div className="pointer-events-none absolute -right-40 bottom-0 h-96 w-96 rounded-full bg-gold/10 blur-3xl" />
 
@@ -42,23 +56,23 @@ export default function CtaBand({
           </span>
         </Reveal>
         <Reveal delay={0.05}>
-          <h2 className="mx-auto mt-6 max-w-3xl font-display text-4xl font-light leading-[1.06] md:text-5xl">
-            {title}
+          <h2 className="mx-auto mt-6 max-w-3xl font-display text-display-2 text-white">
+            {heading}
           </h2>
         </Reveal>
-        {text && (
+        {body && (
           <Reveal delay={0.1}>
-            <p className="mx-auto mt-6 max-w-xl text-[1rem] leading-relaxed text-white/70">{text}</p>
+            <p className="mx-auto mt-6 max-w-xl text-body-lg text-white/70">{body}</p>
           </Reveal>
         )}
         <Reveal delay={0.15}>
           <div className="mt-10 flex flex-wrap justify-center gap-4">
             <Button
-              href={primaryOpensVisitModal ? undefined : primary.href}
+              href={primaryOpensVisitModal ? undefined : action.href}
               onClick={primaryOpensVisitModal ? openVisitModal : undefined}
               variant="gold"
             >
-              {primary.label}
+              {action.label}
             </Button>
             {secondary && (
               <Button

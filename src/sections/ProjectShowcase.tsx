@@ -1,168 +1,109 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import Image from "next/image";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useRef } from "react";
+import Link from "next/link";
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { ArrowUpRight } from "lucide-react";
 import Container from "@/components/ui/Container";
-import Button from "@/components/ui/Button";
-import QueryView from "@/components/ui/QueryView";
+import Section from "@/components/ui/Section";
+import SectionHeading from "@/components/ui/SectionHeading";
 import Skeleton from "@/components/ui/Skeleton";
+import QueryView from "@/components/ui/QueryView";
+import Button from "@/components/ui/Button";
+import { ParallaxImage } from "@/components/ui/Parallax";
+import { cn } from "@/lib/cn";
+import { easeLux, fadeUp, imageReveal, viewportOnceLoose } from "@/lib/motion";
 import { useProjects } from "@/lib/query/hooks";
 import type { Project } from "@/types/project";
 
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-  // Force GPU-composited transforms (translate3d/opacity) for every tween
-  // in this file — avoids any layout-triggering fallback during the long,
-  // continuously-scrubbed pin interaction.
-  gsap.config({ force3D: true });
-}
+/**
+ * Editorial alternating showcase.
+ *
+ * Deliberately does NOT pin the scroll: `Hero` owns the page's single pinned
+ * sequence. Depth here comes from two scroll-linked layers instead — the
+ * photography drifts inside its frame as the row passes, and the whole row
+ * recedes into a shallow depth-of-field as it leaves the top of the viewport.
+ * Both track scroll position continuously, so they reverse exactly and never
+ * take the scroll away from the reader.
+ */
+function ShowcaseRow({ project, index }: { project: Project; index: number }) {
+  const flipped = index % 2 === 1;
+  const ref = useRef<HTMLDivElement>(null);
+  const reduced = useReducedMotion();
 
-function ShowcaseSkeleton() {
-  return <Skeleton className="h-screen w-full" />;
-}
-
-function EmptyShowcase() {
-  return (
-    <div className="flex h-[60vh] w-full items-center justify-center bg-cream px-6 text-center">
-      <p className="max-w-md text-[0.95rem] leading-relaxed text-muted">
-        No projects have been published yet. Add a property in the admin
-        dashboard to feature it here.
-      </p>
-    </div>
-  );
-}
-
-// Pinned, scroll-scrubbed showcase — the exact same mechanic as the
-// Entrance/Villa/Balcony/Exterior hero: each slide is a full-viewport panel
-// stacked in place, starting translated one viewport-height below, sliding
-// straight up to cover the slide beneath it as the user scrolls. Both
-// images stay visible mid-transition; scrolling up reverses it perfectly.
-// Data is live from the CMS (`useProjects` → GET /properties) — up to the
-// first 4 published properties, in whatever order the API returns.
-function ShowcaseSlides({ projects }: { projects: Project[] }) {
-  const slides = projects.slice(0, 4);
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const slideRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const imageRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const textRefs = useRef<(HTMLDivElement | null)[]>([]);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      const slideEls = slideRefs.current.filter(Boolean) as HTMLDivElement[];
-      const imageEls = imageRefs.current.filter(Boolean) as HTMLDivElement[];
-      const textEls = textRefs.current.filter(Boolean) as HTMLDivElement[];
-      if (slideEls.length < 2) return;
-
-      // The image lives in its own inner wrapper so it can carry a slow,
-      // independent Ken-Burns scale without fighting the slide's own
-      // cover-slide transform.
-      gsap.set(slideEls[0], { yPercent: 0, autoAlpha: 1 });
-      gsap.set(slideEls.slice(1), { yPercent: 100, autoAlpha: 0.92 });
-      gsap.set(imageEls, { scale: 1.045, transformOrigin: "50% 50%" });
-      gsap.set(imageEls[0], { scale: 1 });
-      gsap.set(textEls[0], { autoAlpha: 1, y: 0 });
-      gsap.set(textEls.slice(1), { autoAlpha: 0, y: 24 });
-
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top top",
-          end: () => `+=${(slideEls.length - 1) * window.innerHeight * 1.3}`,
-          // A higher scrub value is the actual source of the "momentum" —
-          // it lets the animated playhead glide/catch up to the scroll
-          // position over ~1.1s instead of snapping to it every frame.
-          scrub: 1.1,
-          pin: true,
-          anticipatePin: 1,
-        },
-      });
-
-      for (let i = 1; i < slideEls.length; i++) {
-        const at = i - 1;
-        tl
-          // Primary cover transform — eased "none" on purpose: with scrub
-          // already providing the smoothing/lag, an additional power-curve
-          // here is what caused the mechanical "snap" at the end of each
-          // transition. Letting scrub alone drive it keeps motion silky and
-          // perfectly reversible on scroll-up.
-          .to(slideEls[i], { yPercent: 0, ease: "none", duration: 1 }, at)
-          // Soft opacity blend so the incoming panel's leading edge dissolves
-          // in rather than reading as a hard-edged curtain.
-          .fromTo(slideEls[i], { autoAlpha: 0.92 }, { autoAlpha: 1, ease: "none", duration: 1 }, at)
-          // Incoming image settles from a very slight zoom — a gentle "landing".
-          .to(imageEls[i], { scale: 1, ease: "power2.out", duration: 1 }, at)
-          // Outgoing image keeps drifting slowly as it's covered, for subtle
-          // parallax depth rather than freezing dead the instant it's covered.
-          .to(imageEls[i - 1], { scale: 1.03, ease: "none", duration: 1 }, at)
-          .to(textEls[i - 1], { autoAlpha: 0, y: -24, ease: "power2.out", duration: 0.4 }, at)
-          .to(textEls[i], { autoAlpha: 1, y: 0, ease: "power3.out", duration: 0.5 }, at + 0.5);
-      }
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, [slides]);
-
-  if (slides.length === 0) return <EmptyShowcase />;
+  // Departure window: from the row's top touching the viewport top, to its
+  // bottom clearing it.
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start start", "end start"],
+  });
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 0.96]);
+  const opacity = useTransform(scrollYProgress, [0, 1], [1, 0.4]);
 
   return (
-    <section ref={sectionRef} className="relative h-screen w-full overflow-hidden">
-      {slides.map((project, i) => (
-        <div
-          key={project.id}
-          ref={(el) => {
-            slideRefs.current[i] = el;
-          }}
-          className="absolute inset-0 will-change-transform"
-          style={{ zIndex: i + 1 }}
+    <div ref={ref}>
+      <motion.article
+        style={reduced ? undefined : { scale, opacity }}
+        initial="hidden"
+        whileInView="show"
+        viewport={viewportOnceLoose}
+        className="grid grid-cols-1 items-center gap-8 will-change-transform lg:grid-cols-12 lg:gap-16"
+      >
+        <motion.div
+          variants={imageReveal}
+          className={cn(
+            "relative aspect-[4/3] overflow-hidden lg:col-span-7",
+            flipped && "lg:order-2",
+          )}
         >
-          <div
-            ref={(el) => {
-              imageRefs.current[i] = el;
-            }}
-            className="absolute inset-0 will-change-transform"
-          >
-            <Image
+          <Link href={project.href} className="group block h-full w-full">
+            <ParallaxImage
               src={project.featuredImage || "/images/placeholder-project.jpg"}
               alt={project.title}
-              fill
-              sizes="100vw"
-              className="object-cover"
+              speed={9}
+              sizes="(max-width: 1024px) 100vw, 58vw"
+              className="h-full w-full"
+              imageClassName="transition-transform duration-[var(--duration-cinematic)] ease-[var(--ease-lux)] group-hover:scale-[1.04]"
             />
-          </div>
-          <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/25 to-black/65" />
+            <span className="absolute left-6 top-6 z-10 bg-white/90 px-3 py-1 text-[0.62rem] font-medium uppercase tracking-[0.2em] text-ink backdrop-blur">
+              {project.status}
+            </span>
+          </Link>
+        </motion.div>
 
-          <span className="absolute right-6 top-28 font-display text-sm tracking-[0.2em] text-white/50 md:right-10">
-            {String(i + 1).padStart(2, "0")} / {String(slides.length).padStart(2, "0")}
-          </span>
+        <motion.div
+          variants={fadeUp}
+          className={cn("lg:col-span-5", flipped && "lg:order-1 lg:text-right")}
+        >
+          <p className="eyebrow">{project.subtitle}</p>
+          <h3 className="mt-4 font-display text-display-3 text-ink">{project.title}</h3>
+          <p className="mt-3 text-body text-muted">{project.location}</p>
 
-          <div
-            ref={(el) => {
-              textRefs.current[i] = el;
-            }}
-            className="absolute inset-0 flex items-end"
-          >
-            <Container className="pb-24 md:pb-28">
-              <div className="max-w-2xl">
-                <h3 className="font-display text-4xl font-light uppercase leading-[1.05] tracking-[0.02em] text-white md:text-6xl lg:text-7xl">
-                  {project.title}
-                </h3>
-                <p className="mt-4 text-[0.95rem] text-white/80">{project.location}</p>
-                <p className="mt-2 max-w-md text-[0.95rem] leading-relaxed text-white/70">
-                  {project.subtitle}
-                </p>
-                <div className="mt-9">
-                  <Button href={project.href} variant="gold">
-                    View Project
-                  </Button>
-                </div>
+          <dl className={cn("mt-7 flex flex-wrap gap-x-10 gap-y-4", flipped && "lg:justify-end")}>
+            {project.bedrooms && (
+              <div>
+                <dt className="text-[0.66rem] uppercase tracking-[0.2em] text-muted">
+                  Configuration
+                </dt>
+                <dd className="mt-1 font-display text-h3 text-ink">{project.bedrooms}</dd>
               </div>
-            </Container>
+            )}
+            {project.priceLabel && (
+              <div>
+                <dt className="text-[0.66rem] uppercase tracking-[0.2em] text-muted">Price</dt>
+                <dd className="mt-1 font-display text-h3 text-gold">{project.priceLabel}</dd>
+              </div>
+            )}
+          </dl>
+
+          <div className={cn("mt-9 flex", flipped && "lg:justify-end")}>
+            <Button href={project.href} variant="ghost" iconAfter={<ArrowUpRight size={15} />}>
+              View Residence
+            </Button>
           </div>
-        </div>
-      ))}
-    </section>
+        </motion.div>
+      </motion.article>
+    </div>
   );
 }
 
@@ -170,10 +111,74 @@ export default function ProjectShowcase() {
   const query = useProjects();
 
   return (
-    <div id="showcase">
-      <QueryView query={query} skeleton={<ShowcaseSkeleton />} errorMessage="Unable to load projects right now.">
-        {(projects) => <ShowcaseSlides projects={projects} />}
-      </QueryView>
-    </div>
+    <Section id="projects" tone="light" rhythm="lg" contained={false}>
+      <Container>
+        <SectionHeading
+          eyebrow="Our Portfolio"
+          title="Signature Residences"
+          description="A curated collection of addresses across Hyderabad's most sought-after corridors."
+          align="center"
+        />
+      </Container>
+
+      <Container className="mt-16 md:mt-20">
+        <QueryView
+          query={query}
+          errorMessage="We couldn't load our projects."
+          skeleton={
+            <div className="space-y-20">
+              {Array.from({ length: 2 }).map((_, i) => (
+                <div key={i} className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-16">
+                  <Skeleton className="aspect-[4/3] lg:col-span-7" />
+                  <div className="space-y-4 lg:col-span-5">
+                    <Skeleton className="h-4 w-24" />
+                    <Skeleton className="h-10 w-3/4" />
+                    <Skeleton className="h-4 w-1/2" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          }
+        >
+          {(projects) => {
+            // Editors curate this rail with the "Feature on the homepage"
+            // flag; fall back to the first few so it is never empty.
+            const featured = projects.filter((p) => p.featured);
+            const shown = (featured.length > 0 ? featured : projects).slice(0, 4);
+
+            if (shown.length === 0) {
+              return (
+                <p className="mx-auto max-w-md text-center text-body text-muted">
+                  No projects have been published yet. Add a property in the admin dashboard to
+                  feature it here.
+                </p>
+              );
+            }
+
+            return (
+              <>
+                <div className="space-y-24 md:space-y-32">
+                  {shown.map((project, i) => (
+                    <ShowcaseRow key={project.id} project={project} index={i} />
+                  ))}
+                </div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={viewportOnceLoose}
+                  transition={{ duration: 0.8, ease: easeLux }}
+                  className="mt-20 flex justify-center"
+                >
+                  <Button href="/projects" variant="ghost">
+                    View All Projects
+                  </Button>
+                </motion.div>
+              </>
+            );
+          }}
+        </QueryView>
+      </Container>
+    </Section>
   );
 }

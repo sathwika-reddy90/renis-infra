@@ -89,6 +89,8 @@ model Property {
   developer    String
 
   featuredImage String
+  /// Full-bleed slider on the project hero. Falls back to featuredImage.
+  heroImages    String[]
   video         String?
   virtualTour   String?
   brochure      String?
@@ -96,12 +98,26 @@ model Property {
   masterPlan   String
   masterLegend String[]
 
+  /// Third-party sustainability/wellness marks (IGBC Platinum, WELL, ...).
+  certifications String[]
+
+  /// Surfaces the project in the homepage rail and mega-menu.
+  featured Boolean @default(false)
+  /// Manual display ordering; lower sorts first.
+  order    Int     @default(0)
+
+  /// Optional logo for the originating builder, shown in project specs.
+  developerLogo String?
+
   // Structured detail stored as JSON (arrays of objects).
   floorPlans      Json
   specifications  Json
   paymentPlans    Json
   nearbyLandmarks Json
   overviewStats   Json
+  /// USP cards — { title, description, icon }[]. Defaulted so the column can
+  /// be added to a table that already holds rows.
+  highlights      Json     @default("[]")
   seo             Json
 
   lat Float?
@@ -124,6 +140,8 @@ model Property {
   @@index([propertyType])
   @@index([city])
   @@index([slug])
+  @@index([featured])
+  @@index([order])
 }
 
 model GalleryImage {
@@ -297,6 +315,38 @@ model Visitor {
 
   @@index([createdAt])
   @@index([path])
+}
+
+/// Editorial copy for the marketing pages, replacing the former src/config/*
+/// hardcoded literals. Singleton, addressed by a fixed id like SiteSettings.
+/// Each column is an independent JSON group so one section can be saved
+/// without clobbering the rest.
+model SiteContent {
+  id String @id @default(cuid())
+
+  /// Full-screen landing hero — { image, eyebrow, headline, headlineHighlight, subheadline, ctaLabel, ctaHref }.
+  landingHero Json
+  /// Scroll-driven hero panels — { category, image, title, location, ctaLabel, ctaHref }[].
+  heroSlides  Json
+  /// Highlighted launch band — { eyebrow, name, location, description, image, discoverHref, registerHref }.
+  launch      Json
+  /// "Why RENISINFRA" stat grid — { icon, stat, label }[].
+  whyUs       Json
+  /// "Why invest" stat grid — { icon, stat, label }[].
+  invest      Json
+  /// About page copy — { story, vision, mission, whyChoose[], stats[] }.
+  about       Json
+  /// Company milestones — { year, title, text }[].
+  timeline    Json
+  /// Office locations — { city, label, address, phone, email, hours }[].
+  offices     Json
+  /// Reusable CTA bands, keyed by placement — { key, title, description, ctaLabel, ctaHref }[].
+  ctaBands    Json
+  /// Primary navigation — { label, href }[].
+  nav         Json
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model SiteSettings {

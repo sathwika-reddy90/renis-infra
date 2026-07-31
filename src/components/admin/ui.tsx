@@ -13,7 +13,7 @@ type AdminButtonProps = ComponentPropsWithRef<"button"> & {
 };
 
 const VARIANTS: Record<NonNullable<AdminButtonProps["variant"]>, string> = {
-  gold: "bg-gold text-white hover:bg-[#b7924b]",
+  gold: "bg-gold text-white hover:bg-gold-deep",
   ghost: "border border-line text-ink hover:border-gold hover:text-gold",
   danger: "bg-red-600 text-white hover:bg-red-700",
   dark: "bg-ink text-white hover:bg-black",

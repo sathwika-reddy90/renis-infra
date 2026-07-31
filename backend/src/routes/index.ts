@@ -1,7 +1,9 @@
 import { Router, type RequestHandler } from "express";
 
 import { createCrudRouter } from "./crud.router";
+import { createPropertyRouter } from "./property.routes";
 import { siteRoutes } from "./site.routes";
+import { siteContentRoutes } from "./siteContent.routes";
 import { authRoutes } from "./auth.routes";
 import { mediaRoutes } from "./media.routes";
 import { inquiryRoutes } from "./inquiry.routes";
@@ -11,7 +13,6 @@ import { authorize } from "../middleware/authorize";
 import type { Resource } from "../types/auth";
 
 import {
-  propertyService,
   galleryService,
   testimonialService,
   teamService,
@@ -20,7 +21,6 @@ import {
   blogService,
 } from "../services";
 
-import { propertyCreateSchema, propertyUpdateSchema } from "../types/property";
 import { galleryCreateSchema, galleryUpdateSchema } from "../types/gallery";
 import { testimonialCreateSchema, testimonialUpdateSchema } from "../types/testimonial";
 import { teamCreateSchema, teamUpdateSchema } from "../types/team";
@@ -39,14 +39,9 @@ apiRouter.use("/users", userRoutes);
 
 // Content resources: reads are public (consumed by the public website),
 // writes require the right role.
-apiRouter.use(
-  "/properties",
-  createCrudRouter(propertyService, {
-    create: propertyCreateSchema,
-    update: propertyUpdateSchema,
-    guards: { create: write("properties"), update: write("properties"), remove: write("properties") },
-  }),
-);
+// Properties use a dedicated router — the public site filters, sorts and
+// paginates server-side, which the generic CRUD router doesn't support.
+apiRouter.use("/properties", createPropertyRouter(write("properties")));
 apiRouter.use(
   "/gallery",
   createCrudRouter(galleryService, {
@@ -106,3 +101,6 @@ apiRouter.use("/contact", inquiryRoutes);
 
 // Site settings: public read (used by the site), protected write.
 apiRouter.use("/site", siteRoutes);
+
+// Marketing copy for the public pages: public read, protected write.
+apiRouter.use("/content", siteContentRoutes);

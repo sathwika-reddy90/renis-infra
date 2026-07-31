@@ -1,15 +1,13 @@
 "use client";
 
-import { useEffect, useState, type FormEvent } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import { Check, X } from "lucide-react";
+import { useState, type FormEvent } from "react";
+import { motion } from "framer-motion";
+import { Check } from "lucide-react";
 import Button from "@/components/ui/Button";
+import Dialog from "@/components/ui/Dialog";
+import { Input, Textarea } from "@/components/ui/Field";
 import { useSubmitInquiry } from "@/lib/query/hooks";
 import type { InquiryInput } from "@/lib/api/contact";
-
-const FIELD =
-  "w-full border-b border-line bg-transparent py-3 text-sm text-ink placeholder:text-muted/70 " +
-  "outline-none transition-colors focus:border-gold";
 
 export default function ScheduleVisitModal({
   open,
@@ -20,17 +18,6 @@ export default function ScheduleVisitModal({
 }) {
   const mutation = useSubmitInquiry();
   const [sent, setSent] = useState(false);
-
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
-    window.addEventListener("keydown", onKey);
-    document.body.style.overflow = "hidden";
-    return () => {
-      window.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
-    };
-  }, [open, onClose]);
 
   function handleClose() {
     onClose();
@@ -62,93 +49,70 @@ export default function ScheduleVisitModal({
   }
 
   return (
-    <AnimatePresence>
-      {open && (
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      title={sent ? "Visit requested." : "Schedule a Visit"}
+      hideTitle
+    >
+      {sent ? (
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.25 }}
-          className="fixed inset-0 z-[200] flex items-center justify-center bg-ink/70 p-4 backdrop-blur-sm"
-          onClick={handleClose}
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex flex-col items-start gap-4 py-4"
         >
-          <motion.div
-            initial={{ opacity: 0, y: 24, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 16 }}
-            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            onClick={(e) => e.stopPropagation()}
-            className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto bg-white p-8 md:p-10"
-          >
-            <button
-              onClick={handleClose}
-              aria-label="Close"
-              className="absolute right-5 top-5 text-muted transition-colors hover:text-ink"
-            >
-              <X size={20} />
-            </button>
-
-            {sent ? (
-              <motion.div
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="flex flex-col items-start gap-4 py-6"
-              >
-                <span className="flex h-12 w-12 items-center justify-center rounded-full bg-gold text-white">
-                  <Check size={22} />
-                </span>
-                <h3 className="font-display text-2xl font-light">Visit requested.</h3>
-                <p className="max-w-sm text-[0.95rem] leading-relaxed text-muted">
-                  A residence advisor will confirm your preferred slot shortly.
-                </p>
-                <Button variant="ghost" onClick={handleClose}>
-                  Close
-                </Button>
-              </motion.div>
-            ) : (
-              <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-                <div>
-                  <span className="eyebrow">Private Viewing</span>
-                  <h3 className="mt-2 font-display text-3xl font-light">Schedule a Visit</h3>
-                </div>
-                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                  <input required name="name" placeholder="Full Name" className={FIELD} />
-                  <input required name="phone" type="tel" placeholder="Phone Number" className={FIELD} />
-                </div>
-                <input required name="email" type="email" placeholder="Email Address" className={FIELD} />
-                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                  <label className="flex flex-col gap-1.5">
-                    <span className="text-[0.68rem] uppercase tracking-[0.18em] text-muted">
-                      Preferred Date
-                    </span>
-                    <input name="visitDate" type="date" className={FIELD} />
-                  </label>
-                  <label className="flex flex-col gap-1.5">
-                    <span className="text-[0.68rem] uppercase tracking-[0.18em] text-muted">
-                      Preferred Time
-                    </span>
-                    <input name="visitTime" type="time" className={FIELD} />
-                  </label>
-                </div>
-                <textarea
-                  name="message"
-                  rows={3}
-                  placeholder="Anything specific you'd like to see?"
-                  className={`${FIELD} resize-none`}
-                />
-                {mutation.isError && (
-                  <p className="text-[0.85rem] text-red-600">
-                    Something went wrong. Please try again or call us directly.
-                  </p>
-                )}
-                <Button variant="gold" className="w-full sm:w-auto">
-                  {mutation.isPending ? "Submitting…" : "Request Visit"}
-                </Button>
-              </form>
-            )}
-          </motion.div>
+          <span className="flex h-12 w-12 items-center justify-center rounded-full bg-gold text-white">
+            <Check size={22} aria-hidden />
+          </span>
+          <h3 className="font-display text-display-3 font-light">Visit requested.</h3>
+          <p className="max-w-sm text-body text-muted">
+            A residence advisor will confirm your preferred slot shortly.
+          </p>
+          <Button variant="ghost" onClick={handleClose}>
+            Close
+          </Button>
         </motion.div>
+      ) : (
+        <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-6">
+          <div>
+            <span className="eyebrow">Private Viewing</span>
+            <h3 className="mt-2 font-display text-display-3 font-light">Schedule a Visit</h3>
+          </div>
+
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <Input required name="name" placeholder="Full Name" autoComplete="name" />
+            <Input required name="phone" type="tel" placeholder="Phone Number" autoComplete="tel" />
+          </div>
+
+          <Input required name="email" type="email" placeholder="Email Address" autoComplete="email" />
+
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <Input name="visitDate" type="date" label="Preferred Date" />
+            <Input name="visitTime" type="time" label="Preferred Time" />
+          </div>
+
+          <Textarea
+            name="message"
+            rows={3}
+            placeholder="Anything specific you'd like to see?"
+          />
+
+          {mutation.isError && (
+            <p role="alert" className="text-body-sm text-red-500">
+              Something went wrong. Please try again or call us directly.
+            </p>
+          )}
+
+          <Button
+            type="submit"
+            variant="gold"
+            loading={mutation.isPending}
+            className="w-full sm:w-auto"
+          >
+            {mutation.isPending ? "Submitting…" : "Request Visit"}
+          </Button>
+        </form>
       )}
-    </AnimatePresence>
+    </Dialog>
   );
 }

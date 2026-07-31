@@ -1,5 +1,6 @@
 import Reveal from "@/components/ui/Reveal";
 import { cn } from "@/lib/cn";
+import { curtainUp } from "@/lib/motion";
 
 type SectionHeadingProps = {
   eyebrow?: string;
@@ -35,16 +36,24 @@ export default function SectionHeading({
           </span>
         </Reveal>
       )}
-      <Reveal delay={0.05}>
-        <h2
-          className={cn(
-            "font-display text-4xl font-light leading-[1.05] md:text-5xl lg:text-[3.4rem]",
-            invert ? "text-white" : "text-ink",
-          )}
-        >
-          {title}
-        </h2>
-      </Reveal>
+      {/*
+        Masked curtain reveal: the heading rises from behind a clipped edge
+        rather than fading in place. `pb-[0.14em]` gives descenders and the
+        italic accent room so the mask never shaves them. MotionConfig
+        downgrades this to a plain fade for reduced-motion users.
+      */}
+      <div className="overflow-hidden pb-[0.14em]">
+        <Reveal variants={curtainUp} delay={0.05}>
+          <h2
+            className={cn(
+              "font-display text-4xl font-light leading-[1.05] md:text-5xl lg:text-[3.4rem]",
+              invert ? "text-white" : "text-ink",
+            )}
+          >
+            {title}
+          </h2>
+        </Reveal>
+      </div>
       {description && (
         <Reveal delay={0.1}>
           <p

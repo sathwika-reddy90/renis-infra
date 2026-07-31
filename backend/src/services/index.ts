@@ -55,4 +55,5 @@ export const blogService = new BaseService<Blog, BlogCreateInput, BlogUpdateInpu
 );
 
 export { siteService } from "./site.service";
+export { siteContentService } from "./siteContent.service";
 export { inquiryService } from "./inquiry.service";

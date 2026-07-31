@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import BlogListingContent from "@/components/BlogListingContent";
 
 export const metadata: Metadata = {
-  title: "Blog — RENISINFRA",
+  title: "Blog",
   description: "News, launches and insights from RENISINFRA.",
 };
 

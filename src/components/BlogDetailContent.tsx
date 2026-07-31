@@ -65,7 +65,16 @@ function Article({ post }: { post: BlogPost }) {
           <div className="mt-10 space-y-6">
             {paragraphs.map((p, i) => (
               <Reveal key={i} delay={i * 0.03}>
-                <p className="text-[1.02rem] leading-relaxed text-ink/85">{p}</p>
+                <p
+                  className={
+                    // Lead paragraph gets editorial emphasis.
+                    i === 0
+                      ? "font-display text-h3 font-light leading-relaxed text-ink"
+                      : "text-body-lg text-ink/85"
+                  }
+                >
+                  {p}
+                </p>
               </Reveal>
             ))}
           </div>
@@ -92,6 +101,7 @@ function Article({ post }: { post: BlogPost }) {
       </section>
 
       <CtaBand
+        contentKey="blog"
         eyebrow="Continue the Story"
         title="Discover the address behind the headline."
         primary={{ label: "Explore Projects", href: "/projects" }}

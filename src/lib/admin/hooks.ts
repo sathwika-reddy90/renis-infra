@@ -7,6 +7,7 @@ import { usersApi, inquiryHistoryApi, type CrudApi } from "./api";
 export const adminKeys = {
   list: (resource: string) => ["admin", resource] as const,
   site: ["admin", "site"] as const,
+  content: ["admin", "content"] as const,
   users: ["admin", "users"] as const,
   inquiryHistory: (id: string) => ["admin", "inquiries", id, "history"] as const,
 };

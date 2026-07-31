@@ -12,6 +12,13 @@ export interface Project {
   status: PropertyStatus;
   propertyType: PropertyType;
   priceLabel: string;
+  /** Configuration summary, e.g. "3 & 4 BHK". */
+  bedrooms: string;
+  area: string;
+  possession: string;
+  developer: string;
   featuredImage: string;
+  featured: boolean;
+  order: number;
   href: string;
 }

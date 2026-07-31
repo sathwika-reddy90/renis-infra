@@ -15,6 +15,7 @@ import {
   Sparkles,
   Inbox,
   Settings,
+  LayoutTemplate,
   FolderOpen,
   Menu,
   X,
@@ -40,6 +41,7 @@ const NAV: NavItem[] = [
   { label: "Amenities", href: "/admin/amenities", icon: Sparkles, resource: "amenities" },
   { label: "Media", href: "/admin/media", icon: FolderOpen, resource: "media" },
   { label: "Inquiries", href: "/admin/inquiries", icon: Inbox, resource: "inquiries" },
+  { label: "Content", href: "/admin/content", icon: LayoutTemplate, resource: "settings" },
   { label: "Settings", href: "/admin/settings", icon: Settings, resource: "settings" },
 ];
 

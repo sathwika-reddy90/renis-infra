@@ -122,8 +122,13 @@ export function MediaPickerListField<T extends FieldValues>({
       <Modal open={open} onClose={() => setOpen(false)} title="Media Library" size="lg">
         <MediaLibrary
           selectable
-          onSelect={(item: AdminMedia) => {
-            field.onChange([...value, item.url]);
+          multiple
+          onSelectMany={(items: AdminMedia[]) => {
+            // Skip anything already in the list so re-opening the picker
+            // can't duplicate an image.
+            const additions = items.map((i) => i.url).filter((url) => !value.includes(url));
+            if (additions.length > 0) field.onChange([...value, ...additions]);
+            setOpen(false);
           }}
         />
       </Modal>

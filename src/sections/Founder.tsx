@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import Container from "@/components/ui/Container";
+import { ParallaxImage } from "@/components/ui/Parallax";
 import QueryView from "@/components/ui/QueryView";
 import Skeleton from "@/components/ui/Skeleton";
 import { useTeam } from "@/lib/query/hooks";
@@ -51,15 +51,13 @@ export default function Founder() {
             <>
               <Container>
                 <div className="grid grid-cols-1 md:grid-cols-2">
-                  <div className="relative min-h-[320px] md:min-h-[500px]">
-                    <Image
-                      src={founder.image || "/images/placeholder-project.jpg"}
-                      alt={founder.name}
-                      fill
-                      sizes="(max-width: 768px) 100vw, 50vw"
-                      className="object-cover"
-                    />
-                  </div>
+                  <ParallaxImage
+                    src={founder.image || "/images/placeholder-project.jpg"}
+                    alt={founder.name}
+                    speed={8}
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="min-h-[320px] md:min-h-[500px]"
+                  />
 
                   <div className="flex flex-col justify-center bg-white p-8 md:p-10 lg:p-12">
                     <span className="text-[15px] font-medium uppercase tracking-[0.16em] text-muted md:text-[17px]">
