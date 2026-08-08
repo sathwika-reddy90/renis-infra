@@ -286,3 +286,4 @@ There is no automated test suite in this project; verify changes manually.
 - Keep authentication/authorization logic centralized (`backend/src/types/auth.ts` and its frontend mirror `src/lib/admin/permissions.ts`) — do not duplicate permission checks.
 - Run `npm run lint` and `npm run build` (frontend) and `npm run typecheck` and `npm run build` (backend) before submitting changes.
 - Do not commit `.env`/`.env.local` files or secrets.
+# renis-infra
