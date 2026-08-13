@@ -46,3 +46,6 @@ next-env.d.ts
 /backend/node_modules
 /backend/dist
 /backend/uploads
+
+renisinfra_backup.sql
+renisinfra_supabase.sql

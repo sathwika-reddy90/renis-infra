@@ -1,0 +1,26 @@
+{
+  "name": "renisinfra-image-uploader",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Playwright automation that bulk-uploads project images into the RENISINFRA admin CMS.",
+  "scripts": {
+    "upload": "tsx src/index.ts",
+    "upload:dry": "DRY_RUN=1 tsx src/index.ts",
+    "upload:headed": "HEADED=1 SLOW_MO=120 tsx src/index.ts",
+    "download": "tsx src/download.ts",
+    "sync": "tsx src/sync.ts",
+    "typecheck": "tsc --noEmit",
+    "verify": "tsx src/verify.ts",
+    "migrate": "tsx src/migrate.ts",
+    "repair:urls": "tsx src/repairUrlsCli.ts"
+  },
+  "dependencies": {
+    "playwright": "^1.62.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  }
+}

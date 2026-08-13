@@ -166,11 +166,20 @@ html.lenis body {
   height: auto;
 }
 
-.lenis.lenis-smooth {
+/*
+ * Must key off `.lenis` — which Lenis stamps for as long as it is mounted —
+ * and NOT `.lenis-smooth`, which it only adds *while a smooth wheel scroll is
+ * actually in flight*. Scoping this to `.lenis-smooth` left native smooth
+ * scrolling live at rest, so every programmatic scroll ran through the
+ * browser's animator: on a client-side route change the new page painted at
+ * the previous scroll offset and then visibly glided to the top, instead of
+ * simply appearing at the top the way a fresh load does.
+ */
+html.lenis {
   scroll-behavior: auto !important;
 }
 
-.lenis.lenis-smooth [data-lenis-prevent] {
+.lenis [data-lenis-prevent] {
   overscroll-behavior: contain;
 }
 
@@ -277,6 +286,25 @@ body {
       rgb(11 23 48 / 0.55) 0%,
       rgb(11 23 48 / 0.3) 45%,
       rgb(11 23 48 / 0.68) 100%
+    );
+  }
+
+  /*
+   * Homepage hero variant. Deliberately NOT a tint across the photograph:
+   * it is fully transparent from 18% to 55% — the whole middle of the frame
+   * carries no overlay at all, so the image renders at its own brightness,
+   * colour and contrast. What remains is a hairline of shade at the very top
+   * (so the transparent navbar stays legible) and a gradient confined to the
+   * lower third, sitting behind the bottom-aligned caption. Kept separate
+   * from `.scrim-full` so the property detail hero is unaffected.
+   */
+  .scrim-hero {
+    background: linear-gradient(
+      to bottom,
+      rgb(11 23 48 / 0.14) 0%,
+      rgb(11 23 48 / 0) 18%,
+      rgb(11 23 48 / 0) 55%,
+      rgb(11 23 48 / 0.52) 100%
     );
   }
 

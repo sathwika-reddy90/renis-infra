@@ -22,10 +22,26 @@ const MENU_GROUPS = ["New Launch", "Now Selling", "Ready to Move", "Coming Soon"
 const FALLBACK_NAV = [
   { label: "Home", href: "/" },
   { label: "Projects", href: "/projects" },
+  { label: "Renis Projects", href: "/renis-projects" },
   { label: "About", href: "/about" },
   { label: "Media", href: "/gallery" },
   { label: "Contact", href: "/contact" },
 ];
+
+const RENIS_PROJECTS = { label: "Renis Projects", href: "/renis-projects" };
+
+/**
+ * The nav is CMS-managed, so a code-only entry would be invisible the moment
+ * `content.nav` loads. This slots "Renis Projects" in right after "Projects"
+ * whichever list is in play, and no-ops once the item is added in the CMS —
+ * at which point this helper can go.
+ */
+function withRenisProjects(links: { label: string; href: string }[]) {
+  if (links.some((l) => l.href === RENIS_PROJECTS.href)) return links;
+  const after = links.findIndex((l) => l.href === "/projects");
+  if (after === -1) return [...links, RENIS_PROJECTS];
+  return [...links.slice(0, after + 1), RENIS_PROJECTS, ...links.slice(after + 1)];
+}
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -38,7 +54,7 @@ export default function Navbar() {
   const { data: settings } = useSiteSettings();
   const { data: content } = useSiteContent();
   const { data: projects } = useProjects();
-  const navLinks = content?.nav?.length ? content.nav : FALLBACK_NAV;
+  const navLinks = withRenisProjects(content?.nav?.length ? content.nav : FALLBACK_NAV);
   const drawerRef = useRef<HTMLDivElement>(null);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 

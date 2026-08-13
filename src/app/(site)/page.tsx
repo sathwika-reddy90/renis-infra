@@ -1,6 +1,7 @@
 import LandingHero from "@/sections/LandingHero";
 import LaunchHighlight from "@/sections/LaunchHighlight";
 import Hero from "@/sections/Hero";
+import ImageCompare from "@/sections/ImageCompare";
 import ProjectShowcase from "@/sections/ProjectShowcase";
 import WhyRenisinfra from "@/sections/WhyRenisinfra";
 import Founder from "@/sections/Founder";
@@ -24,6 +25,7 @@ export default function Home() {
         {/* ProjectShowcase carries its own section heading, so the former
             standalone FeaturedProjects heading band is no longer needed. */}
         <Hero />
+        <ImageCompare />
         <ProjectShowcase />
         <WhyRenisinfra />
         <Founder />

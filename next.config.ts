@@ -14,7 +14,21 @@ const nextConfig: NextConfig = {
     root: __dirname,
   },
   images: {
-    remotePatterns: [{ protocol: "https", hostname: "images.unsplash.com" }],
+    // Allow Unsplash and the backend origin (so next/image can optimise
+    // images served from Railway). The backend origin is derived from
+    // `NEXT_PUBLIC_API_URL` so it matches the same host the API client uses.
+    remotePatterns: (() => {
+      try {
+        const backendUrl = new URL(BACKEND_ORIGIN);
+        const backendProtocol = backendUrl.protocol.replace(":", "") as "http" | "https";
+        return [
+          { protocol: "https", hostname: "images.unsplash.com" },
+          { protocol: backendProtocol, hostname: backendUrl.hostname },
+        ];
+      } catch (e) {
+        return [{ protocol: "https", hostname: "images.unsplash.com" }];
+      }
+    })(),
     formats: ["image/avif", "image/webp"],
     deviceSizes: [360, 480, 640, 768, 1024, 1280, 1536, 1920, 2560],
     imageSizes: [64, 96, 128, 200, 256, 384],

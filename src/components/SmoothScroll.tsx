@@ -44,9 +44,11 @@ export default function SmoothScroll() {
     if (reduced) return;
 
     const lenis = new Lenis({
-      // ~0.9s to settle. Long enough to read as momentum, short enough that
-      // the page never feels like it is lagging behind the wheel.
-      duration: 0.9,
+      // ~0.08s to settle — about five frames. Just enough to absorb the
+      // coarse steps of a notched mouse wheel, but short enough that the
+      // scroll position (and therefore every pinned, scrubbed timeline that
+      // reads it) is effectively locked to the input with no felt delay.
+      duration: 0.08,
       // Matches --ease-lux, so JS-driven and CSS-driven motion share a curve.
       easing: (t) => 1 - Math.pow(1 - t, 4),
       smoothWheel: true,

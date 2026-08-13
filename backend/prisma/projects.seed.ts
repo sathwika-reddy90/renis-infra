@@ -22,8 +22,17 @@ const IMAGES: Record<string, string[]> = JSON.parse(
 const json = (value: unknown) => value as Prisma.InputJsonValue;
 
 /** Falls back to a placeholder so a project without scraped imagery still renders. */
-const img = (slug: string, i: number): string =>
-  IMAGES[slug]?.[i] ?? IMAGES[slug]?.[0] ?? "/images/placeholder-project.jpg";
+const normalizeImage = (p?: string): string => {
+  if (!p) return "/images/placeholder-project.jpg";
+  // Replace developer-local or upload paths with a safe public placeholder
+  // so production seeds don't point at localhost or non-existent upload folders.
+  if (p.startsWith("http://localhost") || p.startsWith("http://127.0.0.1") || p.startsWith("/uploads")) {
+    return "/images/placeholder-project.jpg";
+  }
+  return p;
+};
+
+const img = (slug: string, i: number): string => normalizeImage(IMAGES[slug]?.[i] ?? IMAGES[slug]?.[0]);
 
 const gallery = (slug: string, from = 1): string[] => (IMAGES[slug] ?? []).slice(from);
 

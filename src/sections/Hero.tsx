@@ -6,18 +6,21 @@ import { ChevronDown } from "lucide-react";
 import Container from "@/components/ui/Container";
 import Button from "@/components/ui/Button";
 import { useCinematicScroll } from "@/lib/useCinematicScroll";
-import { useSiteContent } from "@/lib/query/hooks";
+import { heroProjects } from "@/lib/homeProjects";
+import { useProjects } from "@/lib/query/hooks";
 
 /**
  * Pinned, scroll-scrubbed panel stack. This is the homepage's single
  * cinematic moment — ProjectShowcase deliberately does not pin, so the page
- * never hijacks the scroll twice in a row. Panels are CMS-managed via
- * /admin/content → Hero.
+ * never hijacks the scroll twice in a row.
+ *
+ * Panels are the first `HERO_PROJECT_COUNT` projects. Everything after that
+ * falls through to ProjectShowcase, so the two never repeat a project.
  */
 export default function Hero() {
   const reduced = useReducedMotion();
-  const { data } = useSiteContent();
-  const slides = data?.heroSlides ?? [];
+  const { data } = useProjects();
+  const slides = heroProjects(data ?? []);
 
   const { section, slides: slideRefs, images, texts } = useCinematicScroll({
     count: slides.length,
@@ -36,12 +39,18 @@ export default function Hero() {
     >
       {slides.map((slide, i) => (
         <div
-          key={`${slide.category}-${i}`}
+          key={slide.id}
           ref={(el) => {
             slideRefs.current[i] = el;
           }}
-          className="absolute inset-0 will-change-transform"
-          style={{ zIndex: i + 1 }}
+          // `overflow-hidden` makes the panel a window onto its own image:
+          // as the panel slides up, the image inside counter-translates by
+          // the same amount and so stays put on screen, with the panel's
+          // moving lower edge deciding how much of it you still see.
+          className="absolute inset-0 overflow-hidden will-change-transform"
+          // Stacked pages: the FIRST panel sits on top, each later panel
+          // directly beneath it, already in its final position.
+          style={{ zIndex: slides.length - i }}
         >
           <div
             ref={(el) => {
@@ -50,7 +59,7 @@ export default function Hero() {
             className="absolute inset-0 will-change-transform"
           >
             <Image
-              src={slide.image}
+              src={slide.featuredImage || "/images/placeholder-project.jpg"}
               alt={slide.title}
               fill
               priority={i === 0}
@@ -59,10 +68,10 @@ export default function Hero() {
               className="object-cover"
             />
           </div>
-          <div className="absolute inset-0 scrim-full" />
+          <div className="absolute inset-0 scrim-hero" />
 
           <span className="eyebrow absolute left-6 top-28 text-white/80 md:left-10">
-            {slide.category}
+            {slide.status}
           </span>
 
           <div
@@ -75,13 +84,37 @@ export default function Hero() {
               <div className="max-w-2xl">
                 <h2 className="font-display text-display-1 text-white">{slide.title}</h2>
                 <p className="mt-4 text-body-lg text-white/80">{slide.location}</p>
-                {slide.cta?.label && (
-                  <div className="mt-9">
-                    <Button href={slide.cta.href} variant="gold">
-                      {slide.cta.label}
-                    </Button>
-                  </div>
+
+                {/* Configuration + price — the two facts a buyer scans for
+                    first, in the same pairing ProjectCard uses. */}
+                {(slide.bedrooms || slide.priceLabel) && (
+                  <dl className="mt-6 flex flex-wrap gap-x-10 gap-y-4">
+                    {slide.bedrooms && (
+                      <div>
+                        <dt className="text-[0.66rem] uppercase tracking-[0.2em] text-white/60">
+                          Configuration
+                        </dt>
+                        <dd className="mt-1 font-display text-h3 text-white">{slide.bedrooms}</dd>
+                      </div>
+                    )}
+                    {slide.priceLabel && (
+                      <div>
+                        <dt className="text-[0.66rem] uppercase tracking-[0.2em] text-white/60">
+                          Price
+                        </dt>
+                        <dd className="mt-1 font-display text-h3 text-gold-soft">
+                          {slide.priceLabel}
+                        </dd>
+                      </div>
+                    )}
+                  </dl>
                 )}
+
+                <div className="mt-9">
+                  <Button href={slide.href} variant="gold">
+                    View Residence
+                  </Button>
+                </div>
               </div>
             </Container>
           </div>

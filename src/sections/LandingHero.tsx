@@ -79,7 +79,7 @@ export default function LandingHero() {
           className="object-cover"
         />
       </motion.div>
-      <div className="absolute inset-0 scrim-full" />
+      <div className="absolute inset-0 scrim-hero" />
       {!reduced && (
         <motion.div style={{ opacity: veil }} className="absolute inset-0 bg-ink" aria-hidden />
       )}

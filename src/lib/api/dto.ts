@@ -193,9 +193,33 @@ const API_ORIGIN = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000/ap
   "",
 );
 
+const IS_DEV = process.env.NODE_ENV !== "production";
+
 export function toLocalAsset<T extends string | undefined>(url: T): T {
   if (!url) return url;
-  return (url.startsWith(API_ORIGIN) ? url.slice(API_ORIGIN.length) || "/" : url) as T;
+
+  // If the backend returned an absolute URL pointing at our API origin,
+  // keep it as-is so we don't accidentally double-prefix. For development
+  // we prefer a root-relative path so Next's rewrite can proxy to the local
+  // backend; for production we want an absolute URL that points at the
+  // production backend origin so browsers fetch the correct host.
+  if (typeof url === "string") {
+    if (url.startsWith(API_ORIGIN)) {
+      // url already contains the origin. In development, convert to
+      // relative so Next's rewrite proxies it; in production leave it.
+      return (IS_DEV ? (url.slice(API_ORIGIN.length) || "/") : (url as T)) as T;
+    }
+
+    // Root-relative uploads paths. In development keep as-relative to let
+    // Next proxy via the rewrite to the local backend; in production
+    // return an absolute URL to the configured backend origin.
+    if (url.startsWith("/uploads")) {
+      return (IS_DEV ? (url as T) : ((`${API_ORIGIN}${url}` as unknown) as T));
+    }
+  }
+
+  // External URLs (Unsplash etc.) are returned unchanged.
+  return url as T;
 }
 
 const detailHref = (slug: string): string => `/projects/${slug}`;

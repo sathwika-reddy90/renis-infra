@@ -12,6 +12,7 @@ import QueryView from "@/components/ui/QueryView";
 import Button from "@/components/ui/Button";
 import { ParallaxImage } from "@/components/ui/Parallax";
 import { cn } from "@/lib/cn";
+import { cardProjects } from "@/lib/homeProjects";
 import { easeLux, fadeUp, imageReveal, viewportOnceLoose } from "@/lib/motion";
 import { useProjects } from "@/lib/query/hooks";
 import type { Project } from "@/types/project";
@@ -141,10 +142,10 @@ export default function ProjectShowcase() {
           }
         >
           {(projects) => {
-            // Editors curate this rail with the "Feature on the homepage"
-            // flag; fall back to the first few so it is never empty.
-            const featured = projects.filter((p) => p.featured);
-            const shown = (featured.length > 0 ? featured : projects).slice(0, 4);
+            // The first HERO_PROJECT_COUNT projects are already on screen in
+            // the hero slider, so this rail picks up exactly where it left off
+            // and the two never show the same project twice.
+            const shown = cardProjects(projects);
 
             if (shown.length === 0) {
               return (
