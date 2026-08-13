@@ -3,14 +3,14 @@ import { z } from "zod";
 
 dotenv.config();
 
+const LOCAL_DATABASE_URL = "postgresql://postgres:postgres@localhost:5432/renisinfra?schema=public";
+
 const envSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
   PORT: z.coerce.number().int().positive().default(4000),
   CORS_ORIGIN: z.string().optional(),
   LOG_LEVEL: z.enum(["debug", "info", "warn", "error"]).default("info"),
-  DATABASE_URL: z
-    .string()
-    .default("postgresql://postgres:postgres@localhost:5432/renisinfra?schema=public"),
+  DATABASE_URL: z.string().url().optional(),
 
   // Auth — override these secrets in production.
   JWT_ACCESS_SECRET: z.string().min(1).default("dev-access-secret-change-in-production"),
@@ -22,7 +22,10 @@ const envSchema = z.object({
   // Media storage — local disk today; swappable via StorageProvider later.
   UPLOAD_DIR: z.string().default("uploads"),
   MAX_UPLOAD_SIZE_MB: z.coerce.number().int().positive().default(15),
-  PUBLIC_ASSET_BASE_URL: z.string().optional(),
+  PUBLIC_ASSET_BASE_URL: z.string().url().optional(),
+  SUPABASE_URL: z.string().url().optional(),
+  SUPABASE_SERVICE_ROLE_KEY: z.string().min(1).optional(),
+  SUPABASE_STORAGE_BUCKET: z.string().default("uploads"),
 });
 
 const parsed = envSchema.safeParse(process.env);
@@ -33,7 +36,11 @@ if (!parsed.success) {
   process.exit(1);
 }
 
-export const env = parsed.data;
+export const env = {
+  ...parsed.data,
+  DATABASE_URL:
+    parsed.data.DATABASE_URL ?? (parsed.data.NODE_ENV === "production" ? undefined : LOCAL_DATABASE_URL),
+};
 export type Env = typeof env;
 
 export const isProduction = env.NODE_ENV === "production";
@@ -44,10 +51,20 @@ if (isProduction && env.JWT_ACCESS_SECRET === "dev-access-secret-change-in-produ
   process.exit(1);
 }
 
+if (isProduction && !env.DATABASE_URL) {
+  console.error("DATABASE_URL must be set in production.");
+  process.exit(1);
+}
+
 if (isProduction && !env.CORS_ORIGIN) {
   console.error(
     "CORS_ORIGIN must be set in production (comma-separated list of allowed origins).",
   );
+  process.exit(1);
+}
+
+if (isProduction && !env.PUBLIC_ASSET_BASE_URL) {
+  console.error("PUBLIC_ASSET_BASE_URL must be set in production.");
   process.exit(1);
 }
 
