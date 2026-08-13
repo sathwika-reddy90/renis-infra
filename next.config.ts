@@ -23,10 +23,14 @@ const nextConfig: NextConfig = {
         const backendProtocol = backendUrl.protocol.replace(":", "") as "http" | "https";
         return [
           { protocol: "https", hostname: "images.unsplash.com" },
+          { protocol: "https", hostname: "qoyyenhmwkcnvcbsultd.supabase.co" },
           { protocol: backendProtocol, hostname: backendUrl.hostname },
         ];
       } catch (e) {
-        return [{ protocol: "https", hostname: "images.unsplash.com" }];
+        return [
+          { protocol: "https", hostname: "images.unsplash.com" },
+          { protocol: "https", hostname: "qoyyenhmwkcnvcbsultd.supabase.co" },
+        ];
       }
     })(),
     formats: ["image/avif", "image/webp"],
