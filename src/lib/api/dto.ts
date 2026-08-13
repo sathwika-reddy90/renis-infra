@@ -198,27 +198,28 @@ const IS_DEV = process.env.NODE_ENV !== "production";
 export function toLocalAsset<T extends string | undefined>(url: T): T {
   if (!url) return url;
 
-  // If the backend returned an absolute URL pointing at our API origin,
-  // keep it as-is so we don't accidentally double-prefix. For development
-  // we prefer a root-relative path so Next's rewrite can proxy to the local
-  // backend; for production we want an absolute URL that points at the
-  // production backend origin so browsers fetch the correct host.
-  if (typeof url === "string") {
-    if (url.startsWith(API_ORIGIN)) {
-      // url already contains the origin. In development, convert to
-      // relative so Next's rewrite proxies it; in production leave it.
-      return (IS_DEV ? (url.slice(API_ORIGIN.length) || "/") : (url as T)) as T;
-    }
-
-    // Root-relative uploads paths. In development keep as-relative to let
-    // Next proxy via the rewrite to the local backend; in production
-    // return an absolute URL to the configured backend origin.
-    if (url.startsWith("/uploads")) {
-      return (IS_DEV ? (url as T) : ((`${API_ORIGIN}${url}` as unknown) as T));
-    }
+  if (typeof url !== "string") {
+    return url;
   }
 
-  // External URLs (Unsplash etc.) are returned unchanged.
+  // Absolute URLs are already valid and must be used unchanged.
+  // This includes Supabase Storage URLs and any other fully-qualified remote URL.
+  if (/^https?:\/\//i.test(url)) {
+    return url as T;
+  }
+
+  // Root-relative uploads paths are the only ones we should prefix with the backend origin.
+  if (url.startsWith("/uploads")) {
+    return (IS_DEV ? (url as T) : ((`${API_ORIGIN}${url}` as unknown) as T));
+  }
+
+  // If the backend returned an absolute URL pointing at our API origin,
+  // keep it as-is in production. In development, convert it to a root-relative path
+  // so Next's rewrite can proxy it to the local backend.
+  if (url.startsWith(API_ORIGIN)) {
+    return (IS_DEV ? (url.slice(API_ORIGIN.length) || "/") : (url as T)) as T;
+  }
+
   return url as T;
 }
 
