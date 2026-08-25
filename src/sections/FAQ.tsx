@@ -30,7 +30,7 @@ export default function FAQ() {
             Frequently Asked <span className="italic text-gold">Questions</span>
           </>
         }
-        description="Everything you need to know before beginning your journey with RENISINFRA."
+        description="Everything you need to know before beginning your journey with RENIESINFRA."
       />
 
       <QueryView

@@ -17,13 +17,13 @@ export async function generateMetadata({
 
   if (!property) return { title: "Residence" };
 
-  const title = property.seo.metaTitle || `${property.title} — RENISINFRA`;
+  const title = property.seo.metaTitle || `${property.title} — RENIESINFRA`;
   const description = property.seo.metaDescription || property.description.slice(0, 155);
   const image = property.seo.ogImage || property.featuredImage;
 
   return {
     // The CMS metaTitle already carries the brand, so bypass the root
-    // layout's "%s | RENISINFRA" template rather than repeating it.
+    // layout's "%s | RENIESINFRA" template rather than repeating it.
     title: { absolute: title },
     description,
     alternates: { canonical: `/projects/${slug}` },

@@ -55,7 +55,7 @@ export default function NewsEvents() {
               News <span className="italic text-gold">&amp; Events</span>
             </>
           }
-          description="The latest from RENISINFRA — launches, milestones and moments worth sharing."
+          description="The latest from RENIESINFRA — launches, milestones and moments worth sharing."
         />
 
         <QueryView query={query} skeleton={<GridSkeleton />} errorMessage="Unable to load news right now.">
@@ -94,7 +94,7 @@ export default function NewsEvents() {
                     <p className="mt-4 text-[0.7rem] uppercase tracking-[0.2em] text-gold">
                       {formatDate(post.publishedAt)}
                     </p>
-                    <h3 className="mt-2 font-display text-xl font-light leading-snug text-ink">
+                    <h3 className="mt-2 font-display text-xl font-medium leading-snug text-ink">
                       {post.title}
                     </h3>
                   </motion.a>

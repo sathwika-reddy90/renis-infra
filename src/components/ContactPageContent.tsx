@@ -86,7 +86,7 @@ export default function ContactPageContent() {
       {/* Map */}
       <Section tone="cream" rhythm="sm">
         <MapPlaceholder
-          label={settings?.siteName ?? "RENISINFRA"}
+          label={settings?.siteName ?? "RENIESINFRA"}
           query={contact.address}
           className="h-[420px]"
         />
@@ -146,7 +146,7 @@ export default function ContactPageContent() {
         contentKey="contact"
         eyebrow="Private Viewing"
         title="Prefer to visit in person?"
-        text="Schedule a guided tour of our residences and experience the RENISINFRA standard."
+        text="Schedule a guided tour of our residences and experience the RENIESINFRA standard."
         primary={{ label: "Schedule a Visit", href: "/contact" }}
         primaryOpensVisitModal
         secondary={{ label: "Explore Projects", href: "/projects" }}

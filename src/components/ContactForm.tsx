@@ -55,7 +55,7 @@ export default function ContactForm({
         <span className="flex h-12 w-12 items-center justify-center rounded-full bg-gold text-white">
           <Check size={22} aria-hidden />
         </span>
-        <h3 className="font-display text-h1 font-light">Thank you.</h3>
+        <h3 className="font-display text-h1 font-semibold">Thank you.</h3>
         <p className="max-w-sm text-body text-muted">
           Your enquiry has been received. A residence advisor will be in touch shortly to arrange
           your private viewing.
@@ -75,7 +75,7 @@ export default function ContactForm({
 
   return (
     <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-6">
-      {heading && <h3 className="font-display text-display-3 font-light">{heading}</h3>}
+      {heading && <h3 className="font-display text-display-3">{heading}</h3>}
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
         <Input required name="name" placeholder="Full Name" autoComplete="name" tone={tone} />

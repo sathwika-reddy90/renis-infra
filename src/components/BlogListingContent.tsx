@@ -49,7 +49,7 @@ export default function BlogListingContent() {
       <PageHero
         eyebrow="Journal"
         title={<>News &amp; <span className="italic text-gold-soft">Insights</span></>}
-        subtitle="Launches, milestones and stories from across the RENISINFRA portfolio."
+        subtitle="Launches, milestones and stories from across the RENIESINFRA portfolio."
         image="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=2000&q=80"
         breadcrumb={[{ label: "Home", href: "/" }, { label: "Blog" }]}
       />
@@ -86,7 +86,7 @@ export default function BlogListingContent() {
                       <p className="mt-5 text-[0.7rem] uppercase tracking-[0.2em] text-gold">
                         {post.category} · {formatDate(post.publishedAt)}
                       </p>
-                      <h3 className="mt-2 font-display text-2xl font-light leading-snug text-ink">
+                      <h3 className="mt-2 font-display text-2xl font-medium leading-snug text-ink">
                         {post.title}
                       </h3>
                       <p className="mt-2 text-[0.92rem] leading-relaxed text-muted">{post.excerpt}</p>

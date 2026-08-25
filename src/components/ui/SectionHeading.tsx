@@ -46,7 +46,7 @@ export default function SectionHeading({
         <Reveal variants={curtainUp} delay={0.05}>
           <h2
             className={cn(
-              "font-display text-4xl font-light leading-[1.05] md:text-5xl lg:text-[3.4rem]",
+              "font-display text-4xl font-bold leading-[1.05] md:text-5xl lg:text-[3.4rem]",
               invert ? "text-white" : "text-ink",
             )}
           >

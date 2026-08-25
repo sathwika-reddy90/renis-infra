@@ -344,7 +344,7 @@ export const toBlogPost = (b: ApiBlog): BlogPost => ({
   content: b.content,
   category: b.category,
   tags: b.tags,
-  author: { name: "RENISINFRA" },
+  author: { name: "RENIESINFRA" },
   coverImage: toLocalAsset(b.coverImage),
   readTime: b.readTime,
   published: Boolean(b.publishedAt),

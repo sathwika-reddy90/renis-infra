@@ -585,7 +585,7 @@ export default function ContentPage() {
             <StatGridPanel
               form={form}
               name="whyUs"
-              title="Why RENISINFRA"
+              title="Why RENIESINFRA"
               description="Icon/stat grid on the left of the homepage split section."
             />
           )}

@@ -1,39 +1,73 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, Jost } from "next/font/google";
+import {
+  Playfair_Display,
+  Montserrat,
+  Great_Vibes,
+  Inter,
+  Libertinus_Sans,
+} from "next/font/google";
 import "./globals.css";
 import Providers from "@/lib/query/Providers";
 import { SITE_URL } from "@/lib/siteUrl";
 
-const display = Cormorant_Garamond({
+// Playfair Display's lightest available weight is 400 (the family ships no
+// 300), so 400–700 covers every weight the headings use.
+const display = Playfair_Display({
   variable: "--font-display",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
+  weight: ["400", "500", "600", "700", "800"],
   display: "swap",
 });
 
-const sans = Jost({
+const sans = Montserrat({
   variable: "--font-sans",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
+  weight: ["300", "400", "500", "600", "700", "800"],
+  style: ["normal", "italic"],
   display: "swap",
 });
 
-const TITLE = "RENISINFRA — Luxury Residences";
+// Script accent used by the hero promo panel ("Summer").
+const script = Great_Vibes({
+  variable: "--font-script",
+  subsets: ["latin"],
+  weight: "400",
+  display: "swap",
+});
+
+// Header/navigation face — matches the reference site's nav typography.
+const nav = Inter({
+  variable: "--font-nav",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "800"],
+  style: ["normal", "italic"],
+  display: "swap",
+});
+
+// Launch-band display face — matches the reference section's heading font.
+const launch = Libertinus_Sans({
+  variable: "--font-launch",
+  subsets: ["latin"],
+  weight: "400",
+  display: "swap",
+});
+
+const TITLE = "RENIESINFRA — Luxury Residences";
 const DESCRIPTION =
-  "RENISINFRA presents landmark luxury residences across Hyderabad's most sought-after addresses. Where architecture, craftsmanship and address meet.";
+  "RENIESINFRA presents landmark luxury residences across Hyderabad's most sought-after addresses. Where architecture, craftsmanship and address meet.";
 
 export const metadata: Metadata = {
   // Lets every page express OG/canonical URLs as relative paths.
   metadataBase: new URL(SITE_URL),
   title: {
     default: TITLE,
-    template: "%s | RENISINFRA",
+    template: "%s | RENIESINFRA",
   },
   description: DESCRIPTION,
-  applicationName: "RENISINFRA",
+  applicationName: "RENIESINFRA",
   openGraph: {
     type: "website",
-    siteName: "RENISINFRA",
+    siteName: "RENIESINFRA",
     title: TITLE,
     description: DESCRIPTION,
     locale: "en_IN",
@@ -60,7 +94,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${display.variable} ${sans.variable} h-full antialiased`}
+      className={`${display.variable} ${sans.variable} ${script.variable} ${nav.variable} ${launch.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-background text-ink">
         <Providers>{children}</Providers>

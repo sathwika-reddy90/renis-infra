@@ -4,7 +4,7 @@ import LegalBody from "@/components/LegalBody";
 
 export const metadata: Metadata = {
   title: "Terms of Use",
-  description: "The terms governing your use of the RENISINFRA website.",
+  description: "The terms governing your use of the RENIESINFRA website.",
 };
 
 export default function TermsPage() {

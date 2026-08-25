@@ -1,4 +1,4 @@
-// Reusable, typed HTTP client for the RENISINFRA backend.
+// Reusable, typed HTTP client for the RENIESINFRA backend.
 // The backend wraps every response in { success, data, message?, details? };
 // this client unwraps `data` and surfaces failures as ApiError.
 

@@ -29,7 +29,7 @@ export default function MapPlaceholder({
           <MapPin size={24} />
         </span>
         <div>
-          <p className="font-display text-2xl font-light">{label}</p>
+          <p className="font-display text-2xl font-medium">{label}</p>
           <p className="mt-1 text-[0.75rem] uppercase tracking-[0.2em] text-gold">
             View on Google Maps
           </p>

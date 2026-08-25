@@ -106,7 +106,7 @@ export default function WhyRenisinfra() {
       <div className="mx-auto grid max-w-[1280px] grid-cols-1 gap-14 sm:grid-cols-2 sm:gap-0">
         {whyItems.length > 0 && (
           <div className="px-6 sm:px-10">
-            <WhyColumn heading="RENISINFRA?" items={whyItems} />
+            <WhyColumn heading="RENIESINFRA?" items={whyItems} />
           </div>
         )}
         {investItems.length > 0 && (

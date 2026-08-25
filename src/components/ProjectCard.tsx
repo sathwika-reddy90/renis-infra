@@ -45,7 +45,7 @@ export default function ProjectCard({
           <p className="text-[0.7rem] uppercase tracking-[0.24em] text-gold-soft">
             {project.subtitle}
           </p>
-          <h3 className="mt-2 font-display text-h1 font-light">{project.title}</h3>
+          <h3 className="mt-2 font-display text-h1 font-semibold">{project.title}</h3>
           <p className="mt-1 text-body-sm text-white/75">{project.location}</p>
 
           {/* Configuration + price — the two facts a buyer scans for first. */}

@@ -66,7 +66,7 @@ function Carousel({ items }: { items: Testimonial[] }) {
             transition={{ duration: 0.6, ease: easeLux }}
             className="absolute inset-0"
           >
-            <p className="font-display text-2xl font-light leading-relaxed text-white/90 md:text-[2rem]">
+            <p className="font-display text-2xl font-medium leading-relaxed text-white/90 md:text-[2rem]">
               &ldquo;{t.quote}&rdquo;
             </p>
             <footer className="mt-8">

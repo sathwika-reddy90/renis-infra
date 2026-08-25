@@ -16,7 +16,7 @@ export default function LegalBody({ documentName }: { documentName: string }) {
         <div className="flex gap-4 border border-line bg-cream p-8">
           <FileText size={20} className="mt-0.5 flex-none text-gold" aria-hidden />
           <div>
-            <h2 className="font-display text-h2 font-light text-ink">
+            <h2 className="font-display text-h2 font-semibold text-ink">
               This document is being finalised.
             </h2>
             <p className="mt-4 text-body text-muted">

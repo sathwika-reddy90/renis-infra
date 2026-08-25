@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Renis Projects",
+  title: "Renies Projects",
 };
 
 /**
- * Placeholder route for the "Renis Projects" nav item.
+ * Placeholder route for the "Renies Projects" nav item.
  *
  * Intentionally empty — the only markup is a spacer tall enough to hold the
  * footer below the fixed header, so the page doesn't collapse under the

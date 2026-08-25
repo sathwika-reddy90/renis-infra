@@ -342,7 +342,7 @@ const emptyProperty = (): PropertyInput =>
     area: "",
     possession: "",
     reraNumber: "",
-    developer: "RENISINFRA",
+    developer: "RENIESINFRA",
     developerLogo: "",
     featuredImage: "",
     heroImages: [],

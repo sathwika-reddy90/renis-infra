@@ -83,7 +83,7 @@ function SidebarBrand() {
   return (
     <div className="flex flex-none items-center justify-between border-b border-white/10 px-5 py-5">
       <Link href="/admin/dashboard" className="font-display text-xl font-semibold tracking-[0.12em] text-white">
-        RENIS<span className="text-gold">INFRA</span>
+        RENIES<span className="text-gold">INFRA</span>
       </Link>
       <span className="border border-gold/40 px-1.5 py-0.5 text-[0.55rem] uppercase tracking-[0.2em] text-gold">
         CMS

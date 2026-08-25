@@ -94,7 +94,7 @@ export default function Dialog({
               <h2
                 id={titleId}
                 className={cn(
-                  "font-display text-h1 font-light text-ink",
+                  "font-display text-h1 font-semibold text-ink",
                   hideTitle && "sr-only",
                 )}
               >

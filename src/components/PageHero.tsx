@@ -32,7 +32,7 @@ export default function PageHero({
         transition={{ duration: 2.2, ease: easeLux }}
         className="absolute inset-0"
       >
-        <Image src={image} alt={typeof title === "string" ? title : "RENISINFRA"} fill priority sizes="100vw" className="object-cover" />
+        <Image src={image} alt={typeof title === "string" ? title : "RENIESINFRA"} fill priority sizes="100vw" className="object-cover" />
       </motion.div>
       <div className="absolute inset-0 bg-gradient-to-b from-black/65 via-black/45 to-black/75" />
 

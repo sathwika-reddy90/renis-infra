@@ -5,7 +5,7 @@ import CtaBand from "@/components/CtaBand";
 
 export const metadata: Metadata = {
   title: "About",
-  description: "The story, vision and people behind RENISINFRA's landmark luxury residences.",
+  description: "The story, vision and people behind RENIESINFRA's landmark luxury residences.",
 };
 
 export default function AboutPage() {

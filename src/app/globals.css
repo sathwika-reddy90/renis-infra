@@ -50,17 +50,17 @@
   --text-display-1: clamp(2.75rem, 1.35rem + 5.4vw, 5.5rem);
   --text-display-1--line-height: 1.02;
   --text-display-1--letter-spacing: -0.02em;
-  --text-display-1--font-weight: 300;
+  --text-display-1--font-weight: 700;
 
   --text-display-2: clamp(2.25rem, 1.4rem + 3.6vw, 4rem);
   --text-display-2--line-height: 1.06;
   --text-display-2--letter-spacing: -0.015em;
-  --text-display-2--font-weight: 300;
+  --text-display-2--font-weight: 700;
 
   --text-display-3: clamp(1.875rem, 1.3rem + 2.4vw, 3rem);
   --text-display-3--line-height: 1.1;
   --text-display-3--letter-spacing: -0.01em;
-  --text-display-3--font-weight: 300;
+  --text-display-3--font-weight: 600;
 
   --text-h1: clamp(1.75rem, 1.25rem + 2vw, 2.5rem);
   --text-h1--line-height: 1.15;
@@ -90,12 +90,12 @@
   --text-eyebrow: 0.72rem;
   --text-eyebrow--line-height: 1.4;
   --text-eyebrow--letter-spacing: 0.32em;
-  --text-eyebrow--font-weight: 500;
+  --text-eyebrow--font-weight: 600;
 
   --text-label: 0.78rem;
   --text-label--line-height: 1.4;
   --text-label--letter-spacing: 0.22em;
-  --text-label--font-weight: 500;
+  --text-label--font-weight: 600;
 
   /* ------------------------------- Spacing ------------------------------- */
   /* Vertical section rhythm — replaces hand-written `py-24 md:py-32`. */
@@ -262,13 +262,18 @@ body {
     font-family: var(--font-display), Georgia, serif;
   }
 
+  /* Script accent for the hero promo panel. */
+  .font-script {
+    font-family: var(--font-script), "Brush Script MT", cursive;
+  }
+
   /* Thin gold uppercase eyebrow label. */
   .eyebrow {
     font-size: var(--text-eyebrow);
     letter-spacing: 0.32em;
     text-transform: uppercase;
     color: var(--color-gold);
-    font-weight: 500;
+    font-weight: 600;
   }
 
   /* Scrims for text sitting over photography. */

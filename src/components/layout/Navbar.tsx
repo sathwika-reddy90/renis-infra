@@ -1,18 +1,17 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion, useScroll, useSpring } from "framer-motion";
-import { ChevronDown, Menu, X } from "lucide-react";
+import { ChevronDown, Menu, Phone, X } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { startLenis, stopLenis } from "@/lib/lenis";
 import { easeLux } from "@/lib/motion";
 import Container from "@/components/ui/Container";
 import Button from "@/components/ui/Button";
 import { useScheduleVisit } from "@/components/ScheduleVisitContext";
-import { useProjects, useSiteContent, useSiteSettings } from "@/lib/query/hooks";
+import { useProjects, useSiteContent } from "@/lib/query/hooks";
 import type { Project } from "@/types/project";
 
 /** Status buckets for the projects mega-menu, in sales-funnel order. */
@@ -22,17 +21,44 @@ const MENU_GROUPS = ["New Launch", "Now Selling", "Ready to Move", "Coming Soon"
 const FALLBACK_NAV = [
   { label: "Home", href: "/" },
   { label: "Projects", href: "/projects" },
-  { label: "Renis Projects", href: "/renis-projects" },
+  { label: "Renies Projects", href: "/renis-projects" },
   { label: "About", href: "/about" },
   { label: "Media", href: "/gallery" },
   { label: "Contact", href: "/contact" },
 ];
 
-const RENIS_PROJECTS = { label: "Renis Projects", href: "/renis-projects" };
+const RENIS_PROJECTS = { label: "Renies Projects", href: "/renis-projects" };
+
+/** WhatsApp deep link built from the site phone number. */
+const WHATSAPP_HREF = "https://wa.me/919000012345";
+
+/* Inline WhatsApp glyph — lucide ships no brand icons. */
+function WhatsAppIcon({ size = 16 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <path d="M12.04 2c-5.46 0-9.9 4.44-9.9 9.9 0 1.75.46 3.45 1.32 4.95L2 22l5.3-1.39a9.87 9.87 0 0 0 4.74 1.21c5.46 0 9.9-4.44 9.9-9.9 0-2.65-1.03-5.14-2.9-7.01A9.83 9.83 0 0 0 12.04 2Zm0 18.15c-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.26 8.26 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.25-8.24 2.2 0 4.27.86 5.82 2.42a8.18 8.18 0 0 1 2.41 5.83c0 4.54-3.7 8.23-8.23 8.23Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.12-.14.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.22.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z" />
+    </svg>
+  );
+}
+
+/**
+ * Header presentation of the CMS nav: the logo covers Home and the CONTACT US
+ * button covers Contact, so both drop out of the link row; "Renies Projects"
+ * reads as "Renies Assist" per the header design. Hrefs are untouched.
+ */
+function toHeaderNav(links: { label: string; href: string }[]) {
+  return links
+    .filter((l) => l.href !== "/" && l.href !== "/contact")
+    .map((l) => {
+      if (l.href === "/renis-projects") return { ...l, label: "Renies Assist" };
+      if (l.href === "/about") return { ...l, label: "About Us" };
+      return l;
+    });
+}
 
 /**
  * The nav is CMS-managed, so a code-only entry would be invisible the moment
- * `content.nav` loads. This slots "Renis Projects" in right after "Projects"
+ * `content.nav` loads. This slots "Renies Projects" in right after "Projects"
  * whichever list is in play, and no-ops once the item is added in the CMS —
  * at which point this helper can go.
  */
@@ -45,13 +71,11 @@ function withRenisProjects(links: { label: string; href: string }[]) {
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
-  const [overDarkHero, setOverDarkHero] = useState(false);
   const [open, setOpen] = useState(false);
   const [megaOpen, setMegaOpen] = useState(false);
   const [trackedPath, setTrackedPath] = useState<string | null>(null);
   const pathname = usePathname();
   const { openVisitModal } = useScheduleVisit();
-  const { data: settings } = useSiteSettings();
   const { data: content } = useSiteContent();
   const { data: projects } = useProjects();
   const navLinks = withRenisProjects(content?.nav?.length ? content.nav : FALLBACK_NAV);
@@ -76,40 +100,9 @@ export default function Navbar() {
    */
   if (trackedPath !== pathname) {
     setTrackedPath(pathname);
-    setOverDarkHero(false);
     setOpen(false);
     setMegaOpen(false);
   }
-
-  /*
-   * Nav links are white, so a transparent header is only legible over a dark
-   * hero. Pages opt in by marking their hero `data-hero-dark`; anything else
-   * keeps the solid treatment (the default above). Previously the links were
-   * unconditionally white and survived only because every page happened to
-   * have a dark hero.
-   */
-  useEffect(() => {
-    const heroes = Array.from(document.querySelectorAll("[data-hero-dark]"));
-    if (heroes.length === 0) return;
-
-    // A page can have more than one dark panel — the homepage has the opening
-    // curtain and the pinned reel — so track how many currently sit under the
-    // header rather than watching only the first.
-    const active = new Set<Element>();
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) active.add(entry.target);
-          else active.delete(entry.target);
-        }
-        setOverDarkHero(active.size > 0);
-      },
-      // Only the band directly beneath the header matters.
-      { rootMargin: "-80px 0px -100% 0px", threshold: 0 },
-    );
-    heroes.forEach((hero) => observer.observe(hero));
-    return () => observer.disconnect();
-  }, [pathname]);
 
   // Focus trap + Escape for the mobile drawer.
   useEffect(() => {
@@ -130,7 +123,6 @@ export default function Navbar() {
   }, [open]);
 
   const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
-  const solid = scrolled || open || megaOpen || !overDarkHero;
 
   const grouped = MENU_GROUPS.map((status) => ({
     status,
@@ -159,37 +151,38 @@ export default function Navbar() {
       <header
         onMouseLeave={scheduleCloseMega}
         className={cn(
-          "fixed inset-x-0 top-0 transition-all duration-[var(--duration-slow)] ease-[var(--ease-lux)]",
-          // Height tracks scroll only. The dark-hero check resolves one frame
-          // after mount, so letting it drive padding too would jump the layout.
-          scrolled || open ? "py-3" : "py-6",
-          solid
-            ? "bg-ink/95 shadow-[0_1px_0_0_rgba(255,255,255,0.08)] backdrop-blur-md"
-            : "bg-transparent",
+          // Always the same translucent black shade — over the hero and over
+          // light content alike, scrolled or not.
+          "fixed inset-x-0 top-0 bg-black/35 backdrop-blur-md [font-family:var(--font-nav),sans-serif] transition-shadow duration-[var(--duration-slow)] ease-[var(--ease-lux)]",
+          scrolled && "shadow-[0_1px_0_0_rgba(255,255,255,0.08)]",
         )}
         style={{ zIndex: "var(--z-header)" }}
       >
-        <Container className="flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3" aria-label="RENISINFRA home">
-            {settings?.logo ? (
-              <Image
-                src={settings.logo}
-                alt={settings.siteName || "RENISINFRA"}
-                width={160}
-                height={40}
-                priority
-                className="h-9 w-auto object-contain"
-              />
-            ) : (
-              <span className="font-display text-2xl font-semibold tracking-[0.12em] text-white">
-                RENIS<span className="text-gold">INFRA</span>
+        <Container className="flex h-[4.5rem] items-center justify-between lg:h-20">
+          {/* Compact header groups the menu toggle with the logo on the left,
+              mirroring the reference layout. */}
+          <div className="flex items-center gap-4">
+            <button
+              type="button"
+              aria-label={open ? "Close menu" : "Open menu"}
+              aria-expanded={open}
+              aria-controls="mobile-nav"
+              onClick={() => setOpen((o) => !o)}
+              className="text-white lg:hidden"
+            >
+              {open ? <X size={26} aria-hidden /> : <Menu size={26} aria-hidden />}
+            </button>
+            <Link href="/" className="flex items-center gap-3" aria-label="RENIESINFRA home">
+              <span className="text-[1.55rem] font-extrabold italic leading-none tracking-tight lg:text-[1.8rem]">
+                <span className="text-[#e63329]">RENIES</span>{" "}
+                <span className="text-white">INFRA</span>
               </span>
-            )}
-          </Link>
+            </Link>
+          </div>
 
           {/* Desktop nav */}
-          <nav aria-label="Main" className="hidden items-center gap-9 lg:flex">
-            {navLinks.map((link) => {
+          <nav aria-label="Main" className="hidden items-center lg:flex">
+            {toHeaderNav(navLinks).map((link) => {
               const isProjects = link.href === "/projects";
               return (
                 <div
@@ -201,25 +194,16 @@ export default function Navbar() {
                     href={link.href}
                     aria-expanded={isProjects && grouped.length > 0 ? megaOpen : undefined}
                     className={cn(
-                      "group relative flex items-center gap-1.5 text-[0.82rem] tracking-[0.06em] text-white/85 transition-colors duration-[var(--duration-base)] hover:text-white",
-                      isActive(link.href) && "text-white",
+                      "group relative flex items-center gap-1.5 px-[13px] py-[9px] text-[13px] font-medium uppercase tracking-[1.4px] text-white transition-opacity duration-[var(--duration-base)] hover:opacity-80",
                     )}
                   >
                     {link.label}
-                    {isProjects && grouped.length > 0 && (
-                      <ChevronDown
-                        size={13}
-                        aria-hidden
-                        className={cn(
-                          "transition-transform duration-[var(--duration-base)]",
-                          megaOpen && "rotate-180",
-                        )}
-                      />
-                    )}
-                    <span
+                    <ChevronDown
+                      size={13}
+                      aria-hidden
                       className={cn(
-                        "absolute -bottom-1.5 left-0 h-px bg-gold transition-all duration-[var(--duration-base)] ease-[var(--ease-lux)]",
-                        isActive(link.href) ? "w-full" : "w-0 group-hover:w-full",
+                        "transition-transform duration-[var(--duration-base)]",
+                        isProjects && megaOpen && "rotate-180",
                       )}
                     />
                   </Link>
@@ -229,25 +213,43 @@ export default function Navbar() {
           </nav>
 
           <div className="hidden items-center gap-3 lg:flex">
-            <Button href="/contact" variant="outline" size="sm">
+            <Link
+              href="/contact"
+              className="inline-flex h-10 items-center gap-2 rounded-none border border-white px-[19px] text-[13px] font-medium uppercase tracking-[1.4px] text-white transition-colors duration-[var(--duration-base)] hover:bg-white/10"
+            >
+              <Phone size={14} aria-hidden />
               Contact Us
-            </Button>
-            <Button onClick={openVisitModal} variant="gold" size="sm">
-              Schedule a Visit
-            </Button>
+            </Link>
+            <a
+              href={WHATSAPP_HREF}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex h-10 items-center gap-2 rounded-none border border-[#24a052] bg-[#24a052] px-[19px] text-[13px] font-medium uppercase tracking-[1.4px] text-white transition-colors duration-[var(--duration-base)] hover:bg-[#1e8a45]"
+            >
+              <WhatsAppIcon size={16} />
+              WhatsApp
+            </a>
+            <span className="ml-4 text-[13px] font-medium uppercase tracking-[1.4px] text-white">
+              EN
+            </span>
           </div>
 
-          {/* Mobile toggle */}
-          <button
-            type="button"
-            aria-label={open ? "Close menu" : "Open menu"}
-            aria-expanded={open}
-            aria-controls="mobile-nav"
-            onClick={() => setOpen((o) => !o)}
-            className="text-white lg:hidden"
-          >
-            {open ? <X size={26} aria-hidden /> : <Menu size={26} aria-hidden />}
-          </button>
+          {/* Compact header right side: call + WhatsApp icons, per the
+              reference layout. */}
+          <div className="flex items-center gap-5 lg:hidden">
+            <a href="tel:+919000012345" aria-label="Call us" className="text-white">
+              <Phone size={20} aria-hidden />
+            </a>
+            <a
+              href={WHATSAPP_HREF}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Chat on WhatsApp"
+              className="text-[#3fae4c]"
+            >
+              <WhatsAppIcon size={22} />
+            </a>
+          </div>
         </Container>
 
         {/* Projects mega-menu */}
@@ -330,7 +332,7 @@ export default function Navbar() {
                     href={link.href}
                     onClick={() => setOpen(false)}
                     className={cn(
-                      "border-b border-white/10 py-3 text-sm tracking-[0.06em] transition-colors",
+                      "border-b border-white/10 py-3 text-sm font-medium tracking-[0.06em] transition-colors",
                       isActive(link.href) ? "text-gold" : "text-white/80",
                     )}
                   >

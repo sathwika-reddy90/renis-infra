@@ -61,9 +61,9 @@ export default function Founder() {
 
                   <div className="flex flex-col justify-center bg-white p-8 md:p-10 lg:p-12">
                     <span className="text-[15px] font-medium uppercase tracking-[0.16em] text-muted md:text-[17px]">
-                      Founder &amp; Chairman of RENISINFRA
+                      Founder &amp; Chairman of RENIESINFRA
                     </span>
-                    <h2 className="mt-6 font-display text-4xl font-light uppercase tracking-[0.02em] text-gold md:text-5xl">
+                    <h2 className="mt-6 font-display text-4xl font-bold uppercase tracking-[0.02em] text-gold md:text-5xl">
                       {founder.name}
                     </h2>
                     <button

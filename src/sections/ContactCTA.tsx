@@ -79,7 +79,7 @@ export default function ContactCTA() {
         <div className="relative min-h-[360px] lg:min-h-full">
           <Image
             src={CONTACT_IMAGE}
-            alt="A RENISINFRA residence"
+            alt="A RENIESINFRA residence"
             fill
             sizes="(max-width: 1024px) 100vw, 50vw"
             className="object-cover"

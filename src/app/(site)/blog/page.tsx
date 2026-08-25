@@ -3,7 +3,7 @@ import BlogListingContent from "@/components/BlogListingContent";
 
 export const metadata: Metadata = {
   title: "Blog",
-  description: "News, launches and insights from RENISINFRA.",
+  description: "News, launches and insights from RENIESINFRA.",
 };
 
 export default function BlogPage() {

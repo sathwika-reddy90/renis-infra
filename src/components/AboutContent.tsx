@@ -50,7 +50,7 @@ export default function AboutContent() {
             <Reveal className="relative aspect-[4/5] overflow-hidden">
               <Image
                 src={STORY_IMAGE}
-                alt="RENISINFRA craftsmanship"
+                alt="RENIESINFRA craftsmanship"
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover"
@@ -108,7 +108,7 @@ export default function AboutContent() {
             eyebrow="Why Choose Us"
             title={
               <>
-                The RENISINFRA <span className="italic text-gold">difference</span>
+                The RENIESINFRA <span className="italic text-gold">difference</span>
               </>
             }
           />
@@ -132,7 +132,7 @@ export default function AboutContent() {
           <div className="grid grid-cols-2 gap-y-12 lg:grid-cols-4">
             {about?.stats.map((item) => (
               <Reveal key={item.label} className="text-center">
-                <div className="font-display text-display-2 font-light text-white">
+                <div className="font-display text-display-2 text-white">
                   <StatCounter value={item.stat} />
                 </div>
                 <p className="mt-3 text-[0.75rem] uppercase tracking-[0.18em] text-white/60">

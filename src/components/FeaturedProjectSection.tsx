@@ -51,7 +51,7 @@ export default function FeaturedProjectSection() {
                     </span>
                   </Reveal>
                   <Reveal delay={0.05}>
-                    <h2 className="mt-5 font-display text-4xl font-light leading-[1.08] md:text-5xl">
+                    <h2 className="mt-5 font-display text-4xl font-bold leading-[1.08] md:text-5xl">
                       {featured.title}
                     </h2>
                   </Reveal>

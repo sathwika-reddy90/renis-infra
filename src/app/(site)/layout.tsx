@@ -1,6 +1,7 @@
 import { HydrationBoundary } from "@tanstack/react-query";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import FloatingChat from "@/components/layout/FloatingChat";
 import SmoothScroll from "@/components/SmoothScroll";
 import { ScheduleVisitProvider } from "@/components/ScheduleVisitContext";
 import { prefetchSiteData } from "@/lib/query/prefetch";
@@ -20,7 +21,7 @@ async function organizationJsonLd() {
   return {
     "@context": "https://schema.org",
     "@type": "RealEstateAgent",
-    name: settings?.siteName ?? "RENISINFRA",
+    name: settings?.siteName ?? "RENIESINFRA",
     url: SITE_URL,
     ...(settings?.logo ? { logo: absoluteUrl(settings.logo) } : {}),
     ...(settings?.phone ? { telephone: settings.phone } : {}),
@@ -60,6 +61,7 @@ export default async function SiteLayout({
           {children}
         </main>
         <Footer />
+        <FloatingChat />
       </ScheduleVisitProvider>
     </HydrationBoundary>
   );

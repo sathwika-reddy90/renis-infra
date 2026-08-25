@@ -3,7 +3,7 @@ import ContactPageContent from "@/components/ContactPageContent";
 
 export const metadata: Metadata = {
   title: "Contact",
-  description: "Speak with a RENISINFRA residence advisor and schedule your private viewing.",
+  description: "Speak with a RENIESINFRA residence advisor and schedule your private viewing.",
 };
 
 export default function ContactPage() {

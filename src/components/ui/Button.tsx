@@ -29,7 +29,7 @@ type ButtonProps = {
 
 const base =
   "group relative inline-flex items-center justify-center gap-2 overflow-hidden " +
-  "font-medium uppercase tracking-[0.22em] " +
+  "font-semibold uppercase tracking-[0.22em] " +
   "transition-colors duration-[var(--duration-slow)] ease-[var(--ease-lux)] " +
   "cursor-pointer select-none disabled:cursor-not-allowed disabled:opacity-55";
 

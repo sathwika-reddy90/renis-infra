@@ -69,7 +69,7 @@ function Article({ post }: { post: BlogPost }) {
                   className={
                     // Lead paragraph gets editorial emphasis.
                     i === 0
-                      ? "font-display text-h3 font-light leading-relaxed text-ink"
+                      ? "font-display text-h3 font-medium leading-relaxed text-ink"
                       : "text-body-lg text-ink/85"
                   }
                 >

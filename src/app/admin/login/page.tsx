@@ -37,7 +37,7 @@ export default function LoginPage() {
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
           <span className="font-display text-3xl font-semibold tracking-[0.12em] text-white">
-            RENIS<span className="text-gold">INFRA</span>
+            RENIES<span className="text-gold">INFRA</span>
           </span>
           <p className="mt-2 text-[0.62rem] uppercase tracking-[0.3em] text-white/40">Admin CMS</p>
         </div>

@@ -9,7 +9,7 @@ import Skeleton from "@/components/ui/Skeleton";
 
 export const metadata: Metadata = {
   title: "Projects",
-  description: "Explore the RENISINFRA portfolio of landmark luxury residences across Hyderabad.",
+  description: "Explore the RENIESINFRA portfolio of landmark luxury residences across Hyderabad.",
 };
 
 function ExplorerFallback() {

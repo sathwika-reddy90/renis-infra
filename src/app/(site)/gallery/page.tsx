@@ -8,7 +8,7 @@ import Skeleton from "@/components/ui/Skeleton";
 
 export const metadata: Metadata = {
   title: "Gallery",
-  description: "Spaces, finishes and moments from across the RENISINFRA collection.",
+  description: "Spaces, finishes and moments from across the RENIESINFRA collection.",
 };
 
 function GalleryFallback() {
@@ -37,7 +37,7 @@ export default function GalleryPage() {
       <PageHero
         eyebrow="The Portfolio"
         title={<>A Study in <span className="italic text-gold-soft">Detail</span></>}
-        subtitle="Interiors, architecture and amenities from across the RENISINFRA collection."
+        subtitle="Interiors, architecture and amenities from across the RENIESINFRA collection."
         image="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2000&q=80"
         breadcrumb={[{ label: "Home", href: "/" }, { label: "Gallery" }]}
       />

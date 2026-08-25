@@ -5,7 +5,7 @@ import LegalBody from "@/components/LegalBody";
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description:
-    "How RENISINFRA collects, uses and safeguards the personal information you share with us.",
+    "How RENIESINFRA collects, uses and safeguards the personal information you share with us.",
 };
 
 export default function PrivacyPage() {

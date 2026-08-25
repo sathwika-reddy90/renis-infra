@@ -4,7 +4,7 @@ import AuthGate from "@/components/admin/AuthGate";
 import { ToastProvider } from "@/components/admin/Toast";
 
 export const metadata: Metadata = {
-  title: "Admin CMS — RENISINFRA",
+  title: "Admin CMS — RENIESINFRA",
   robots: { index: false, follow: false },
 };
 

@@ -45,18 +45,18 @@ export default function Footer() {
         <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-6">
           {/* Brand */}
           <div className="sm:col-span-2">
-            <Link href="/" className="inline-flex items-center" aria-label="RENISINFRA home">
+            <Link href="/" className="inline-flex items-center" aria-label="RENIESINFRA home">
               {data?.logo ? (
                 <Image
                   src={data.logo}
-                  alt={data.siteName || "RENISINFRA"}
+                  alt={data.siteName || "RENIESINFRA"}
                   width={200}
                   height={48}
                   className="h-11 w-auto object-contain"
                 />
               ) : (
                 <span className="font-display text-3xl font-semibold tracking-[0.12em]">
-                  RENIS<span className="text-gold">INFRA</span>
+                  RENIES<span className="text-gold">INFRA</span>
                 </span>
               )}
             </Link>
@@ -86,7 +86,7 @@ export default function Footer() {
 
           {/* Projects — live from the CMS. */}
           <div>
-            <h4 className="text-[0.72rem] uppercase tracking-[0.24em] text-gold">Projects</h4>
+            <h4 className="text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-gold">Projects</h4>
             <ul className="mt-5 space-y-3">
               <li>
                 <Link
@@ -111,7 +111,7 @@ export default function Footer() {
 
           {/* Media */}
           <div>
-            <h4 className="text-[0.72rem] uppercase tracking-[0.24em] text-gold">Explore</h4>
+            <h4 className="text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-gold">Explore</h4>
             <ul className="mt-5 space-y-3">
               {MEDIA_LINKS.map((link) => (
                 <li key={link.label}>
@@ -129,7 +129,7 @@ export default function Footer() {
           {/* Locations — from /admin/content → Offices. */}
           {offices.length > 0 && (
             <div>
-              <h4 className="text-[0.72rem] uppercase tracking-[0.24em] text-gold">Locations</h4>
+              <h4 className="text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-gold">Locations</h4>
               <ul className="mt-5 space-y-3">
                 {offices.map((office) => (
                   <li key={office.city}>
@@ -147,7 +147,7 @@ export default function Footer() {
 
           {/* Contact */}
           <div>
-            <h4 className="text-[0.72rem] uppercase tracking-[0.24em] text-gold">Get in Touch</h4>
+            <h4 className="text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-gold">Get in Touch</h4>
             <ul className="mt-5 space-y-4 text-body-sm text-white/65">
               <li className="flex gap-3">
                 <MapPin size={15} className="mt-1 flex-none text-gold" aria-hidden />
@@ -178,7 +178,7 @@ export default function Footer() {
         {/* Latest launches strip — hidden entirely when nothing is launching. */}
         {launches.length > 0 && (
           <div className="mt-14 border-t border-white/10 pt-10">
-            <h4 className="text-[0.72rem] uppercase tracking-[0.24em] text-gold">
+            <h4 className="text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-gold">
               Latest Launches
             </h4>
             <div className="mt-5 flex flex-wrap gap-x-10 gap-y-3">
@@ -201,7 +201,7 @@ export default function Footer() {
         )}
 
         <div className="mt-14 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-8 text-[0.78rem] text-white/45 md:flex-row">
-          <p>© {new Date().getFullYear()} {data?.siteName ?? "RENISINFRA"}. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} {data?.siteName ?? "RENIESINFRA"}. All rights reserved.</p>
           <div className="flex gap-6">
             {LEGAL_LINKS.map((l) => (
               <Link key={l.href} href={l.href} className="transition-colors hover:text-white">

@@ -264,7 +264,7 @@ export default function ProjectsExplorer() {
               </div>
             ) : total === 0 ? (
               <div className="mt-16 text-center">
-                <p className="font-display text-h2 font-light text-ink">No matching residences.</p>
+                <p className="font-display text-h2 font-semibold text-ink">No matching residences.</p>
                 <p className="mx-auto mt-3 max-w-sm text-body text-muted">
                   Try widening your filters, or speak with an advisor and we&apos;ll curate a
                   shortlist for you.

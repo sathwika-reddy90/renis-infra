@@ -1,12 +1,11 @@
 "use client";
 
+import Link from "next/link";
+import { ExternalLink } from "lucide-react";
 import Section from "@/components/ui/Section";
 import Reveal from "@/components/ui/Reveal";
-import Button from "@/components/ui/Button";
 import Skeleton from "@/components/ui/Skeleton";
-import { ParallaxImage } from "@/components/ui/Parallax";
 import { useScheduleVisit } from "@/components/ScheduleVisitContext";
-import { imageReveal } from "@/lib/motion";
 import { useSiteContent } from "@/lib/query/hooks";
 
 /** Latest-launch band. Copy is CMS-managed via /admin/content → Launch. */
@@ -17,7 +16,7 @@ export default function LaunchHighlight() {
 
   if (isPending) {
     return (
-      <Section tone="light" rhythm="md">
+      <Section tone="transparent" rhythm="md">
         <div className="mx-auto max-w-2xl space-y-5 text-center">
           <Skeleton className="mx-auto h-4 w-32" />
           <Skeleton className="mx-auto h-12 w-2/3" />
@@ -30,52 +29,41 @@ export default function LaunchHighlight() {
   if (!launch) return null;
 
   return (
-    <Section id="launch-highlight" tone="light" rhythm="md" containerClassName="text-center">
+    <Section
+      id="launch-highlight"
+      tone="transparent"
+      rhythm="none"
+      className="py-24"
+      containerClassName="text-center"
+    >
       <Reveal>
-        <span className="eyebrow flex items-center justify-center gap-3">
-          <span className="h-px w-8 bg-gold" />
+        <span className="block text-[18px] font-medium uppercase tracking-[2.88px] text-[#4a4b4b] [font-family:var(--font-nav),sans-serif]">
           {launch.eyebrow}
-          <span className="h-px w-8 bg-gold" />
         </span>
       </Reveal>
       <Reveal delay={0.05}>
-        <h2 className="mx-auto mt-6 max-w-2xl font-display text-display-2 text-ink">
-          {launch.name}
+        <h2 className="mx-auto mt-7 text-[48px] font-normal uppercase leading-[1.25] tracking-[4.8px] text-[#bda588] [font-family:var(--font-launch),sans-serif] max-md:text-[32px] max-md:tracking-[3px]">
+          Greenz by Renies
         </h2>
       </Reveal>
-      <Reveal delay={0.1}>
-        <p className="mt-3 text-[0.85rem] uppercase tracking-[0.2em] text-muted">
-          {launch.location}
-        </p>
-      </Reveal>
-      <Reveal delay={0.15}>
-        <p className="mx-auto mt-6 max-w-xl text-body-lg text-muted">{launch.description}</p>
-      </Reveal>
       <Reveal delay={0.2}>
-        <div className="mt-10 flex flex-wrap justify-center gap-4">
-          <Button href={launch.discoverHref} variant="gold">
+        <div className="mt-12 flex flex-wrap items-center justify-center gap-5 [font-family:var(--font-nav),sans-serif]">
+          <Link
+            href={launch.discoverHref}
+            className="inline-flex h-[59px] min-w-[233px] items-center justify-center gap-2.5 rounded-none bg-[#555555] px-8 text-[14px] font-medium uppercase tracking-[1.4px] text-white transition-colors duration-[var(--duration-base)] hover:bg-[#444444]"
+          >
+            <ExternalLink size={16} aria-hidden />
             Discover
-          </Button>
-          <Button onClick={openVisitModal} variant="ghost">
+          </Link>
+          <button
+            type="button"
+            onClick={openVisitModal}
+            className="inline-flex h-[59px] min-w-[294px] cursor-pointer items-center justify-center rounded-none border border-[#bda588] bg-[#bda588] px-8 text-[14px] font-medium uppercase tracking-[1.4px] text-white transition-colors duration-[var(--duration-base)] hover:bg-[#ac9376]"
+          >
             Register Interest
-          </Button>
+          </button>
         </div>
       </Reveal>
-
-      {/* Cinematic strip bridging this band into the pinned reel below. The
-          image has always been editable at /admin/content → Launch; nothing
-          rendered it until now. */}
-      {launch.image && (
-        <Reveal delay={0.25} variants={imageReveal} className="mt-16 md:mt-20">
-          <ParallaxImage
-            src={launch.image}
-            alt={launch.name}
-            speed={14}
-            sizes="(max-width: 768px) 100vw, 90vw"
-            className="aspect-[16/9] w-full md:aspect-[21/8]"
-          />
-        </Reveal>
-      )}
     </Section>
   );
 }

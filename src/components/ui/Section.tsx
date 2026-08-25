@@ -1,7 +1,7 @@
 import Container from "@/components/ui/Container";
 import { cn } from "@/lib/cn";
 
-type Tone = "light" | "sand" | "cream" | "ink";
+type Tone = "light" | "sand" | "cream" | "ink" | "transparent";
 type Rhythm = "sm" | "md" | "lg" | "none";
 
 const TONE: Record<Tone, string> = {
@@ -9,6 +9,9 @@ const TONE: Record<Tone, string> = {
   sand: "bg-sand text-ink",
   cream: "bg-cream text-ink",
   ink: "bg-ink text-white",
+  // No background of its own — the section shows whatever the page paints
+  // behind it.
+  transparent: "bg-transparent text-ink",
 };
 
 const RHYTHM: Record<Rhythm, string> = {

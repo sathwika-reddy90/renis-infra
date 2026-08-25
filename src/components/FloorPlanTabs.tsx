@@ -73,7 +73,7 @@ export default function FloorPlanTabs({
           </div>
 
           <div>
-            <h3 className="font-display text-display-3 font-light text-ink">{plan.type}</h3>
+            <h3 className="font-display text-display-3 text-ink">{plan.type}</h3>
 
             <div className="mt-3 flex flex-wrap items-baseline gap-x-6 gap-y-2">
               {plan.area && (

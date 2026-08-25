@@ -64,7 +64,7 @@ export default function ScheduleVisitModal({
           <span className="flex h-12 w-12 items-center justify-center rounded-full bg-gold text-white">
             <Check size={22} aria-hidden />
           </span>
-          <h3 className="font-display text-display-3 font-light">Visit requested.</h3>
+          <h3 className="font-display text-display-3">Visit requested.</h3>
           <p className="max-w-sm text-body text-muted">
             A residence advisor will confirm your preferred slot shortly.
           </p>
@@ -76,7 +76,7 @@ export default function ScheduleVisitModal({
         <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-6">
           <div>
             <span className="eyebrow">Private Viewing</span>
-            <h3 className="mt-2 font-display text-display-3 font-light">Schedule a Visit</h3>
+            <h3 className="mt-2 font-display text-display-3">Schedule a Visit</h3>
           </div>
 
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">

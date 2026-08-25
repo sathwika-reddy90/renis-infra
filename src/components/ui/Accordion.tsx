@@ -47,7 +47,7 @@ export default function Accordion({
                 onClick={() => setOpen(active ? null : i)}
                 className="flex w-full items-center justify-between gap-6 py-6 text-left"
               >
-                <span className="font-display text-h3 font-light text-ink">{item.question}</span>
+                <span className="font-display text-h3 font-medium text-ink">{item.question}</span>
                 {variant === "circle" ? (
                   <motion.span
                     animate={{ rotate: active ? 45 : 0 }}

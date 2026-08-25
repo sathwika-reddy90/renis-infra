@@ -35,7 +35,7 @@ export default function LeadershipGrid() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                 <div className="absolute inset-x-0 bottom-0 p-5 text-white">
-                  <p className="font-display text-xl font-light">{p.name}</p>
+                  <p className="font-display text-xl font-medium">{p.name}</p>
                   <p className="mt-1 text-[0.68rem] uppercase tracking-[0.18em] text-gold-soft">{p.role}</p>
                 </div>
               </div>
