@@ -20,7 +20,6 @@ import Container from "@/components/ui/Container";
 import Section from "@/components/ui/Section";
 import SectionHeading from "@/components/ui/SectionHeading";
 import Button from "@/components/ui/Button";
-import Badge from "@/components/ui/Badge";
 import Card from "@/components/ui/Card";
 import Dialog from "@/components/ui/Dialog";
 import Lightbox from "@/components/ui/Lightbox";
@@ -94,46 +93,12 @@ function ProjectHero({
           transition={{ duration: 0.9, ease: easeLux, delay: 0.2 }}
           className="max-w-3xl"
         >
-          <div className="flex flex-wrap items-center gap-3">
-            <Badge tone="gold">{property.status}</Badge>
-            {property.certifications.slice(0, 2).map((c) => (
-              <Badge key={c} tone="light">
-                {c}
-              </Badge>
-            ))}
-          </div>
-
-          {property.subtitle && <p className="eyebrow mt-6 text-gold-soft">{property.subtitle}</p>}
-          <h1 className="mt-3 font-display text-display-1 text-white">{property.title}</h1>
-          <p className="mt-4 text-body-lg text-white/80">
-            {property.location}
-            {property.city && `, ${property.city}`}
-          </p>
-
-          <div className="mt-8 flex flex-wrap items-center gap-x-10 gap-y-4">
-            {property.priceLabel && (
-              <div>
-                <p className="text-[0.66rem] uppercase tracking-[0.22em] text-white/55">Price</p>
-                <p className="mt-1 font-display text-h2 text-gold-soft">{property.priceLabel}</p>
-              </div>
-            )}
-            {property.bedrooms && (
-              <div>
-                <p className="text-[0.66rem] uppercase tracking-[0.22em] text-white/55">
-                  Configuration
-                </p>
-                <p className="mt-1 font-display text-h2 text-white">{property.bedrooms}</p>
-              </div>
-            )}
-            {property.possession && (
-              <div>
-                <p className="text-[0.66rem] uppercase tracking-[0.22em] text-white/55">
-                  Possession
-                </p>
-                <p className="mt-1 font-display text-h2 text-white">{property.possession}</p>
-              </div>
-            )}
-          </div>
+          {/* The hero shows only the photograph and the action buttons — all
+              project information (name, location, price, configuration,
+              possession, status) lives in the sections below. The title stays
+              in the DOM as the page's h1 for SEO/screen readers, visually
+              hidden. */}
+          <h1 className="sr-only">{property.title}</h1>
 
           <div className="mt-10 flex flex-wrap gap-3">
             <Button variant="gold" onClick={onEnquire}>
@@ -287,7 +252,10 @@ export default function PropertyDetailContent({ slug }: { slug: string }) {
       <StickyNav items={navItems} />
 
       {/* Overview */}
-      <Section id="overview" tone="light" rhythm="md">
+      {/* Overview → Highlights → Plans sit tighter than the page's default
+          rhythm: the stats grid, highlight cards and floor plans read as one
+          continuous run of project facts. */}
+      <Section id="overview" tone="light" rhythm="none" className="pt-section-sm pb-10">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-5">
             <span className="eyebrow">The Address</span>
@@ -321,7 +289,7 @@ export default function PropertyDetailContent({ slug }: { slug: string }) {
 
       {/* Highlights */}
       {property.highlights.length > 0 && (
-        <Section id="highlights" tone="cream" rhythm="md">
+        <Section id="highlights" tone="cream" rhythm="none" className="pt-10 pb-10">
           <SectionHeading eyebrow="What Sets It Apart" title="Highlights" align="center" />
           <motion.div
             variants={staggerFast}
@@ -348,7 +316,7 @@ export default function PropertyDetailContent({ slug }: { slug: string }) {
 
       {/* Floor plans */}
       {property.floorPlans.length > 0 && (
-        <Section id="plans" tone="light" rhythm="md">
+        <Section id="plans" tone="light" rhythm="none" className="pt-10 pb-section-sm">
           <SectionHeading
             eyebrow="Configurations"
             title="Floor Plans"
@@ -361,7 +329,7 @@ export default function PropertyDetailContent({ slug }: { slug: string }) {
 
       {/* Amenities */}
       {property.amenities.length > 0 && (
-        <Section id="amenities" tone="ink" rhythm="md">
+        <Section id="amenities" tone="ink" rhythm="sm">
           <SectionHeading eyebrow="The Lifestyle" title="Amenities" align="center" invert />
           <motion.ul
             variants={staggerFast}
@@ -386,7 +354,7 @@ export default function PropertyDetailContent({ slug }: { slug: string }) {
 
       {/* Gallery */}
       {property.gallery.length > 0 && (
-        <Section id="gallery" tone="light" rhythm="md">
+        <Section id="gallery" tone="light" rhythm="sm">
           <SectionHeading eyebrow="Imagery" title="Gallery" align="center" />
           <div className="mt-14 grid grid-cols-2 gap-3 md:grid-cols-3 lg:gap-4">
             {property.gallery.map((src, i) => (
@@ -416,7 +384,7 @@ export default function PropertyDetailContent({ slug }: { slug: string }) {
 
       {/* Master plan */}
       {property.masterLegend.length > 0 && (
-        <Section tone="cream" rhythm="md">
+        <Section tone="cream" rhythm="sm">
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
             <div className="lg:col-span-7">
               <button
@@ -454,7 +422,7 @@ export default function PropertyDetailContent({ slug }: { slug: string }) {
 
       {/* Specifications — in the model all along, never rendered before. */}
       {property.specifications.length > 0 && (
-        <Section id="specs" tone="light" rhythm="md">
+        <Section id="specs" tone="light" rhythm="sm">
           <SectionHeading eyebrow="Build Quality" title="Specifications" align="left" />
           <div className="mt-12 grid grid-cols-1 gap-x-16 gap-y-10 md:grid-cols-2">
             {property.specifications.map((spec) => (
@@ -478,7 +446,7 @@ export default function PropertyDetailContent({ slug }: { slug: string }) {
 
       {/* Payment plans — likewise. */}
       {property.paymentPlans.length > 0 && (
-        <Section id="payment" tone="cream" rhythm="md">
+        <Section id="payment" tone="cream" rhythm="sm">
           <SectionHeading eyebrow="Ownership" title="Payment Plans" align="center" />
           <div className="mt-14 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {property.paymentPlans.map((plan) => (
@@ -495,7 +463,7 @@ export default function PropertyDetailContent({ slug }: { slug: string }) {
       )}
 
       {/* Location */}
-      <Section id="location" tone="light" rhythm="md">
+      <Section id="location" tone="light" rhythm="sm">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-7">
             <MapPlaceholder
@@ -532,7 +500,7 @@ export default function PropertyDetailContent({ slug }: { slug: string }) {
 
       {/* FAQs */}
       {faqs.length > 0 && (
-        <Section tone="cream" rhythm="md">
+        <Section tone="cream" rhythm="sm">
           <SectionHeading eyebrow="Questions" title="Frequently Asked" align="center" />
           <div className="mx-auto mt-12 max-w-3xl">
             <Accordion items={faqs} />
@@ -541,7 +509,7 @@ export default function PropertyDetailContent({ slug }: { slug: string }) {
       )}
 
       {/* Enquiry */}
-      <Section id="enquire" tone="light" rhythm="md">
+      <Section id="enquire" tone="light" rhythm="sm">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-5">
             <span className="eyebrow">Private Viewing</span>
@@ -569,7 +537,7 @@ export default function PropertyDetailContent({ slug }: { slug: string }) {
 
       {/* Related */}
       {(related.data?.length ?? 0) > 0 && (
-        <Section tone="cream" rhythm="md">
+        <Section tone="cream" rhythm="sm">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <SectionHeading eyebrow="Explore More" title="Other Residences" align="left" />
             <Link

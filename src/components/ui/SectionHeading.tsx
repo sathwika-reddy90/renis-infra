@@ -1,6 +1,9 @@
+"use client";
+
+import { motion } from "framer-motion";
 import Reveal from "@/components/ui/Reveal";
 import { cn } from "@/lib/cn";
-import { curtainUp } from "@/lib/motion";
+import { curtainUp, viewportOnce } from "@/lib/motion";
 
 type SectionHeadingProps = {
   eyebrow?: string;
@@ -42,8 +45,20 @@ export default function SectionHeading({
         italic accent room so the mask never shaves them. MotionConfig
         downgrades this to a plain fade for reduced-motion users.
       */}
-      <div className="overflow-hidden pb-[0.14em]">
-        <Reveal variants={curtainUp} delay={0.05}>
+      {/*
+        The MASK is the observed element, not the title: the title starts
+        translated 100% below the clipped edge, so an IntersectionObserver
+        watching the title itself sees a fully-clipped (zero-area) target and
+        may never fire — leaving the heading permanently hidden. Observing the
+        never-clipped mask and propagating the variant down is deterministic.
+      */}
+      <motion.div
+        initial="hidden"
+        whileInView="show"
+        viewport={viewportOnce}
+        className="overflow-hidden pb-[0.14em]"
+      >
+        <motion.div variants={curtainUp} transition={{ delay: 0.05 }}>
           <h2
             className={cn(
               "font-display text-4xl font-bold leading-[1.05] md:text-5xl lg:text-[3.4rem]",
@@ -52,8 +67,8 @@ export default function SectionHeading({
           >
             {title}
           </h2>
-        </Reveal>
-      </div>
+        </motion.div>
+      </motion.div>
       {description && (
         <Reveal delay={0.1}>
           <p
