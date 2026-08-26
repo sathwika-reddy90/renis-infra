@@ -57,7 +57,10 @@ function ProjectHero({
 }) {
   const reduced = useReducedMotion();
   const [index, setIndex] = useState(0);
-  const images = property.heroImages.length > 0 ? property.heroImages : [property.featuredImage];
+  // The hero mirrors the homepage card: same featuredImage, so clicking
+  // "View Residence" lands on the identical photograph. heroImages remains
+  // only as a fallback for a property with no featured image set.
+  const images = property.featuredImage ? [property.featuredImage] : property.heroImages;
   const go = (dir: number) => setIndex((i) => (i + dir + images.length) % images.length);
 
   return (

@@ -70,10 +70,6 @@ export default function Hero() {
           </div>
           <div className="absolute inset-0 scrim-hero" />
 
-          <span className="eyebrow absolute left-6 top-28 text-white/80 md:left-10">
-            {slide.status}
-          </span>
-
           <div
             ref={(el) => {
               texts.current[i] = el;
@@ -82,34 +78,6 @@ export default function Hero() {
           >
             <Container className="pb-24 md:pb-28">
               <div className="max-w-2xl">
-                <h2 className="font-display text-display-1 text-white">{slide.title}</h2>
-                <p className="mt-4 text-body-lg text-white/80">{slide.location}</p>
-
-                {/* Configuration + price — the two facts a buyer scans for
-                    first, in the same pairing ProjectCard uses. */}
-                {(slide.bedrooms || slide.priceLabel) && (
-                  <dl className="mt-6 flex flex-wrap gap-x-10 gap-y-4">
-                    {slide.bedrooms && (
-                      <div>
-                        <dt className="text-[0.66rem] uppercase tracking-[0.2em] text-white/60">
-                          Configuration
-                        </dt>
-                        <dd className="mt-1 font-display text-h3 text-white">{slide.bedrooms}</dd>
-                      </div>
-                    )}
-                    {slide.priceLabel && (
-                      <div>
-                        <dt className="text-[0.66rem] uppercase tracking-[0.2em] text-white/60">
-                          Price
-                        </dt>
-                        <dd className="mt-1 font-display text-h3 text-gold-soft">
-                          {slide.priceLabel}
-                        </dd>
-                      </div>
-                    )}
-                  </dl>
-                )}
-
                 <div className="mt-9">
                   <Button href={slide.href} variant="gold">
                     View Residence

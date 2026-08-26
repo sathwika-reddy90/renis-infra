@@ -8,13 +8,29 @@ import Reveal from "@/components/ui/Reveal";
 import SectionHeading from "@/components/ui/SectionHeading";
 import StatCounter from "@/components/ui/StatCounter";
 import Skeleton from "@/components/ui/Skeleton";
-import LeadershipGrid from "@/components/LeadershipGrid";
+import Founder from "@/sections/Founder";
 import { useSiteContent } from "@/lib/query/hooks";
 
 const KIND_ICON: Record<string, typeof Eye> = { Vision: Eye, Mission: Target };
 
 const STORY_IMAGE =
   "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1100&q=80";
+
+/**
+ * Large, gold, uppercase section label matching the homepage's heading scale
+ * (see WhyRenisinfra/Testimonials/AwardsRecognition) — used for the About
+ * page's major section names, which previously rode along as small eyebrow
+ * text and read as visually minor next to the rest of the site.
+ */
+function BigHeading({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  return (
+    <h2
+      className={`text-center text-[32px] font-normal uppercase tracking-[3px] text-[#bda588] [font-family:var(--font-launch),sans-serif] sm:text-[48px] sm:tracking-[4.8px] ${className}`}
+    >
+      {children}
+    </h2>
+  );
+}
 
 /**
  * About page body. Every editorial block here is CMS-managed via
@@ -25,7 +41,7 @@ export default function AboutContent() {
 
   if (isPending) {
     return (
-      <Section tone="light" rhythm="md">
+      <Section tone="light" rhythm="sm">
         <div className="grid grid-cols-1 gap-14 lg:grid-cols-2">
           <Skeleton className="aspect-[4/5]" />
           <div className="space-y-4">
@@ -45,7 +61,12 @@ export default function AboutContent() {
     <>
       {/* Story */}
       {about && (
-        <Section tone="light" rhythm="md" contained={false}>
+        <Section tone="light" rhythm="sm" contained={false}>
+          <Container>
+            <Reveal>
+              <BigHeading className="mb-12 lg:mb-16">{about.storyTitle}</BigHeading>
+            </Reveal>
+          </Container>
           <Container className="grid grid-cols-1 items-center gap-14 lg:grid-cols-2 lg:gap-20">
             <Reveal className="relative aspect-[4/5] overflow-hidden">
               <Image
@@ -59,7 +80,6 @@ export default function AboutContent() {
             <div>
               <SectionHeading
                 align="left"
-                eyebrow={about.storyTitle}
                 title={
                   <>
                     A house built on <span className="italic text-gold">detail</span>
@@ -78,7 +98,7 @@ export default function AboutContent() {
 
       {/* Vision & Mission */}
       {(about?.visionMission.length ?? 0) > 0 && (
-        <Section tone="cream" rhythm="md">
+        <Section tone="cream" rhythm="sm">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             {about?.visionMission.map((v, i) => {
               const Icon = KIND_ICON[v.kind] ?? Eye;
@@ -103,9 +123,11 @@ export default function AboutContent() {
 
       {/* Why choose us */}
       {(about?.whyChoose.length ?? 0) > 0 && (
-        <Section tone="light" rhythm="md">
+        <Section tone="light" rhythm="sm">
+          <Reveal>
+            <BigHeading className="mb-3">Why Choose Us</BigHeading>
+          </Reveal>
           <SectionHeading
-            eyebrow="Why Choose Us"
             title={
               <>
                 The RENIESINFRA <span className="italic text-gold">difference</span>
@@ -129,6 +151,9 @@ export default function AboutContent() {
       {/* Stats */}
       {(about?.stats.length ?? 0) > 0 && (
         <Section tone="ink" rhythm="sm">
+          <Reveal>
+            <BigHeading className="mb-12 lg:mb-16">Our Milestones</BigHeading>
+          </Reveal>
           <div className="grid grid-cols-2 gap-y-12 lg:grid-cols-4">
             {about?.stats.map((item) => (
               <Reveal key={item.label} className="text-center">
@@ -145,23 +170,28 @@ export default function AboutContent() {
       )}
 
       {/* Leadership */}
-      <Section tone="cream" rhythm="md">
+      <Section tone="cream" rhythm="sm">
+        <Reveal>
+          <BigHeading className="mb-3">Leadership</BigHeading>
+        </Reveal>
         <SectionHeading
-          eyebrow="Leadership"
           title={
             <>
               The people behind the <span className="italic text-gold">craft</span>
             </>
           }
         />
-        <LeadershipGrid />
       </Section>
+
+      <Founder />
 
       {/* Timeline */}
       {timeline.length > 0 && (
-        <Section tone="light" rhythm="md" containerClassName="max-w-4xl">
+        <Section tone="light" rhythm="sm" containerClassName="max-w-4xl">
+          <Reveal>
+            <BigHeading className="mb-3">Our Journey</BigHeading>
+          </Reveal>
           <SectionHeading
-            eyebrow="Our Journey"
             title={
               <>
                 A history of <span className="italic text-gold">milestones</span>

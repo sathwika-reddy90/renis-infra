@@ -43,7 +43,7 @@ export default function LaunchHighlight() {
       </Reveal>
       <Reveal delay={0.05}>
         <h2 className="mx-auto mt-7 text-[48px] font-normal uppercase leading-[1.25] tracking-[4.8px] text-[#bda588] [font-family:var(--font-launch),sans-serif] max-md:text-[32px] max-md:tracking-[3px]">
-          Greenz by Renies
+          Sattva Lago by Reniesinfra
         </h2>
       </Reveal>
       <Reveal delay={0.2}>

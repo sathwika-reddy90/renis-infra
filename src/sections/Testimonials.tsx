@@ -65,7 +65,7 @@ function ReviewsCarousel({ items }: { items: Testimonial[] }) {
   // it can't yank a card away mid-read.
   useEffect(() => {
     if (pages.length < 2 || reduced || paused) return;
-    const id = setInterval(() => paginate(1), 6500);
+    const id = setInterval(() => paginate(1), 2500);
     return () => clearInterval(id);
   }, [paginate, pages.length, reduced, paused]);
 
@@ -142,7 +142,7 @@ export default function Testimonials() {
   const query = useTestimonials();
 
   return (
-    <section id="testimonials" className="bg-gray-50 py-16 sm:py-20">
+    <section id="testimonials" className="bg-gray-50 pt-8 pb-16 sm:pt-8 sm:pb-20">
       <Container className="text-center">
         <span className="text-[18px] font-medium uppercase tracking-[0.22em] text-[#888888] [font-family:var(--font-nav),sans-serif]">
           Reviews

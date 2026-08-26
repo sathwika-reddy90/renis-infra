@@ -138,6 +138,31 @@ export function useCinematicScroll({ count, disabled = false }: Options): Cinema
           .to(textEls[i - 1], { autoAlpha: 0, y: -24, ease: "power2.out", duration: 0.4 }, at)
           .to(textEls[i], { autoAlpha: 1, y: 0, ease: "power3.out", duration: 0.5 }, at + 0.5);
       }
+
+      // Only the two panels taking part in the current transition can ever be
+      // seen — everything below the incoming panel is fully covered by it,
+      // everything above the outgoing one has already left the screen. But
+      // with force3D + will-change, every stacked panel otherwise keeps ~4
+      // full-viewport composited layers resident for the whole pin, and past
+      // roughly 8 panels the compositor starts evicting and re-rasterizing
+      // tiles mid-scroll, which reads as flicker. Hiding the provably
+      // invisible panels (with a one-panel safety margin for fast scrubbing)
+      // releases those layers without changing a single visible pixel.
+      let visLo = -1;
+      let visHi = -1;
+      const applyVisibilityWindow = () => {
+        const t = tl.progress() * (slideEls.length - 1);
+        const lo = Math.max(0, Math.floor(t) - 1);
+        const hi = Math.min(slideEls.length - 1, Math.floor(t) + 2);
+        if (lo === visLo && hi === visHi) return;
+        visLo = lo;
+        visHi = hi;
+        for (let j = 0; j < slideEls.length; j++) {
+          slideEls[j].style.visibility = j < lo || j > hi ? "hidden" : "";
+        }
+      };
+      tl.eventCallback("onUpdate", applyVisibilityWindow);
+      applyVisibilityWindow();
     }, section);
 
     return () => ctx.revert();

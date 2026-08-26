@@ -94,7 +94,12 @@ export default function RenisProjectsPage() {
                   </span>
                 </div>
 
-                <h3 className="mt-4 font-display text-display-3 text-ink">{project.title}</h3>
+                {/* min-h reserves exactly two lines (2 × 1.2 line-height) so
+                    short and long names occupy the same heading block and the
+                    rows below stay aligned across every card. */}
+                <h3 className="mt-4 min-h-[2.4em] break-words font-display text-h2 text-ink">
+                  {project.title}
+                </h3>
                 <p className="mt-2 text-body text-muted">{project.location}</p>
 
                 <dl className="mt-5 flex flex-wrap gap-x-10 gap-y-3">

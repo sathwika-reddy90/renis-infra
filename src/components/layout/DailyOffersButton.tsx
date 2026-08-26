@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { BadgePercent } from "lucide-react";
 import { easeLux } from "@/lib/motion";
 import DailyOffersPanel from "./DailyOffersPanel";
+import DailyOffersTeaser from "./DailyOffersTeaser";
 
 /**
  * Floating trigger pinned above the WhatsApp bubble on every public page.
@@ -14,12 +15,25 @@ import DailyOffersPanel from "./DailyOffersPanel";
  */
 export default function DailyOffersButton() {
   const [open, setOpen] = useState(false);
+  const [teaserVisible, setTeaserVisible] = useState(false);
+
+  // Small teaser announces itself shortly after each fresh page load/refresh;
+  // it never persists a "seen" flag, so it reappears every time by design.
+  useEffect(() => {
+    const timer = setTimeout(() => setTeaserVisible(true), 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const openPanel = () => {
+    setTeaserVisible(false);
+    setOpen(true);
+  };
 
   return (
     <>
       <motion.button
         type="button"
-        onClick={() => setOpen(true)}
+        onClick={openPanel}
         aria-label="View Daily Offers"
         whileHover={{ scale: 1.08 }}
         whileTap={{ scale: 0.96 }}
@@ -34,6 +48,12 @@ export default function DailyOffersButton() {
           Daily Offers
         </span>
       </motion.button>
+
+      <DailyOffersTeaser
+        visible={teaserVisible}
+        onOpen={openPanel}
+        onDismiss={() => setTeaserVisible(false)}
+      />
 
       <DailyOffersPanel open={open} onClose={() => setOpen(false)} />
     </>

@@ -21,13 +21,20 @@ const MENU_GROUPS = ["New Launch", "Now Selling", "Ready to Move", "Coming Soon"
 const FALLBACK_NAV = [
   { label: "Home", href: "/" },
   { label: "Projects", href: "/projects" },
-  { label: "Renies Project", href: "/renis-projects" },
+  { label: "Residences", href: "/renis-projects" },
   { label: "About", href: "/about" },
   { label: "Media", href: "/gallery" },
   { label: "Contact", href: "/contact" },
 ];
 
-const RENIS_PROJECT = { label: "Renies Project", href: "/renis-projects" };
+const RENIS_PROJECT = { label: "Residences", href: "/renis-projects" };
+
+/** Media's dropdown items — Project Tours reuses the existing gallery page/data. */
+const MEDIA_LINKS = [
+  { label: "Awards", href: "/awards" },
+  { label: "Blog", href: "/blog" },
+  { label: "Project Tours", href: "/gallery" },
+];
 
 /** WhatsApp deep link built from the site phone number. */
 const WHATSAPP_HREF = "https://wa.me/919000012345";
@@ -57,7 +64,7 @@ function toHeaderNav(links: { label: string; href: string }[]) {
 
 /**
  * The nav is CMS-managed, so a code-only entry would be invisible the moment
- * `content.nav` loads. This slots "Renies Project" in right after "Projects"
+ * `content.nav` loads. This slots "Residences" in right after "Projects"
  * whichever list is in play, and no-ops once the item is added in the CMS —
  * at which point this helper can go.
  */
@@ -72,6 +79,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [megaOpen, setMegaOpen] = useState(false);
+  const [mediaOpen, setMediaOpen] = useState(false);
   const [trackedPath, setTrackedPath] = useState<string | null>(null);
   const pathname = usePathname();
   const { openVisitModal } = useScheduleVisit();
@@ -80,6 +88,7 @@ export default function Navbar() {
   const navLinks = withRenisProject(content?.nav?.length ? content.nav : FALLBACK_NAV);
   const drawerRef = useRef<HTMLDivElement>(null);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const mediaCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 30, mass: 0.3 });
@@ -101,6 +110,7 @@ export default function Navbar() {
     setTrackedPath(pathname);
     setOpen(false);
     setMegaOpen(false);
+    setMediaOpen(false);
   }
 
   // Focus trap + Escape for the mobile drawer.
@@ -138,6 +148,15 @@ export default function Navbar() {
     closeTimer.current = setTimeout(() => setMegaOpen(false), 140);
   };
 
+  const openMedia = () => {
+    if (mediaCloseTimer.current) clearTimeout(mediaCloseTimer.current);
+    setMediaOpen(true);
+  };
+  const scheduleCloseMedia = () => {
+    if (mediaCloseTimer.current) clearTimeout(mediaCloseTimer.current);
+    mediaCloseTimer.current = setTimeout(() => setMediaOpen(false), 140);
+  };
+
   return (
     <>
       <a
@@ -148,7 +167,10 @@ export default function Navbar() {
       </a>
 
       <header
-        onMouseLeave={scheduleCloseMega}
+        onMouseLeave={() => {
+          scheduleCloseMega();
+          scheduleCloseMedia();
+        }}
         className={cn(
           // Always the same solid navy shade — over the hero and over
           // light content alike, scrolled or not — so it never picks up a
@@ -188,29 +210,70 @@ export default function Navbar() {
           <nav aria-label="Main" className="hidden items-center lg:flex">
             {toHeaderNav(navLinks).map((link) => {
               const isProjects = link.href === "/projects";
+              const isMedia = link.href === "/gallery";
+              const showArrow = isProjects || isMedia;
               return (
                 <div
                   key={link.href}
                   className="relative"
-                  onMouseEnter={isProjects && grouped.length > 0 ? openMega : undefined}
+                  onMouseEnter={
+                    isProjects && grouped.length > 0
+                      ? openMega
+                      : isMedia
+                        ? openMedia
+                        : undefined
+                  }
                 >
                   <Link
                     href={link.href}
-                    aria-expanded={isProjects && grouped.length > 0 ? megaOpen : undefined}
+                    aria-expanded={
+                      isProjects && grouped.length > 0 ? megaOpen : isMedia ? mediaOpen : undefined
+                    }
                     className={cn(
                       "group relative flex items-center gap-1.5 px-[13px] py-[9px] text-[13px] font-medium uppercase tracking-[1.4px] text-white transition-opacity duration-[var(--duration-base)] hover:opacity-80",
                     )}
                   >
                     {link.label}
-                    <ChevronDown
-                      size={13}
-                      aria-hidden
-                      className={cn(
-                        "transition-transform duration-[var(--duration-base)]",
-                        isProjects && megaOpen && "rotate-180",
-                      )}
-                    />
+                    {showArrow && (
+                      <ChevronDown
+                        size={13}
+                        aria-hidden
+                        className={cn(
+                          "transition-transform duration-[var(--duration-base)]",
+                          ((isProjects && megaOpen) || (isMedia && mediaOpen)) && "rotate-180",
+                        )}
+                      />
+                    )}
                   </Link>
+
+                  {/* Media dropdown */}
+                  {isMedia && (
+                    <AnimatePresence>
+                      {mediaOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, y: -8 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -8 }}
+                          transition={{ duration: 0.24, ease: easeLux }}
+                          onMouseEnter={openMedia}
+                          className="absolute left-0 top-full min-w-[200px] border-t border-white/10 bg-ink/98 backdrop-blur-md"
+                        >
+                          <ul className="py-2">
+                            {MEDIA_LINKS.map((m) => (
+                              <li key={m.href}>
+                                <Link
+                                  href={m.href}
+                                  className="block px-5 py-3 text-[12px] font-medium uppercase tracking-[1.2px] text-white/70 transition-colors duration-[var(--duration-base)] hover:text-gold"
+                                >
+                                  {m.label}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  )}
                 </div>
               );
             })}
@@ -364,6 +427,23 @@ export default function Navbar() {
                     </ul>
                   </div>
                 )}
+
+                <div className="mt-5">
+                  <h3 className="text-[0.66rem] uppercase tracking-[0.24em] text-gold">Media</h3>
+                  <ul className="mt-3 space-y-2">
+                    {MEDIA_LINKS.map((m) => (
+                      <li key={m.href}>
+                        <Link
+                          href={m.href}
+                          onClick={() => setOpen(false)}
+                          className="block py-1 text-[0.88rem] text-white/65"
+                        >
+                          {m.label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
 
                 <div className="flex flex-col gap-3 pt-6">
                   <Button

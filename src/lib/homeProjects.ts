@@ -1,7 +1,11 @@
 import type { Project } from "@/types/project";
 
-/** How many projects the homepage hero slider rotates through. */
-export const HERO_PROJECT_COUNT = 7;
+/**
+ * How many projects the homepage hero slider rotates through.
+ * Infinity: every homepage project rides the hero's pinned scroll, and
+ * ProjectShowcase (the former second layout) receives nothing.
+ */
+export const HERO_PROJECT_COUNT = Infinity;
 
 /**
  * Curation for the hero rail, applied before the split.
@@ -23,6 +27,10 @@ export const HERO_PROJECT_SLUGS: readonly string[] = [
   "poulomi-palazzo",
   "iris-by-raghava",
   "elan-by-meenakshi",
+  "the-trilight",
+  "high-9",
+  "prestige-budvel",
+  "prestige-golden-grove",
 ];
 
 /** Curated slugs first (in listed order), then everything else in API order. */

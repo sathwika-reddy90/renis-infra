@@ -217,8 +217,15 @@ export function toLocalAsset<T extends string | undefined>(url: T): T {
     return url;
   }
 
-  // Absolute URLs are already valid and must be used unchanged.
-  // This includes Supabase Storage URLs and any other fully-qualified remote URL.
+  // Our own backend origin first: in dev, strip to a relative /uploads path
+  // so next/image serves it via the rewrite instead of a loopback fetch
+  // (the optimizer hard-blocks loopback remote URLs). Must run before the
+  // generic absolute-URL check below, which would otherwise swallow it.
+  if (url.startsWith(API_ORIGIN)) {
+    return (IS_DEV ? (url.slice(API_ORIGIN.length) || "/") : (url as T)) as T;
+  }
+
+  // Any other absolute URL (Supabase, Unsplash, ...) is used unchanged.
   if (/^https?:\/\//i.test(url)) {
     return url as T;
   }
@@ -226,13 +233,6 @@ export function toLocalAsset<T extends string | undefined>(url: T): T {
   // Root-relative uploads paths are the only ones we should prefix with the backend origin.
   if (url.startsWith("/uploads")) {
     return (IS_DEV ? (url as T) : ((`${API_ORIGIN}${url}` as unknown) as T));
-  }
-
-  // If the backend returned an absolute URL pointing at our API origin,
-  // keep it as-is in production. In development, convert it to a root-relative path
-  // so Next's rewrite can proxy it to the local backend.
-  if (url.startsWith(API_ORIGIN)) {
-    return (IS_DEV ? (url.slice(API_ORIGIN.length) || "/") : (url as T)) as T;
   }
 
   return url as T;

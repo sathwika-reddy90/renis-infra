@@ -29,8 +29,19 @@ export function createApp(): Application {
   app.use(express.urlencoded({ extended: true }));
   app.use(cookieParser());
 
-  // Serve uploaded media (local storage provider only).
-  app.use("/uploads", express.static(path.resolve(process.cwd(), env.UPLOAD_DIR)));
+  // Serve uploaded media (local storage provider only). These files are
+  // embedded cross-origin by the Next.js frontend (a different origin from
+  // this API in both dev and prod), so relax helmet's global same-origin
+  // Cross-Origin-Resource-Policy just for this route — otherwise browsers
+  // silently block <img> loads of locally-stored uploads (broken-image icon,
+  // no console/network error surfaced on the request itself) while
+  // Supabase-hosted uploads, served from a separate origin that doesn't send
+  // that header, load fine.
+  app.use(
+    "/uploads",
+    helmet.crossOriginResourcePolicy({ policy: "cross-origin" }),
+    express.static(path.resolve(process.cwd(), env.UPLOAD_DIR)),
+  );
 
   // Observability.
   app.use(requestLogger);

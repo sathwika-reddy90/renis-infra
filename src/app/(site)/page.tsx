@@ -2,7 +2,6 @@ import LandingHero from "@/sections/LandingHero";
 import LaunchHighlight from "@/sections/LaunchHighlight";
 import Hero from "@/sections/Hero";
 import ImageCompare from "@/sections/ImageCompare";
-import ProjectShowcase from "@/sections/ProjectShowcase";
 import WhyRenisinfra from "@/sections/WhyRenisinfra";
 import Founder from "@/sections/Founder";
 import AwardsRecognition from "@/sections/AwardsRecognition";
@@ -26,9 +25,11 @@ export default function Home() {
             standalone FeaturedProjects heading band is no longer needed. */}
         <Hero />
         <ImageCompare />
-        <ProjectShowcase />
         <WhyRenisinfra />
-        <Founder />
+        {/* Founder + Reviews share the same grey band and read as one
+            continuous leadership section — reduced bottom rhythm here pairs
+            with Testimonials' reduced top rhythm. */}
+        <Founder rhythmClassName="pt-16 pb-8 md:pt-24 md:pb-8" />
         <Testimonials />
         <AwardsRecognition />
         <ContactCTA />

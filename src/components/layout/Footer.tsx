@@ -10,7 +10,7 @@ import { CONTACT } from "@/config/company";
 
 const MEDIA_LINKS = [
   { label: "Gallery", href: "/gallery" },
-  { label: "News & Events", href: "/blog" },
+  { label: "Awards & Recognition", href: "/awards" },
   { label: "About Us", href: "/about" },
   { label: "Contact", href: "/contact" },
 ];
