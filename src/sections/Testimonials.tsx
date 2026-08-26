@@ -2,113 +2,136 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { Quote, ArrowLeft, ArrowRight } from "lucide-react";
-import Section from "@/components/ui/Section";
-import SectionHeading from "@/components/ui/SectionHeading";
+import { ChevronLeft, ChevronRight, Star } from "lucide-react";
+import Container from "@/components/ui/Container";
 import QueryView from "@/components/ui/QueryView";
+import Skeleton from "@/components/ui/Skeleton";
 import { useTestimonials } from "@/lib/query/hooks";
 import type { Testimonial } from "@/types/testimonial";
 import { easeLux } from "@/lib/motion";
 
-function CarouselSkeleton() {
+const PAGE_SIZE = 2;
+
+function chunk<T>(items: T[], size: number): T[][] {
+  const pages: T[][] = [];
+  for (let i = 0; i < items.length; i += size) pages.push(items.slice(i, i + size));
+  return pages;
+}
+
+function ReviewCard({ item }: { item: Testimonial }) {
+  const stars = Math.max(0, Math.min(5, item.rating ?? 5));
   return (
-    <div className="mx-auto mt-14 flex max-w-3xl flex-col items-center gap-4">
-      <div className="h-7 w-3/4 animate-pulse rounded bg-white/10" />
-      <div className="h-7 w-2/3 animate-pulse rounded bg-white/10" />
-      <div className="mt-6 h-4 w-32 animate-pulse rounded bg-white/10" />
+    <div className="flex h-full flex-col bg-white p-8 text-left md:p-10">
+      <div className="flex items-center gap-3">
+        <div className="flex gap-0.5 text-[#e8b84b]" aria-hidden>
+          {Array.from({ length: stars }).map((_, i) => (
+            <Star key={i} size={16} fill="currentColor" strokeWidth={0} />
+          ))}
+        </div>
+        <span className="text-[13px] font-semibold uppercase tracking-[0.12em] text-[#bda588]">
+          {item.name}
+        </span>
+      </div>
+      <p className="mt-5 text-[14px] leading-relaxed text-[#4a4b4b] [font-family:var(--font-nav),sans-serif]">
+        {item.quote}
+      </p>
     </div>
   );
 }
 
-function Carousel({ items }: { items: Testimonial[] }) {
-  const [[index, dir], setState] = useState<[number, number]>([0, 0]);
+function ReviewsSkeleton() {
+  return (
+    <div className="mx-auto mt-12 grid max-w-4xl grid-cols-1 gap-5 md:grid-cols-2">
+      <Skeleton className="h-[220px]" />
+      <Skeleton className="h-[220px]" />
+    </div>
+  );
+}
+
+function ReviewsCarousel({ items }: { items: Testimonial[] }) {
+  const pages = chunk(items, PAGE_SIZE);
+  const [[page, dir], setState] = useState<[number, number]>([0, 0]);
   const [paused, setPaused] = useState(false);
   const reduced = useReducedMotion();
 
   const paginate = useCallback(
     (d: number) => {
-      setState(([i]) => [(i + d + items.length) % items.length, d]);
+      setState(([p]) => [(p + d + pages.length) % pages.length, d]);
     },
-    [items.length],
+    [pages.length],
   );
 
-  // Autoplay is suppressed for reduced-motion users, and pauses on hover or
-  // keyboard focus so it can't yank content away mid-read.
+  // Autoplay is suppressed for reduced-motion users, and pauses on hover so
+  // it can't yank a card away mid-read.
   useEffect(() => {
-    if (items.length < 2 || reduced || paused) return;
+    if (pages.length < 2 || reduced || paused) return;
     const id = setInterval(() => paginate(1), 6500);
     return () => clearInterval(id);
-  }, [paginate, items.length, reduced, paused]);
+  }, [paginate, pages.length, reduced, paused]);
 
-  if (items.length === 0) return null;
-  const t = items[Math.min(index, items.length - 1)];
+  if (pages.length === 0) return null;
+  const current = pages[Math.min(page, pages.length - 1)];
 
   return (
     <div
-      className="relative mx-auto mt-14 max-w-3xl text-center"
+      className="relative mx-auto mt-12 max-w-4xl"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
-      onFocusCapture={() => setPaused(true)}
-      onBlurCapture={() => setPaused(false)}
-      aria-roledescription="carousel"
-      aria-label="Resident testimonials"
     >
-      <Quote className="mx-auto mb-8 text-gold" size={44} strokeWidth={1} aria-hidden />
+      {pages.length > 1 && (
+        <button
+          type="button"
+          aria-label="Previous reviews"
+          onClick={() => paginate(-1)}
+          className="absolute left-0 top-1/2 z-10 hidden -translate-x-12 -translate-y-1/2 text-muted-light transition-colors hover:text-muted lg:block"
+        >
+          <ChevronLeft size={22} strokeWidth={1.5} aria-hidden />
+        </button>
+      )}
 
-      <div className="relative min-h-[220px] md:min-h-[200px]">
+      <div className="relative min-h-[220px] overflow-hidden">
         <AnimatePresence mode="wait" custom={dir}>
-          <motion.blockquote
-            key={t.id}
+          <motion.div
+            key={page}
             custom={dir}
             initial={{ opacity: 0, x: dir >= 0 ? 40 : -40 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: dir >= 0 ? -40 : 40 }}
-            transition={{ duration: 0.6, ease: easeLux }}
-            className="absolute inset-0"
+            transition={{ duration: 0.5, ease: easeLux }}
+            className="grid grid-cols-1 gap-5 md:grid-cols-2"
           >
-            <p className="font-display text-2xl font-medium leading-relaxed text-white/90 md:text-[2rem]">
-              &ldquo;{t.quote}&rdquo;
-            </p>
-            <footer className="mt-8">
-              <p className="text-sm font-medium tracking-[0.12em] text-white">{t.name}</p>
-              <p className="mt-1 text-[0.78rem] uppercase tracking-[0.2em] text-gold">{t.role}</p>
-            </footer>
-          </motion.blockquote>
+            {current.map((item) => (
+              <ReviewCard key={item.id} item={item} />
+            ))}
+          </motion.div>
         </AnimatePresence>
       </div>
 
-      {items.length > 1 && (
-        <div className="mt-12 flex items-center justify-center gap-6">
-          <button
-            type="button"
-            aria-label="Previous testimonial"
-            onClick={() => paginate(-1)}
-            className="flex h-11 w-11 items-center justify-center rounded-full border border-white/25 text-white/80 transition-colors hover:border-gold hover:text-gold"
-          >
-            <ArrowLeft size={16} aria-hidden />
-          </button>
-          <div className="flex gap-2">
-            {items.map((item, i) => (
-              <button
-                key={item.id}
-                type="button"
-                aria-label={`Go to testimonial ${i + 1}`}
-                aria-current={i === index ? "true" : undefined}
-                onClick={() => setState([i, i > index ? 1 : -1])}
-                className={`h-1.5 rounded-full transition-all duration-[var(--duration-slow)] ${
-                  i === index ? "w-8 bg-gold" : "w-1.5 bg-white/30"
-                }`}
-              />
-            ))}
-          </div>
-          <button
-            type="button"
-            aria-label="Next testimonial"
-            onClick={() => paginate(1)}
-            className="flex h-11 w-11 items-center justify-center rounded-full border border-white/25 text-white/80 transition-colors hover:border-gold hover:text-gold"
-          >
-            <ArrowRight size={16} aria-hidden />
-          </button>
+      {pages.length > 1 && (
+        <button
+          type="button"
+          aria-label="Next reviews"
+          onClick={() => paginate(1)}
+          className="absolute right-0 top-1/2 z-10 hidden translate-x-12 -translate-y-1/2 text-muted-light transition-colors hover:text-muted lg:block"
+        >
+          <ChevronRight size={22} strokeWidth={1.5} aria-hidden />
+        </button>
+      )}
+
+      {pages.length > 1 && (
+        <div className="mt-10 flex items-center justify-center gap-2">
+          {pages.map((_, i) => (
+            <button
+              key={i}
+              type="button"
+              aria-label={`Go to review page ${i + 1}`}
+              aria-current={i === page ? "true" : undefined}
+              onClick={() => setState([i, i > page ? 1 : -1])}
+              className={`h-1.5 w-1.5 rounded-full transition-colors ${
+                i === page ? "bg-ink" : "bg-muted-light/60"
+              }`}
+            />
+          ))}
         </div>
       )}
     </div>
@@ -119,20 +142,22 @@ export default function Testimonials() {
   const query = useTestimonials();
 
   return (
-    <Section id="testimonials" tone="ink" rhythm="md">
-      <SectionHeading
-        eyebrow="Resident Voices"
-        title={
-          <>
-            Words from <span className="italic text-gold">Home</span>
-          </>
-        }
-        invert
-      />
+    <section id="testimonials" className="bg-gray-50 py-16 sm:py-20">
+      <Container className="text-center">
+        <span className="text-[18px] font-medium uppercase tracking-[0.22em] text-[#888888] [font-family:var(--font-nav),sans-serif]">
+          Reviews
+        </span>
+        <h2 className="mt-3 text-[26px] font-normal uppercase tracking-[0.02em] text-[#bda588] [font-family:var(--font-launch),sans-serif] sm:whitespace-nowrap sm:text-[48px]">
+          A Reputation Built on Trust
+        </h2>
+        <p className="mx-auto mt-4 max-w-xl text-[15px] text-foreground [font-family:var(--font-nav),sans-serif] sm:max-w-none sm:whitespace-nowrap">
+          Thousands of verified reviews from satisfied homeowners and investors across Hyderabad.
+        </p>
 
-      <QueryView query={query} skeleton={<CarouselSkeleton />} invertError>
-        {(items) => <Carousel items={items} />}
-      </QueryView>
-    </Section>
+        <QueryView query={query} skeleton={<ReviewsSkeleton />}>
+          {(items) => <ReviewsCarousel items={items} />}
+        </QueryView>
+      </Container>
+    </section>
   );
 }

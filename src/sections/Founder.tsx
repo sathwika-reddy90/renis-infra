@@ -52,23 +52,23 @@ export default function Founder() {
               <Container>
                 <div className="grid grid-cols-1 md:grid-cols-2">
                   <ParallaxImage
-                    src={founder.image || "/images/placeholder-project.jpg"}
+                    src="/images/placeholder-project.jpg"
                     alt={founder.name}
                     speed={8}
                     sizes="(max-width: 768px) 100vw, 50vw"
                     className="min-h-[320px] md:min-h-[500px]"
                   />
 
-                  <div className="flex flex-col justify-center bg-white p-8 md:p-10 lg:p-12">
-                    <span className="text-[15px] font-medium uppercase tracking-[0.16em] text-muted md:text-[17px]">
+                  <div className="flex flex-col items-center justify-center bg-white p-8 text-center md:p-10 lg:p-12">
+                    <span className="whitespace-nowrap text-[18px] font-medium uppercase tracking-[0.18em] text-[#4d4d4d] [font-family:var(--font-nav),sans-serif]">
                       Founder &amp; Chairman of RENIESINFRA
                     </span>
-                    <h2 className="mt-6 font-display text-4xl font-bold uppercase tracking-[0.02em] text-gold md:text-5xl">
+                    <h2 className="mt-2 text-4xl font-normal uppercase tracking-[0.04em] text-[#bda588] [font-family:var(--font-launch),sans-serif] md:text-5xl">
                       {founder.name}
                     </h2>
                     <button
                       onClick={() => setWatching(true)}
-                      className="mt-8 w-fit bg-[#555555] px-6 py-3 text-[13px] font-medium uppercase tracking-[0.1em] text-white transition-colors duration-300 hover:bg-ink"
+                      className="mt-5 bg-[#555555] px-5 py-2.5 text-sm font-medium uppercase tracking-[0.1em] text-white transition-colors duration-300 hover:bg-ink [font-family:var(--font-nav),sans-serif]"
                     >
                       Watch Complete Story
                     </button>

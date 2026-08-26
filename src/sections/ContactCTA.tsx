@@ -4,7 +4,6 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { Phone, Mail, MapPin } from "lucide-react";
 import Reveal from "@/components/ui/Reveal";
-import SectionHeading from "@/components/ui/SectionHeading";
 import EnquiryForm from "@/components/EnquiryForm";
 import { useSiteSettings } from "@/lib/query/hooks";
 import { CONTACT } from "@/config/company";
@@ -30,21 +29,15 @@ export default function ContactCTA() {
     <section id="contact" className="bg-background">
       <div className="grid grid-cols-1 lg:grid-cols-2">
         {/* Form */}
-        <div className="flex flex-col justify-center px-6 py-24 md:px-10 md:py-32 lg:px-16">
-          <SectionHeading
-            align="left"
-            eyebrow="Begin the Conversation"
-            title={
-              <>
-                Schedule a private viewing of your{" "}
-                <span className="italic text-gold">future address</span>.
-              </>
-            }
-            description="Complete the form and a residence advisor will be in touch within one business day."
-          />
+        <div className="flex flex-col justify-center px-6 py-16 md:px-10 md:py-20 lg:px-16">
+          <Reveal>
+            <h2 className="text-[32px] font-normal uppercase tracking-[0.02em] text-[#bda588] [font-family:var(--font-launch),sans-serif] sm:text-[48px]">
+              Get in Touch
+            </h2>
+          </Reveal>
 
-          <Reveal delay={0.1} className="mt-10 max-w-lg">
-            <EnquiryForm />
+          <Reveal delay={0.1} className="mt-8 max-w-lg">
+            <EnquiryForm fieldVariant="boxed" />
           </Reveal>
 
           <motion.div
@@ -84,7 +77,6 @@ export default function ContactCTA() {
             sizes="(max-width: 1024px) 100vw, 50vw"
             className="object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent lg:bg-gradient-to-l" />
         </div>
       </div>
     </section>

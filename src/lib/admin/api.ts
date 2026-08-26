@@ -7,6 +7,7 @@ import type {
   AdminFaq,
   AdminAmenity,
   AdminBlog,
+  AdminOffer,
   AdminInquiry,
   AdminSiteSettings,
   AdminSiteContent,
@@ -21,6 +22,7 @@ import type {
   FaqInput,
   AmenityInput,
   BlogInput,
+  OfferInput,
   InquiryInput,
   SiteSettingsInput,
   SiteContentInput,
@@ -53,6 +55,7 @@ export const adminApi = {
   faqs: makeCrud<AdminFaq, FaqInput>("/faqs"),
   amenities: makeCrud<AdminAmenity, AmenityInput>("/amenities"),
   blogs: makeCrud<AdminBlog, BlogInput>("/blogs"),
+  offers: makeCrud<AdminOffer, OfferInput>("/offers"),
   inquiries: makeCrud<AdminInquiry, InquiryInput>("/contact"),
 } as const;
 

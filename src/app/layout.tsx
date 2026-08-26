@@ -39,7 +39,7 @@ const script = Great_Vibes({
 const nav = Inter({
   variable: "--font-nav",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "800"],
+  weight: ["300", "400", "500", "600", "800"],
   style: ["normal", "italic"],
   display: "swap",
 });

@@ -16,11 +16,15 @@ export default function Accordion({
   items,
   variant = "plain",
   defaultOpen = 0,
+  /** Swaps the row typography/spacing for a dense, sans-serif reference
+   *  match (homepage FAQ) — every other consumer keeps the default look. */
+  compact = false,
 }: {
   items: FAQ[];
   variant?: "plain" | "circle";
   /** Index open on mount; pass null for all-collapsed. */
   defaultOpen?: number | null;
+  compact?: boolean;
 }) {
   const baseId = useId();
   const [open, setOpen] = useState<number | null>(defaultOpen);
@@ -28,7 +32,11 @@ export default function Accordion({
   return (
     <div
       className={cn(
-        variant === "plain" ? "divide-y divide-line border-y border-line" : "divide-y divide-line",
+        compact
+          ? "space-y-[18px]"
+          : variant === "plain"
+            ? "divide-y divide-line border-y border-line"
+            : "divide-y divide-line",
       )}
     >
       {items.map((item, i) => {
@@ -45,9 +53,20 @@ export default function Accordion({
                 aria-expanded={active}
                 aria-controls={panelId}
                 onClick={() => setOpen(active ? null : i)}
-                className="flex w-full items-center justify-between gap-6 py-6 text-left"
+                className={cn(
+                  "box-border flex w-full items-center justify-between gap-6 text-left",
+                  compact ? "h-[49px] border border-line bg-[#f8f9fb] px-[15px]" : "py-6",
+                )}
               >
-                <span className="font-display text-h3 font-medium text-ink">{item.question}</span>
+                <span
+                  className={
+                    compact
+                      ? "text-[15px] font-light text-[#222222] [font-family:var(--font-nav),sans-serif]"
+                      : "font-display text-h3 font-medium text-ink"
+                  }
+                >
+                  {item.question}
+                </span>
                 {variant === "circle" ? (
                   <motion.span
                     animate={{ rotate: active ? 45 : 0 }}
@@ -79,9 +98,19 @@ export default function Accordion({
                   animate={{ height: "auto", opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
                   transition={{ duration: 0.4, ease: easeLux }}
-                  className="overflow-hidden"
+                  className={cn(
+                    "overflow-hidden",
+                    compact && "border-x border-b border-line bg-[#f8f9fb]",
+                  )}
                 >
-                  <p className="max-w-2xl pb-6 text-body text-muted">{item.answer}</p>
+                  <p
+                    className={cn(
+                      "max-w-2xl text-body text-muted",
+                      compact ? "px-[15px] pb-[15px]" : "pb-6",
+                    )}
+                  >
+                    {item.answer}
+                  </p>
                 </motion.div>
               )}
             </AnimatePresence>

@@ -37,6 +37,7 @@ export default function ProjectsPage() {
   return (
     <>
       <PageHero
+        variant="brand"
         eyebrow="Our Portfolio"
         title={<>Landmark <span className="italic text-gold-soft">Residences</span></>}
         subtitle="A curated collection of homes defining Hyderabad's most coveted addresses."

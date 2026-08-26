@@ -39,6 +39,10 @@ export const queryKeys = {
     all: ["amenities"] as const,
     list: () => [...queryKeys.amenities.all, "list"] as const,
   },
+  offers: {
+    all: ["offers"] as const,
+    list: () => [...queryKeys.offers.all, "list"] as const,
+  },
   site: {
     all: ["site"] as const,
     settings: () => [...queryKeys.site.all, "settings"] as const,

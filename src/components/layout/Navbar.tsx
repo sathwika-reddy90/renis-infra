@@ -21,13 +21,13 @@ const MENU_GROUPS = ["New Launch", "Now Selling", "Ready to Move", "Coming Soon"
 const FALLBACK_NAV = [
   { label: "Home", href: "/" },
   { label: "Projects", href: "/projects" },
-  { label: "Renies Projects", href: "/renis-projects" },
+  { label: "Renies Project", href: "/renis-projects" },
   { label: "About", href: "/about" },
   { label: "Media", href: "/gallery" },
   { label: "Contact", href: "/contact" },
 ];
 
-const RENIS_PROJECTS = { label: "Renies Projects", href: "/renis-projects" };
+const RENIS_PROJECT = { label: "Renies Project", href: "/renis-projects" };
 
 /** WhatsApp deep link built from the site phone number. */
 const WHATSAPP_HREF = "https://wa.me/919000012345";
@@ -43,14 +43,13 @@ function WhatsAppIcon({ size = 16 }: { size?: number }) {
 
 /**
  * Header presentation of the CMS nav: the logo covers Home and the CONTACT US
- * button covers Contact, so both drop out of the link row; "Renies Projects"
- * reads as "Renies Assist" per the header design. Hrefs are untouched.
+ * button covers Contact, so both drop out of the link row. Hrefs are
+ * otherwise untouched.
  */
 function toHeaderNav(links: { label: string; href: string }[]) {
   return links
     .filter((l) => l.href !== "/" && l.href !== "/contact")
     .map((l) => {
-      if (l.href === "/renis-projects") return { ...l, label: "Renies Assist" };
       if (l.href === "/about") return { ...l, label: "About Us" };
       return l;
     });
@@ -58,15 +57,15 @@ function toHeaderNav(links: { label: string; href: string }[]) {
 
 /**
  * The nav is CMS-managed, so a code-only entry would be invisible the moment
- * `content.nav` loads. This slots "Renies Projects" in right after "Projects"
+ * `content.nav` loads. This slots "Renies Project" in right after "Projects"
  * whichever list is in play, and no-ops once the item is added in the CMS —
  * at which point this helper can go.
  */
-function withRenisProjects(links: { label: string; href: string }[]) {
-  if (links.some((l) => l.href === RENIS_PROJECTS.href)) return links;
+function withRenisProject(links: { label: string; href: string }[]) {
+  if (links.some((l) => l.href === RENIS_PROJECT.href)) return links;
   const after = links.findIndex((l) => l.href === "/projects");
-  if (after === -1) return [...links, RENIS_PROJECTS];
-  return [...links.slice(0, after + 1), RENIS_PROJECTS, ...links.slice(after + 1)];
+  if (after === -1) return [...links, RENIS_PROJECT];
+  return [...links.slice(0, after + 1), RENIS_PROJECT, ...links.slice(after + 1)];
 }
 
 export default function Navbar() {
@@ -78,7 +77,7 @@ export default function Navbar() {
   const { openVisitModal } = useScheduleVisit();
   const { data: content } = useSiteContent();
   const { data: projects } = useProjects();
-  const navLinks = withRenisProjects(content?.nav?.length ? content.nav : FALLBACK_NAV);
+  const navLinks = withRenisProject(content?.nav?.length ? content.nav : FALLBACK_NAV);
   const drawerRef = useRef<HTMLDivElement>(null);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -151,9 +150,10 @@ export default function Navbar() {
       <header
         onMouseLeave={scheduleCloseMega}
         className={cn(
-          // Always the same translucent black shade — over the hero and over
-          // light content alike, scrolled or not.
-          "fixed inset-x-0 top-0 bg-black/35 backdrop-blur-md [font-family:var(--font-nav),sans-serif] transition-shadow duration-[var(--duration-slow)] ease-[var(--ease-lux)]",
+          // Always the same solid navy shade — over the hero and over
+          // light content alike, scrolled or not — so it never picks up a
+          // tint from whatever photo or section is behind it.
+          "fixed inset-x-0 top-0 bg-ink [font-family:var(--font-nav),sans-serif] transition-shadow duration-[var(--duration-slow)] ease-[var(--ease-lux)]",
           scrolled && "shadow-[0_1px_0_0_rgba(255,255,255,0.08)]",
         )}
         style={{ zIndex: "var(--z-header)" }}
@@ -173,9 +173,13 @@ export default function Navbar() {
               {open ? <X size={26} aria-hidden /> : <Menu size={26} aria-hidden />}
             </button>
             <Link href="/" className="flex items-center gap-3" aria-label="RENIESINFRA home">
-              <span className="text-[1.55rem] font-extrabold italic leading-none tracking-tight lg:text-[1.8rem]">
-                <span className="text-[#e63329]">RENIES</span>{" "}
-                <span className="text-white">INFRA</span>
+              <span className="flex items-baseline leading-none [font-family:var(--font-sans),sans-serif]">
+                <span className="text-[2.05rem] font-extrabold italic tracking-tight text-[#C9A878] lg:text-[2.35rem]">
+                  RENIES
+                </span>
+                <span className="ml-2 text-[1.2rem] font-extrabold italic tracking-tight text-white lg:text-[1.4rem]">
+                  infra
+                </span>
               </span>
             </Link>
           </div>

@@ -19,6 +19,7 @@ import {
   faqService,
   amenityService,
   blogService,
+  offerService,
 } from "../services";
 
 import { galleryCreateSchema, galleryUpdateSchema } from "../types/gallery";
@@ -27,6 +28,7 @@ import { teamCreateSchema, teamUpdateSchema } from "../types/team";
 import { faqCreateSchema, faqUpdateSchema } from "../types/faq";
 import { amenityCreateSchema, amenityUpdateSchema } from "../types/amenity";
 import { blogCreateSchema, blogUpdateSchema } from "../types/blog";
+import { offerCreateSchema, offerUpdateSchema } from "../types/offer";
 
 // Guard builder — a single, reusable definition of write protection.
 const write = (resource: Resource): RequestHandler[] => [authenticate, authorize(resource, "write")];
@@ -92,6 +94,14 @@ apiRouter.use(
     create: amenityCreateSchema,
     update: amenityUpdateSchema,
     guards: { create: write("amenities"), update: write("amenities"), remove: write("amenities") },
+  }),
+);
+apiRouter.use(
+  "/offers",
+  createCrudRouter(offerService, {
+    create: offerCreateSchema,
+    update: offerUpdateSchema,
+    guards: { create: write("offers"), update: write("offers"), remove: write("offers") },
   }),
 );
 

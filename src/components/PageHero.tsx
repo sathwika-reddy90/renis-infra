@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import Container from "@/components/ui/Container";
+import { cn } from "@/lib/cn";
 import { easeLux } from "@/lib/motion";
 
 type Crumb = { label: string; href?: string };
@@ -14,12 +15,19 @@ export default function PageHero({
   subtitle,
   image,
   breadcrumb,
+  /** "brand" swaps the eyebrow/title font family to the Inter-label +
+   *  Libertinus-serif system used on the homepage (Why/Founder/Reviews/
+   *  Awards). Defaults to the original cinematic Playfay treatment so
+   *  every other PageHero consumer (contact, blog, privacy, terms) is
+   *  unaffected. */
+  variant = "cinematic",
 }: {
   eyebrow?: string;
   title: React.ReactNode;
   subtitle?: string;
   image: string;
   breadcrumb?: Crumb[];
+  variant?: "cinematic" | "brand";
 }) {
   return (
     <section
@@ -42,7 +50,10 @@ export default function PageHero({
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: easeLux, delay: 0.2 }}
-            className="eyebrow flex items-center justify-center gap-3 text-gold-soft"
+            className={cn(
+              "eyebrow flex items-center justify-center gap-3 text-gold-soft",
+              variant === "brand" && "[font-family:var(--font-nav),sans-serif]",
+            )}
           >
             <span className="h-px w-8 bg-gold" />
             {eyebrow}
@@ -53,7 +64,10 @@ export default function PageHero({
           initial={{ opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, ease: easeLux, delay: 0.32 }}
-          className="mx-auto mt-5 max-w-4xl font-display text-display-1 text-white"
+          className={cn(
+            "mx-auto mt-5 max-w-4xl text-display-1 text-white",
+            variant === "brand" ? "[font-family:var(--font-launch),sans-serif]" : "font-display",
+          )}
         >
           {title}
         </motion.h1>

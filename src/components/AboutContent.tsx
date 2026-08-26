@@ -68,7 +68,7 @@ export default function AboutContent() {
               />
               {about.storyBody.map((paragraph, i) => (
                 <Reveal key={paragraph.slice(0, 32)} delay={0.1 + i * 0.04}>
-                  <p className="mt-6 max-w-lg text-body text-muted">{paragraph}</p>
+                  <p className="mt-6 max-w-lg text-lg font-medium text-muted">{paragraph}</p>
                 </Reveal>
               ))}
             </div>

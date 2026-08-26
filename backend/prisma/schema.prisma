@@ -364,6 +364,26 @@ model SiteSettings {
   updatedAt DateTime @updatedAt
 }
 
+model Offer {
+  id          String    @id @default(cuid())
+  title       String
+  description String
+  discount    String
+  image       String?
+  startDate   DateTime?
+  endDate     DateTime?
+  ctaText     String?
+  ctaLink     String?
+  priority    Int       @default(0)
+  enabled     Boolean   @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([enabled])
+  @@index([priority])
+}
+
 model Media {
   id           String    @id @default(cuid())
   /// Storage provider that owns this file ("local", later "s3", ...).

@@ -35,6 +35,7 @@ export default function GalleryPage() {
   return (
     <>
       <PageHero
+        variant="brand"
         eyebrow="The Portfolio"
         title={<>A Study in <span className="italic text-gold-soft">Detail</span></>}
         subtitle="Interiors, architecture and amenities from across the RENIESINFRA collection."

@@ -12,6 +12,7 @@ export default function AboutPage() {
   return (
     <>
       <PageHero
+        variant="brand"
         eyebrow="Our Story"
         title={
           <>

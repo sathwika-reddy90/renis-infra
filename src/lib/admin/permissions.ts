@@ -12,6 +12,7 @@ export type Resource =
   | "testimonials"
   | "faqs"
   | "amenities"
+  | "offers"
   | "inquiries"
   | "settings"
   | "users"
@@ -29,11 +30,12 @@ const WRITE_ACCESS: Record<Role, Resource[] | "*"> = {
     "testimonials",
     "faqs",
     "amenities",
+    "offers",
     "inquiries",
     "settings",
     "media",
   ],
-  EDITOR: ["properties", "gallery", "blogs", "faqs", "testimonials", "media"],
+  EDITOR: ["properties", "gallery", "blogs", "faqs", "testimonials", "offers", "media"],
 };
 
 const READ_ACCESS: Record<Role, Resource[] | "*"> = {

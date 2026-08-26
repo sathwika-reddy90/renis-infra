@@ -16,6 +16,7 @@ import { fetchTeam } from "@/lib/api/team";
 import { fetchFaqs } from "@/lib/api/faqs";
 import { fetchBlogs, fetchBlogBySlug } from "@/lib/api/blogs";
 import { fetchAmenities } from "@/lib/api/amenities";
+import { fetchOffers } from "@/lib/api/offers";
 import { fetchSiteSettings } from "@/lib/api/site";
 import { fetchSiteContent } from "@/lib/api/siteContent";
 import { submitInquiry } from "@/lib/api/contact";
@@ -117,6 +118,13 @@ export function useAmenities() {
   return useQuery({
     queryKey: queryKeys.amenities.list(),
     queryFn: ({ signal }) => fetchAmenities(signal),
+  });
+}
+
+export function useOffers() {
+  return useQuery({
+    queryKey: queryKeys.offers.list(),
+    queryFn: ({ signal }) => fetchOffers(signal),
   });
 }
 

@@ -3,17 +3,15 @@
 import { motion } from "framer-motion";
 import Reveal from "@/components/ui/Reveal";
 import Skeleton from "@/components/ui/Skeleton";
-import StatCounter from "@/components/ui/StatCounter";
 import { cn } from "@/lib/cn";
-import { resolveIcon } from "@/lib/icons";
 import { fadeUp, stagger, viewportOnce } from "@/lib/motion";
 import { useSiteContent } from "@/lib/query/hooks";
 import type { StatItem } from "@/lib/api/siteContent";
 
 /**
- * 4-column x 2-row icon/stat grid: vertical rules between columns, one
- * horizontal rule under row 1, icon centred per cell, number + label
- * left-aligned per cell.
+ * 4-column x 2-row grid of blank cells: vertical rules between columns, one
+ * horizontal rule under row 1. Content is intentionally empty — only the
+ * grid structure/spacing is kept as a placeholder.
  */
 function StatGrid({ items }: { items: StatItem[] }) {
   return (
@@ -22,10 +20,9 @@ function StatGrid({ items }: { items: StatItem[] }) {
       initial="hidden"
       whileInView="show"
       viewport={viewportOnce}
-      className="mt-8 grid grid-cols-2 sm:grid-cols-4"
+      className="mt-12 grid grid-cols-2 sm:grid-cols-4"
     >
       {items.map((item, i) => {
-        const Icon = resolveIcon(item.icon);
         const lastInRow = (i + 1) % 4 === 0;
         const firstRow = i < 4;
         return (
@@ -33,21 +30,11 @@ function StatGrid({ items }: { items: StatItem[] }) {
             key={`${item.label}-${i}`}
             variants={fadeUp}
             className={cn(
-              "px-3 py-5",
+              "min-h-[140px] px-3 py-6",
               !lastInRow && "sm:border-r sm:border-line",
               firstRow && items.length > 4 && "border-b border-line",
             )}
-          >
-            <div className="flex justify-center">
-              <Icon size={26} strokeWidth={1.25} className="text-gold" aria-hidden />
-            </div>
-            <div className="mt-3 text-left font-display text-2xl font-normal text-ink sm:text-[28px]">
-              <StatCounter value={item.stat} />
-            </div>
-            <p className="mt-1 text-left text-[0.66rem] uppercase leading-snug tracking-[0.06em] text-muted">
-              {item.label}
-            </p>
-          </motion.div>
+          />
         );
       })}
     </motion.div>
@@ -58,8 +45,10 @@ function WhyColumn({ heading, items }: { heading: React.ReactNode; items: StatIt
   return (
     <div>
       <Reveal className="text-center">
-        <span className="text-[13px] font-medium uppercase tracking-[0.16em] text-gold">Why</span>
-        <h2 className="mt-1 whitespace-nowrap font-display text-2xl font-normal uppercase tracking-[0.03em] text-gold sm:text-3xl xl:text-[40px]">
+        <span className="text-[15px] font-medium uppercase tracking-[0.22em] text-[#888888] [font-family:var(--font-nav),sans-serif]">
+          Why
+        </span>
+        <h2 className="mt-3 whitespace-nowrap text-[32px] font-normal uppercase tracking-[3px] text-[#bda588] [font-family:var(--font-launch),sans-serif] sm:text-[48px] sm:tracking-[4.8px]">
           {heading}
         </h2>
       </Reveal>
@@ -78,11 +67,11 @@ export default function WhyRenisinfra() {
 
   if (isPending) {
     return (
-      <section className="bg-background py-16 sm:py-20">
+      <section className="bg-background py-20 sm:py-24">
         <div className="mx-auto grid max-w-[1280px] grid-cols-1 gap-14 px-6 sm:grid-cols-2 sm:px-10">
           {Array.from({ length: 2 }).map((_, i) => (
             <div key={i} className="space-y-6">
-              <Skeleton className="mx-auto h-9 w-56" />
+              <Skeleton className="h-9 w-56" />
               <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
                 {Array.from({ length: 8 }).map((_, j) => (
                   <Skeleton key={j} className="h-24" />
@@ -100,7 +89,7 @@ export default function WhyRenisinfra() {
   if (whyItems.length === 0 && investItems.length === 0) return null;
 
   return (
-    <section id="why" className="relative bg-background py-16 sm:py-20">
+    <section id="why" className="relative bg-background py-20 sm:py-24">
       <div className="pointer-events-none absolute inset-y-0 left-1/2 hidden w-px -translate-x-1/2 bg-line sm:block" />
 
       <div className="mx-auto grid max-w-[1280px] grid-cols-1 gap-14 sm:grid-cols-2 sm:gap-0">

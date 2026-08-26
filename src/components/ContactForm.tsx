@@ -16,11 +16,15 @@ export default function ContactForm({
   tone = "light",
   /** Pre-selects an interest — used by the project detail enquiry form. */
   defaultInterest,
+  /** "boxed" gives each field a full rectangular border instead of the
+   *  default underline — opt-in per instance so other forms are unaffected. */
+  fieldVariant = "underline",
 }: {
   interests?: string[];
   heading?: string;
   tone?: "light" | "invert";
   defaultInterest?: string;
+  fieldVariant?: "underline" | "boxed";
 }) {
   const mutation = useSubmitInquiry();
   const [sent, setSent] = useState(false);
@@ -78,7 +82,14 @@ export default function ContactForm({
       {heading && <h3 className="font-display text-display-3">{heading}</h3>}
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-        <Input required name="name" placeholder="Full Name" autoComplete="name" tone={tone} />
+        <Input
+          required
+          name="name"
+          placeholder="Full Name"
+          autoComplete="name"
+          tone={tone}
+          variant={fieldVariant}
+        />
         <Input
           required
           name="phone"
@@ -86,6 +97,7 @@ export default function ContactForm({
           placeholder="Phone Number"
           autoComplete="tel"
           tone={tone}
+          variant={fieldVariant}
         />
       </div>
 
@@ -96,6 +108,7 @@ export default function ContactForm({
         placeholder="Email Address"
         autoComplete="email"
         tone={tone}
+        variant={fieldVariant}
       />
 
       {interests && interests.length > 0 && (
@@ -104,12 +117,19 @@ export default function ContactForm({
           name="interest"
           placeholder="Interested In"
           tone={tone}
+          variant={fieldVariant}
           defaultValue={defaultInterest ?? ""}
           options={interests.map((i) => ({ value: i, label: i }))}
         />
       )}
 
-      <Textarea name="message" rows={4} placeholder="Your Message" tone={tone} />
+      <Textarea
+        name="message"
+        rows={4}
+        placeholder="Your Message"
+        tone={tone}
+        variant={fieldVariant}
+      />
 
       {mutation.isError && (
         <p role="alert" className="text-body-sm text-red-500">
@@ -120,9 +140,9 @@ export default function ContactForm({
       <div className="pt-2">
         <Button
           type="submit"
-          variant="gold"
+          variant={fieldVariant === "boxed" ? "champagne" : "gold"}
           loading={mutation.isPending}
-          className="w-full sm:w-auto"
+          className={fieldVariant === "boxed" ? "w-full" : "w-full sm:w-auto"}
         >
           {mutation.isPending ? "Submitting…" : "Submit Enquiry"}
         </Button>

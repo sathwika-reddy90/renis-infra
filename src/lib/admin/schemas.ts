@@ -167,6 +167,20 @@ export const blogSchema = z.object({
 });
 export type BlogInput = z.infer<typeof blogSchema>;
 
+export const offerSchema = z.object({
+  title: req(),
+  description: req(),
+  discount: req(),
+  image: optUrl(),
+  startDate: optStr(),
+  endDate: optStr(),
+  ctaText: optStr(),
+  ctaLink: optUrl(),
+  priority: intField(),
+  enabled: z.boolean().default(true),
+});
+export type OfferInput = z.infer<typeof offerSchema>;
+
 export const siteSettingsSchema = z.object({
   siteName: req(),
   phone: req(),

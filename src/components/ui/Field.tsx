@@ -11,11 +11,15 @@ import { cn } from "@/lib/cn";
  * `tone="invert"` is for fields sitting on the ink/dark sections.
  */
 type Tone = "light" | "invert";
+/** "underline" is the original minimal style; "boxed" is a fully-bordered
+ *  rectangular field used where a reference design calls for it. */
+export type Variant = "underline" | "boxed";
 
-const control = (tone: Tone, hasError: boolean) =>
+const control = (tone: Tone, hasError: boolean, variant: Variant = "underline") =>
   cn(
-    "w-full border-b bg-transparent py-3 text-body-sm outline-none",
+    "w-full bg-transparent text-body-sm outline-none",
     "transition-colors duration-[var(--duration-base)]",
+    variant === "boxed" ? "border px-4 py-3.5" : "border-b py-3",
     tone === "light"
       ? "border-line text-ink placeholder:text-muted/70 focus:border-gold"
       : "border-white/25 text-white placeholder:text-white/50 focus:border-gold",
@@ -70,10 +74,10 @@ function Shell({
 
 /* ---------------------------------- Input --------------------------------- */
 
-export type InputProps = Common & React.ComponentPropsWithoutRef<"input">;
+export type InputProps = Common & { variant?: Variant } & React.ComponentPropsWithoutRef<"input">;
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
-  { label, error, hint, tone = "light", className, ...props },
+  { label, error, hint, tone = "light", variant = "underline", className, ...props },
   ref,
 ) {
   const auto = useId();
@@ -85,7 +89,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
         id={id}
         aria-invalid={error ? true : undefined}
         aria-describedby={error ? `${id}-error` : undefined}
-        className={control(tone, Boolean(error))}
+        className={control(tone, Boolean(error), variant)}
         {...props}
       />
     </Shell>
@@ -94,10 +98,10 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
 
 /* -------------------------------- Textarea -------------------------------- */
 
-export type TextareaProps = Common & React.ComponentPropsWithoutRef<"textarea">;
+export type TextareaProps = Common & { variant?: Variant } & React.ComponentPropsWithoutRef<"textarea">;
 
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function Textarea(
-  { label, error, hint, tone = "light", className, rows = 4, ...props },
+  { label, error, hint, tone = "light", variant = "underline", className, rows = 4, ...props },
   ref,
 ) {
   const auto = useId();
@@ -110,7 +114,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
         rows={rows}
         aria-invalid={error ? true : undefined}
         aria-describedby={error ? `${id}-error` : undefined}
-        className={cn(control(tone, Boolean(error)), "resize-none")}
+        className={cn(control(tone, Boolean(error), variant), "resize-none")}
         {...props}
       />
     </Shell>
@@ -120,12 +124,13 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
 /* --------------------------------- Select --------------------------------- */
 
 export type SelectProps = Common & {
+  variant?: Variant;
   options: { value: string; label: string }[];
   placeholder?: string;
 } & React.ComponentPropsWithoutRef<"select">;
 
 export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select(
-  { label, error, hint, tone = "light", className, options, placeholder, ...props },
+  { label, error, hint, tone = "light", variant = "underline", className, options, placeholder, ...props },
   ref,
 ) {
   const auto = useId();
@@ -139,7 +144,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
           aria-invalid={error ? true : undefined}
           aria-describedby={error ? `${id}-error` : undefined}
           className={cn(
-            control(tone, Boolean(error)),
+            control(tone, Boolean(error), variant),
             "cursor-pointer appearance-none pr-8",
             // Native option lists render on the OS surface, so they need a
             // readable colour even when the control itself is inverted.

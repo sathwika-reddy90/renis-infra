@@ -2,6 +2,7 @@ import { HydrationBoundary } from "@tanstack/react-query";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import FloatingChat from "@/components/layout/FloatingChat";
+import DailyOffersButton from "@/components/layout/DailyOffersButton";
 import SmoothScroll from "@/components/SmoothScroll";
 import { ScheduleVisitProvider } from "@/components/ScheduleVisitContext";
 import { prefetchSiteData } from "@/lib/query/prefetch";
@@ -62,6 +63,7 @@ export default async function SiteLayout({
         </main>
         <Footer />
         <FloatingChat />
+        <DailyOffersButton />
       </ScheduleVisitProvider>
     </HydrationBoundary>
   );

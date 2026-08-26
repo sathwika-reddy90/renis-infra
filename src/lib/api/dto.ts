@@ -20,6 +20,7 @@ import type { TeamMember } from "@/types/team";
 import type { FAQ } from "@/types/faq";
 import type { Amenity } from "@/types/amenity";
 import type { BlogPost } from "@/types/blog";
+import type { Offer, OfferStatus } from "@/types/offer";
 
 /* ------------------------------ Enum mapping ------------------------------- */
 
@@ -162,6 +163,20 @@ export interface ApiBlog {
   keywords: string[];
   createdAt: string;
   updatedAt: string;
+}
+
+export interface ApiOffer {
+  id: string;
+  title: string;
+  description: string;
+  discount: string;
+  image?: string;
+  startDate?: string;
+  endDate?: string;
+  ctaText?: string;
+  ctaLink?: string;
+  priority: number;
+  status: OfferStatus;
 }
 
 export interface ApiSiteSettings {
@@ -334,6 +349,20 @@ export const toAmenity = (a: ApiAmenity): Amenity => ({
   description: a.description,
   icon: a.icon,
   category: a.category,
+});
+
+export const toOffer = (o: ApiOffer): Offer => ({
+  id: o.id,
+  title: o.title,
+  description: o.description,
+  discount: o.discount,
+  image: toLocalAsset(o.image),
+  startDate: o.startDate,
+  endDate: o.endDate,
+  ctaText: o.ctaText,
+  ctaLink: o.ctaLink,
+  priority: o.priority,
+  status: o.status,
 });
 
 export const toBlogPost = (b: ApiBlog): BlogPost => ({

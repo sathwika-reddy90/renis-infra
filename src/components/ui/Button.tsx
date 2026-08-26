@@ -7,7 +7,7 @@ import { cn } from "@/lib/cn";
 
 type Ripple = { id: number; x: number; y: number };
 
-type Variant = "gold" | "outline" | "outline-dark" | "ghost" | "ink" | "link";
+type Variant = "gold" | "champagne" | "outline" | "outline-dark" | "ghost" | "ink" | "link";
 type Size = "sm" | "md" | "lg";
 
 type ButtonProps = {
@@ -41,6 +41,7 @@ const SIZES: Record<Size, string> = {
 
 const VARIANTS: Record<Variant, string> = {
   gold: "bg-gold text-white hover:bg-gold-deep",
+  champagne: "bg-[#bda588] text-white hover:bg-[#a8916f]",
   ink: "bg-ink text-white hover:bg-ink-800",
   // For dark backgrounds / photography.
   outline: "border border-white/40 text-white hover:border-white hover:bg-white/10",

@@ -6,7 +6,6 @@ import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion
 import { ArrowUpRight } from "lucide-react";
 import Container from "@/components/ui/Container";
 import Section from "@/components/ui/Section";
-import SectionHeading from "@/components/ui/SectionHeading";
 import Skeleton from "@/components/ui/Skeleton";
 import QueryView from "@/components/ui/QueryView";
 import Button from "@/components/ui/Button";
@@ -113,13 +112,16 @@ export default function ProjectShowcase() {
 
   return (
     <Section id="projects" tone="light" rhythm="lg" contained={false}>
-      <Container>
-        <SectionHeading
-          eyebrow="Our Portfolio"
-          title="Signature Residences"
-          description="A curated collection of addresses across Hyderabad's most sought-after corridors."
-          align="center"
-        />
+      <Container className="text-center">
+        <span className="text-[18px] font-medium uppercase tracking-[0.22em] text-[#888888] [font-family:var(--font-nav),sans-serif]">
+          Our Portfolio
+        </span>
+        <h2 className="mt-3 text-[26px] font-normal uppercase tracking-[0.02em] text-[#bda588] [font-family:var(--font-launch),sans-serif] sm:whitespace-nowrap sm:text-[48px]">
+          Signature Residences
+        </h2>
+        <p className="mx-auto mt-4 max-w-xl text-[15px] text-foreground [font-family:var(--font-nav),sans-serif] sm:max-w-none sm:whitespace-nowrap">
+          A curated collection of addresses across Hyderabad&apos;s most sought-after corridors.
+        </p>
       </Container>
 
       <Container className="mt-16 md:mt-20">

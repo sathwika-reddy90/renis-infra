@@ -12,6 +12,7 @@ export const RESOURCES = [
   "testimonials",
   "faqs",
   "amenities",
+  "offers",
   "inquiries",
   "settings",
   "users",
@@ -44,11 +45,12 @@ const WRITE_ACCESS: Record<Role, readonly Resource[] | "*"> = {
     "testimonials",
     "faqs",
     "amenities",
+    "offers",
     "inquiries",
     "settings",
     "media",
   ],
-  EDITOR: ["properties", "gallery", "blogs", "faqs", "testimonials", "media"],
+  EDITOR: ["properties", "gallery", "blogs", "faqs", "testimonials", "offers", "media"],
 };
 
 /**

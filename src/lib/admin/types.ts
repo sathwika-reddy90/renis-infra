@@ -242,6 +242,23 @@ export interface AdminSiteContent extends AdminEntity {
   nav: { label: string; href: string }[];
 }
 
+export const OFFER_STATUSES = ["ACTIVE", "SCHEDULED", "EXPIRED", "DISABLED"] as const;
+export type OfferStatusValue = (typeof OFFER_STATUSES)[number];
+
+export interface AdminOffer extends AdminEntity {
+  title: string;
+  description: string;
+  discount: string;
+  image?: string | null;
+  startDate?: string | null;
+  endDate?: string | null;
+  ctaText?: string | null;
+  ctaLink?: string | null;
+  priority: number;
+  enabled: boolean;
+  status: OfferStatusValue;
+}
+
 export const MEDIA_TYPES = ["IMAGE", "VIDEO", "DOCUMENT"] as const;
 export type MediaTypeValue = (typeof MEDIA_TYPES)[number];
 
