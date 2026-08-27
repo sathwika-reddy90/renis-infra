@@ -1,44 +1,35 @@
 "use client";
 
 import { motion } from "framer-motion";
+import {
+  Award,
+  Building2,
+  Compass,
+  MapPin,
+  ShieldCheck,
+  TrendingUp,
+  type LucideIcon,
+} from "lucide-react";
 import Reveal from "@/components/ui/Reveal";
 import { fadeUp, stagger, viewportOnce } from "@/lib/motion";
 
 interface WhyDemoItem {
   title: string;
-  desc: string;
+  icon: LucideIcon;
 }
 
 /** Demo copy for the "Why Reniesinfra?" column — placeholder until CMS-managed. */
 const WHY_US_ITEMS: WhyDemoItem[] = [
-  {
-    title: "Crafted for Elevated Living",
-    desc: "Thoughtfully designed residences combining architecture, craftsmanship and modern luxury.",
-  },
-  {
-    title: "A Legacy of Excellence",
-    desc: "A commitment to quality, transparency and exceptional residential experiences.",
-  },
-  {
-    title: "Designed Around You",
-    desc: "Every detail is considered to create refined spaces that feel personal, timeless and effortless.",
-  },
+  { title: "Crafted for Elevated Living", icon: Building2 },
+  { title: "A Legacy of Excellence", icon: Award },
+  { title: "Designed Around You", icon: Compass },
 ];
 
 /** Demo copy for the "Why Invest With Us?" column — placeholder until CMS-managed. */
 const INVEST_ITEMS: WhyDemoItem[] = [
-  {
-    title: "Prime Locations",
-    desc: "Strategically positioned residences in Hyderabad's most promising and established neighbourhoods.",
-  },
-  {
-    title: "Strong Growth Potential",
-    desc: "Projects designed around locations with long-term residential and investment potential.",
-  },
-  {
-    title: "Trusted Delivery",
-    desc: "A focused approach to quality, transparency and timely project execution.",
-  },
+  { title: "Prime Locations", icon: MapPin },
+  { title: "Strong Growth Potential", icon: TrendingUp },
+  { title: "Trusted Delivery", icon: ShieldCheck },
 ];
 
 function DemoList({ items }: { items: WhyDemoItem[] }) {
@@ -48,23 +39,25 @@ function DemoList({ items }: { items: WhyDemoItem[] }) {
       initial="hidden"
       whileInView="show"
       viewport={viewportOnce}
-      className="mt-12 space-y-8"
+      // Reference-style cells: gold icon over a small uppercase label, with
+      // thin vertical hairlines separating the three cells.
+      className="mt-10 grid grid-cols-3 divide-x divide-line sm:mt-12"
     >
-      {items.map((item, i) => (
+      {items.map((item) => (
         <motion.div
           key={item.title}
           variants={fadeUp}
-          className="border-t border-line pt-6 first:border-t-0 first:pt-0"
+          className="flex flex-col items-center px-2 py-2 text-center sm:px-4"
         >
-          <span className="text-[13px] font-semibold text-[#bda588] [font-family:var(--font-nav),sans-serif]">
-            {String(i + 1).padStart(2, "0")}
-          </span>
-          <h3 className="mt-2 text-[17px] font-medium text-[#1a1a1a] [font-family:var(--font-nav),sans-serif]">
+          <item.icon
+            size={34}
+            strokeWidth={1.25}
+            className="text-[#bda588] sm:h-10 sm:w-10"
+            aria-hidden
+          />
+          <h3 className="mx-auto mt-4 max-w-[180px] text-[11px] font-medium uppercase leading-[1.7] tracking-[0.14em] text-[#4a4b4b] [font-family:var(--font-nav),sans-serif] sm:text-[12px] sm:tracking-[0.16em]">
             {item.title}
           </h3>
-          <p className="mt-2 text-[14px] leading-relaxed text-[#4a4b4b] [font-family:var(--font-nav),sans-serif]">
-            {item.desc}
-          </p>
         </motion.div>
       ))}
     </motion.div>
@@ -73,12 +66,12 @@ function DemoList({ items }: { items: WhyDemoItem[] }) {
 
 function WhyColumn({ heading, items }: { heading: React.ReactNode; items: WhyDemoItem[] }) {
   return (
-    <div>
+    <div className="flex h-full flex-col">
       <Reveal className="text-center">
-        <span className="text-[15px] font-medium uppercase tracking-[0.22em] text-[#888888] [font-family:var(--font-nav),sans-serif]">
+        <span className="text-[15px] font-medium uppercase tracking-[0.22em] text-[#888888] [font-family:var(--font-nav),sans-serif] sm:text-[18px]">
           Why
         </span>
-        <h2 className="mt-3 whitespace-nowrap text-[32px] font-normal uppercase tracking-[3px] text-[#bda588] [font-family:var(--font-launch),sans-serif] sm:text-[48px] sm:tracking-[4.8px]">
+        <h2 className="mt-3 whitespace-nowrap text-[32px] font-normal uppercase tracking-[0.094em] text-[#bda588] [font-family:var(--font-launch),sans-serif] sm:text-[clamp(30px,4.2vw,48px)] sm:tracking-[0.1em]">
           {heading}
         </h2>
       </Reveal>
@@ -89,7 +82,7 @@ function WhyColumn({ heading, items }: { heading: React.ReactNode; items: WhyDem
 
 /**
  * Two equal columns split by a divider running the full section height, each
- * with a centred "Why" label, a one-line heading and demo content cards.
+ * with a centred "Why" label, a one-line heading and icon/label cells.
  * Content here is placeholder copy pending CMS management via /admin/content.
  */
 export default function WhyRenisinfra() {

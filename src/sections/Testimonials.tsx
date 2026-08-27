@@ -61,13 +61,14 @@ function ReviewsCarousel({ items }: { items: Testimonial[] }) {
     [pages.length],
   );
 
-  // Autoplay is suppressed for reduced-motion users, and pauses on hover so
-  // it can't yank a card away mid-read.
+  // Autoplay always runs (pausing on hover so it can't yank a card away
+  // mid-read). Reduced-motion users still get the rotation — the OS setting
+  // must not freeze the carousel — just with a crossfade instead of a slide.
   useEffect(() => {
-    if (pages.length < 2 || reduced || paused) return;
+    if (pages.length < 2 || paused) return;
     const id = setInterval(() => paginate(1), 2500);
     return () => clearInterval(id);
-  }, [paginate, pages.length, reduced, paused]);
+  }, [paginate, pages.length, paused]);
 
   if (pages.length === 0) return null;
   const current = pages[Math.min(page, pages.length - 1)];
@@ -94,10 +95,10 @@ function ReviewsCarousel({ items }: { items: Testimonial[] }) {
           <motion.div
             key={page}
             custom={dir}
-            initial={{ opacity: 0, x: dir >= 0 ? 40 : -40 }}
+            initial={{ opacity: 0, x: reduced ? 0 : dir >= 0 ? 40 : -40 }}
             animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: dir >= 0 ? -40 : 40 }}
-            transition={{ duration: 0.5, ease: easeLux }}
+            exit={{ opacity: 0, x: reduced ? 0 : dir >= 0 ? -40 : 40 }}
+            transition={{ duration: reduced ? 0.25 : 0.5, ease: easeLux }}
             className="grid grid-cols-1 gap-5 md:grid-cols-2"
           >
             {current.map((item) => (

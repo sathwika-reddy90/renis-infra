@@ -25,7 +25,20 @@ export function createApp(): Application {
   app.use(helmet());
   // `credentials: true` is required so the browser sends the HttpOnly refresh
   // cookie; a reflected allow-list origin (not "*") is required alongside credentials.
-  const corsOptions: cors.CorsOptions = { origin: corsOrigins, credentials: true };
+  // Vercel preview deployments get a fresh origin per deploy
+  // (renis-infra-<hash>-sathwika-reddy90s-projects.vercel.app), so they can't
+  // live in the static CORS_ORIGIN list — match them by pattern instead, or
+  // every API call from a preview build fails and its pages render as errors.
+  const VERCEL_PREVIEW_ORIGIN =
+    /^https:\/\/renis-infra-[a-z0-9-]+-sathwika-reddy90s-projects\.vercel\.app$/;
+  const corsOptions: cors.CorsOptions = {
+    origin: (origin, callback) => {
+      const allowed =
+        !origin || corsOrigins.includes(origin) || VERCEL_PREVIEW_ORIGIN.test(origin);
+      callback(null, allowed);
+    },
+    credentials: true,
+  };
   app.use(cors(corsOptions));
   app.options("*", cors(corsOptions));
   app.use(compression());

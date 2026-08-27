@@ -95,7 +95,10 @@ export default async function PropertyDetailPage({
         // Serialised from our own data, not user input.
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <PropertyDetailContent slug={slug} />
+      {/* type-home: inherit the homepage's Inter/Libertinus type system. */}
+      <div className="type-home">
+        <PropertyDetailContent slug={slug} />
+      </div>
     </HydrationBoundary>
   );
 }

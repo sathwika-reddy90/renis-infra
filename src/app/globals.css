@@ -370,3 +370,46 @@ body {
     scroll-behavior: auto !important;
   }
 }
+
+/*
+ * Invisible page scrollbar. The thumb/track never paint, but scrolling —
+ * wheel, keys, touch, Lenis smoothing — is completely untouched.
+ * `scrollbar-width` covers Firefox; the ::-webkit rules cover
+ * Chrome/Safari/Edge; -ms-overflow-style covers legacy Edge/IE.
+ */
+html {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  background: transparent;
+}
+
+/*
+ * Homepage type system, applied as a scope (project detail pages).
+ *
+ * The homepage sections set their faces inline: Inter (--font-nav) for body
+ * copy and Libertinus (--font-launch) for display headings. Pages wrapped in
+ * `.type-home` inherit that same pairing without rewriting every utility
+ * class: body text falls through inheritance to Inter, while `.font-display`
+ * elements switch from Playfair to Libertinus at its single 400 weight (the
+ * weight the homepage headings use — heavier values would only synthesize).
+ *
+ * Deliberately unlayered: unlayered author styles outrank @layer utilities,
+ * so these win over `font-display` / `font-bold` inside the scope while
+ * leaving the rest of the site (and the admin CMS) untouched.
+ */
+.type-home,
+.type-home :where(button, input, textarea, select) {
+  font-family: var(--font-nav), sans-serif;
+}
+
+.type-home .font-display {
+  font-family: var(--font-launch), sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
