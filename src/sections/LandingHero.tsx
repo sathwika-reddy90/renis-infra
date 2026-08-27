@@ -2,19 +2,20 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import Skeleton from "@/components/ui/Skeleton";
 import { useSiteContent } from "@/lib/query/hooks";
 
 /*
- * Rooftop-pool-over-skyline hero image. The site's imagery is Unsplash-hosted
- * throughout (next.config allowlists images.unsplash.com); this is the closest
- * available match to the promo-hero composition: infinity pool, timber deck,
- * loungers and a high-rise skyline in daylight.
+ * Brand hero banner, hosted in the site's Supabase `uploads` bucket. This is
+ * a fully composed 1920×1080 artwork — logo, headline, copy, CTA and icon
+ * row are baked into the image itself — so the hero renders it as-is with no
+ * overlay panel, no mirroring and no offset. On portrait screens the banner
+ * letterboxes (object-contain) over the ink background so its text stays
+ * readable instead of being cropped away.
  */
 const HERO_IMAGE =
-  "https://images.unsplash.com/photo-1783667818798-38903081f98f?auto=format&fit=crop&w=2400&q=85";
+  "https://qoyyenhmwkcnvcbsultd.supabase.co/storage/v1/object/public/uploads/reneis%20main%20page%20.1.jpg";
 
 /**
  * Opening curtain.
@@ -64,14 +65,14 @@ export default function LandingHero() {
       >
         <Image
           src={HERO_IMAGE}
-          alt="Rooftop infinity pool overlooking the city skyline"
+          alt="RENIES INFRA — Hyderabad's premium projects, one destination"
           fill
           priority
           sizes="100vw"
           quality={90}
-          // Mirrored so the skyline reads on the open right half, matching the
-          // reference composition (promo panel left, towers right).
-          className="-scale-x-100 object-cover object-[38%_center]"
+          // The artwork's text hugs its left edge, so anchor any cover-crop to
+          // the left — whatever the aspect ratio, only the building side crops.
+          className="object-contain sm:object-cover sm:object-left"
         />
       </motion.div>
       {!reduced && (
@@ -80,68 +81,20 @@ export default function LandingHero() {
     </>
   );
 
-  /* Blue promotional panel — left portion of the hero, per the reference. */
-  const panel = (
-    <div className="absolute inset-y-0 left-0 z-10 flex w-full items-center justify-center bg-gradient-to-b from-[#2d7fae]/95 via-[#226d9c]/95 to-[#175a86]/95 px-8 pt-20 sm:w-[75%] md:w-[55%] lg:w-[41%]">
-      <div className="flex w-full max-w-md flex-col items-center text-center">
-        <p className="font-script text-[3.2rem] leading-[0.9] text-white md:text-[3.6rem]">
-          Summer
-        </p>
-        <h1 className="mt-1 font-display text-[3.2rem] font-bold uppercase leading-none tracking-[0.02em] text-white md:text-[4rem]">
-          Bonanza
-        </h1>
-        <p className="mt-5 text-[1rem] font-semibold uppercase tracking-[0.14em] text-white md:text-[1.15rem]">
-          Own Your Dubai Address
-        </p>
-
-        <div className="mt-9 flex w-full items-stretch justify-center gap-5">
-          <div className="flex w-[12rem] flex-col items-center justify-center rounded-xl bg-white px-4 py-4">
-            <span className="text-[2rem] font-extrabold leading-tight text-[#12263c]">
-              0.5<span className="align-top text-[1.2rem]">%</span>
-            </span>
-            <span className="text-[1rem] font-bold uppercase leading-snug text-[#12263c]">
-              Pay Monthly
-            </span>
-          </div>
-          <div className="flex w-[12rem] flex-col items-center justify-center rounded-xl bg-white px-4 py-4">
-            <span className="text-[2rem] font-extrabold leading-tight text-[#12263c]">40/60</span>
-            <span className="text-[1rem] font-bold uppercase leading-snug text-[#12263c]">
-              Payment Plan
-            </span>
-          </div>
-        </div>
-
-        <p className="mt-8 text-[1.05rem] uppercase tracking-[0.08em] text-white">
-          <span className="font-bold">10%</span>{" "}
-          <span className="font-medium">Down Payment</span>
-        </p>
-
-        <Link
-          href="/contact"
-          className="mt-9 inline-flex h-[3.5rem] w-[18rem] max-w-full items-center justify-center rounded-full bg-[#c9a878] text-[0.95rem] font-semibold uppercase tracking-[0.16em] text-white transition-colors duration-[var(--duration-base)] hover:bg-[#b8975f]"
-        >
-          Register Now
-        </Link>
-      </div>
-    </div>
-  );
-
   // Reduced motion gets the same composition with no fixed layer and no
   // scroll-linked transforms — an ordinary full-bleed hero that scrolls away.
   if (reduced) {
     return (
-      <section data-hero-dark className="relative h-screen w-full overflow-hidden">
+      <section data-hero-dark className="relative h-screen w-full overflow-hidden bg-ink">
         {media}
-        {panel}
       </section>
     );
   }
 
   return (
     <section data-hero-dark className="relative h-screen w-full">
-      <motion.div style={{ visibility }} className="fixed inset-0 z-0 overflow-hidden">
+      <motion.div style={{ visibility }} className="fixed inset-0 z-0 overflow-hidden bg-ink">
         {media}
-        {panel}
       </motion.div>
     </section>
   );
