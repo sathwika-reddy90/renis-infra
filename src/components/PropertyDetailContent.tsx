@@ -84,7 +84,6 @@ function ProjectHero({
           />
         </motion.div>
       </AnimatePresence>
-      <div className="absolute inset-0 scrim-full" />
 
       <Container className="relative flex min-h-[86vh] flex-col justify-end pb-16 pt-32">
         <motion.div
