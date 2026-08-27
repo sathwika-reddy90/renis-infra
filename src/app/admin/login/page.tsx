@@ -24,10 +24,16 @@ export default function LoginPage() {
       // AuthGate handles a forced password change; otherwise land on the dashboard.
       router.replace("/admin/dashboard");
     } catch (error) {
-      const message =
-        error instanceof ApiError && error.status === 429
-          ? error.message
-          : "Invalid email or password";
+      // Only a real 401 means bad credentials; surfacing other failures
+      // (rate limit, network, server errors) as "invalid password" sends
+      // users chasing the wrong problem.
+      let message = "Invalid email or password";
+      if (!(error instanceof ApiError)) {
+        // fetch threw before a response existed (network / CORS failure).
+        message = "Unable to reach the server. Please check your connection and try again.";
+      } else if (error.status !== 401) {
+        message = error.message;
+      }
       setError("password", { message });
     }
   });

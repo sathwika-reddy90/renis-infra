@@ -15,6 +15,12 @@ import { ApiResponse } from "./utils/ApiResponse";
 export function createApp(): Application {
   const app = express();
 
+  // Behind Railway's reverse proxy: trust the first X-Forwarded-* hop so
+  // req.ip is the real client address. Without this, every visitor shares the
+  // proxy's IP and the login rate limiter becomes one global bucket, locking
+  // out all devices at once.
+  app.set("trust proxy", 1);
+
   // Security & performance middleware.
   app.use(helmet());
   // `credentials: true` is required so the browser sends the HttpOnly refresh

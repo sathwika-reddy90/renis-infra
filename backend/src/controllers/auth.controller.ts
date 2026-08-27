@@ -13,7 +13,12 @@ function cookieOptions(): CookieOptions {
   return {
     httpOnly: true,
     secure: isProduction,
-    sameSite: "lax",
+    // The admin frontend (Vercel) and this API (Railway) are cross-site, and
+    // browsers never attach SameSite=Lax cookies to cross-site fetches — the
+    // refresh flow silently breaks. "None" (which requires Secure) is the only
+    // value that works cross-site; keep "lax" for same-site local dev, where
+    // Secure cookies would be dropped over http.
+    sameSite: isProduction ? "none" : "lax",
     path: COOKIE_PATH,
     domain: env.COOKIE_DOMAIN,
     maxAge: env.REFRESH_TOKEN_TTL_DAYS * 24 * 60 * 60 * 1000,
