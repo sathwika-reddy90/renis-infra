@@ -1,5 +1,6 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { env } from "../config/env";
+import { ApiError } from "../utils/ApiError";
 import type { StorageProvider, StoredFile, StoredFileInput } from "./StorageProvider";
 
 export class SupabaseStorageProvider implements StorageProvider {
@@ -52,7 +53,12 @@ export class SupabaseStorageProvider implements StorageProvider {
       });
 
     if (error) {
-      throw new Error(`Supabase upload failed: ${error.message}`);
+      // Surfaced as-is to the admin UI: the caller must see that storage
+      // rejected the file, never a success with an unusable local URL.
+      throw ApiError.internal(
+        "Image upload to storage failed. The file was not saved — please try again.",
+        error.message,
+      );
     }
 
     return {
