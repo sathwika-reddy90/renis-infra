@@ -390,6 +390,23 @@ body::-webkit-scrollbar {
 }
 
 /*
+ * Landing hero banner: the artwork is a fully composed 16:9 image (logo,
+ * headline and icon row are baked in), so `object-cover` is only safe while
+ * the viewport stays near that shape. On short, wide viewports — a laptop
+ * screen minus browser chrome, or Windows display scaling shrinking the CSS
+ * viewport — cover gouges the top and bottom of the composition (logo and
+ * icon row). Past ~1.95:1 the full artwork is fitted instead; the small
+ * symmetric bars blend into the banner's own dark field. Unlayered so it
+ * outranks the object-cover utility on the element.
+ */
+@media (min-width: 640px) and (min-aspect-ratio: 39/20) {
+  .hero-banner {
+    object-fit: contain;
+    object-position: center;
+  }
+}
+
+/*
  * Homepage type system, applied as a scope (project detail pages).
  *
  * The homepage sections set their faces inline: Inter (--font-nav) for body

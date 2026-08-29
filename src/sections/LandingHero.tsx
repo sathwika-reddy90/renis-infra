@@ -72,7 +72,7 @@ export default function LandingHero() {
           quality={90}
           // The artwork's text hugs its left edge, so anchor any cover-crop to
           // the left — whatever the aspect ratio, only the building side crops.
-          className="object-contain sm:object-cover sm:object-left"
+          className="hero-banner object-contain sm:object-cover sm:object-left"
         />
       </motion.div>
       {!reduced && (
