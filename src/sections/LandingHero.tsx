@@ -15,7 +15,7 @@ import { useSiteContent } from "@/lib/query/hooks";
  * readable instead of being cropped away.
  */
 const HERO_IMAGE =
-  "https://qoyyenhmwkcnvcbsultd.supabase.co/storage/v1/object/public/uploads/reneis%20main%20page%20.1.jpg";
+  "https://qoyyenhmwkcnvcbsultd.supabase.co/storage/v1/object/public/uploads/renies-hero-banner-v3.jpg";
 
 /**
  * Opening curtain.
