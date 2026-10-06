@@ -37,7 +37,7 @@ export default function DailyOffersTeaser({
             }
           }}
           aria-label="View Daily Offers"
-          className="fixed bottom-[160px] right-6 z-[60] w-[min(272px,calc(100vw-3rem))] cursor-pointer border border-white/10 bg-ink p-5 shadow-[0_16px_40px_rgba(11,23,48,0.35)] transition-transform duration-[var(--duration-base)] hover:-translate-y-0.5 md:bottom-[192px]"
+          className="floating-widget fixed bottom-[160px] right-6 z-[60] w-[min(272px,calc(100vw-3rem))] cursor-pointer border border-white/10 bg-ink p-5 shadow-[0_16px_40px_rgba(11,23,48,0.35)] transition-transform duration-[var(--duration-base)] hover:-translate-y-0.5 md:bottom-[192px]"
         >
           <button
             type="button"

@@ -148,10 +148,10 @@ export default function Testimonials() {
         <span className="text-[18px] font-medium uppercase tracking-[0.22em] text-[#888888] [font-family:var(--font-nav),sans-serif]">
           Reviews
         </span>
-        <h2 className="mt-3 text-[26px] font-normal uppercase tracking-[0.02em] text-[#bda588] [font-family:var(--font-launch),sans-serif] sm:whitespace-nowrap sm:text-[48px]">
+        <h2 className="mt-3 text-[26px] font-normal uppercase tracking-[0.02em] text-[#bda588] [font-family:var(--font-launch),sans-serif] sm:text-[48px] lg:whitespace-nowrap">
           A Reputation Built on Trust
         </h2>
-        <p className="mx-auto mt-4 max-w-xl text-[15px] text-foreground [font-family:var(--font-nav),sans-serif] sm:max-w-none sm:whitespace-nowrap">
+        <p className="mx-auto mt-4 max-w-xl text-[15px] text-foreground [font-family:var(--font-nav),sans-serif] sm:max-w-none lg:whitespace-nowrap">
           Thousands of verified reviews from satisfied homeowners and investors across Hyderabad.
         </p>
 

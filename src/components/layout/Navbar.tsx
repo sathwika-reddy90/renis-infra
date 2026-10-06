@@ -183,7 +183,7 @@ export default function Navbar() {
         <Container className="flex h-[4.5rem] items-center justify-between lg:h-20">
           {/* Compact header groups the menu toggle with the logo on the left,
               mirroring the reference layout. */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 max-[360px]:gap-3">
             <button
               type="button"
               aria-label={open ? "Close menu" : "Open menu"}
@@ -196,10 +196,10 @@ export default function Navbar() {
             </button>
             <Link href="/" className="flex items-center gap-3" aria-label="RENIESINFRA home">
               <span className="flex items-baseline leading-none [font-family:var(--font-sans),sans-serif]">
-                <span className="text-[2.05rem] font-extrabold italic tracking-tight text-[#C9A878] lg:text-[2.35rem]">
+                <span className="text-[2.05rem] font-extrabold italic tracking-tight text-[#C9A878] max-[360px]:text-[1.75rem] lg:text-[2.35rem]">
                   RENIES
                 </span>
-                <span className="ml-2 text-[1.2rem] font-extrabold italic tracking-tight text-white lg:text-[1.4rem]">
+                <span className="ml-2 text-[1.2rem] font-extrabold italic tracking-tight text-white max-[360px]:text-[1.05rem] lg:text-[1.4rem]">
                   infra
                 </span>
               </span>
@@ -303,7 +303,7 @@ export default function Navbar() {
 
           {/* Compact header right side: call + WhatsApp icons, per the
               reference layout. */}
-          <div className="flex items-center gap-5 lg:hidden">
+          <div className="flex items-center gap-5 max-[360px]:gap-4 lg:hidden">
             <a href="tel:+919000012345" aria-label="Call us" className="text-white">
               <Phone size={20} aria-hidden />
             </a>

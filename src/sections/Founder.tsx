@@ -64,7 +64,7 @@ export default function Founder({
                 />
 
                 <div className="flex flex-col items-center justify-center bg-white p-8 text-center md:p-10 lg:p-12">
-                  <span className="whitespace-nowrap text-[18px] font-medium uppercase tracking-[0.18em] text-[#4d4d4d] [font-family:var(--font-nav),sans-serif]">
+                  <span className="whitespace-nowrap text-[18px] font-medium uppercase tracking-[0.18em] text-[#4d4d4d] [font-family:var(--font-nav),sans-serif] max-xl:whitespace-normal">
                     Founder &amp; Chairman of RENIESINFRA
                   </span>
                   <h2 className="mt-2 text-4xl font-normal uppercase tracking-[0.04em] text-[#bda588] [font-family:var(--font-launch),sans-serif] md:text-5xl">

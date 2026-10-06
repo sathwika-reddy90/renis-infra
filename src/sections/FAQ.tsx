@@ -23,10 +23,10 @@ export default function FAQ() {
   return (
     <Section id="faq" tone="light" rhythm="md">
       <div className="text-center">
-        <h2 className="text-[26px] font-normal uppercase tracking-[0.02em] text-[#bda588] [font-family:var(--font-launch),sans-serif] sm:whitespace-nowrap sm:text-[48px]">
+        <h2 className="text-[26px] font-normal uppercase tracking-[0.02em] text-[#bda588] [font-family:var(--font-launch),sans-serif] sm:text-[48px] lg:whitespace-nowrap">
           Frequently Asked Questions
         </h2>
-        <p className="mx-auto mt-4 max-w-xl text-[15px] text-foreground [font-family:var(--font-nav),sans-serif] sm:max-w-none sm:whitespace-nowrap">
+        <p className="mx-auto mt-4 max-w-xl text-[15px] text-foreground [font-family:var(--font-nav),sans-serif] sm:max-w-none lg:whitespace-nowrap">
           Everything you need to know before beginning your journey with RENIESINFRA.
         </p>
       </div>

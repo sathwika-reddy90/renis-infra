@@ -11,7 +11,7 @@ export default function AwardsRecognition() {
         <span className="text-[18px] font-medium uppercase tracking-[0.22em] text-[#4a4b4b] [font-family:var(--font-nav),sans-serif]">
           Recognition
         </span>
-        <h2 className="mt-3 text-[26px] font-normal uppercase tracking-[0.02em] text-[#bda588] [font-family:var(--font-launch),sans-serif] sm:whitespace-nowrap sm:text-[48px]">
+        <h2 className="mt-3 text-[26px] font-normal uppercase tracking-[0.02em] text-[#bda588] [font-family:var(--font-launch),sans-serif] sm:text-[48px] lg:whitespace-nowrap">
           Awards &amp; Recognition
         </h2>
 

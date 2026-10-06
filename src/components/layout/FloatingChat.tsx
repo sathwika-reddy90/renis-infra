@@ -13,7 +13,7 @@ export default function FloatingChat() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Chat with us on WhatsApp"
-      className="fixed bottom-6 right-6 z-[60] flex h-16 w-16 items-center justify-center rounded-full bg-[#c9a878] shadow-[0_6px_24px_rgba(11,23,48,0.28)] transition-colors duration-[var(--duration-base)] hover:bg-[#b8975f]"
+      className="floating-widget fixed bottom-6 right-6 z-[60] flex h-16 w-16 items-center justify-center rounded-full bg-[#c9a878] shadow-[0_6px_24px_rgba(11,23,48,0.28)] transition-colors duration-[var(--duration-base)] hover:bg-[#b8975f]"
     >
       <svg width="30" height="30" viewBox="0 0 24 24" fill="none" aria-hidden>
         <path

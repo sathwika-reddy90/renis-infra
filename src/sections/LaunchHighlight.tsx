@@ -50,7 +50,7 @@ export default function LaunchHighlight() {
         <div className="mt-12 flex flex-wrap items-center justify-center gap-5 [font-family:var(--font-nav),sans-serif]">
           <Link
             href={launch.discoverHref}
-            className="inline-flex h-[59px] min-w-[233px] items-center justify-center gap-2.5 rounded-none bg-[#555555] px-8 text-[14px] font-medium uppercase tracking-[1.4px] text-white transition-colors duration-[var(--duration-base)] hover:bg-[#444444]"
+            className="inline-flex h-[59px] min-w-[233px] max-[360px]:w-full max-[360px]:min-w-0 items-center justify-center gap-2.5 rounded-none bg-[#555555] px-8 text-[14px] font-medium uppercase tracking-[1.4px] text-white transition-colors duration-[var(--duration-base)] hover:bg-[#444444]"
           >
             <ExternalLink size={16} aria-hidden />
             Discover
@@ -58,7 +58,7 @@ export default function LaunchHighlight() {
           <button
             type="button"
             onClick={openVisitModal}
-            className="inline-flex h-[59px] min-w-[294px] cursor-pointer items-center justify-center rounded-none border border-[#bda588] bg-[#bda588] px-8 text-[14px] font-medium uppercase tracking-[1.4px] text-white transition-colors duration-[var(--duration-base)] hover:bg-[#ac9376]"
+            className="inline-flex h-[59px] min-w-[294px] max-[360px]:w-full max-[360px]:min-w-0 cursor-pointer items-center justify-center rounded-none border border-[#bda588] bg-[#bda588] px-8 text-[14px] font-medium uppercase tracking-[1.4px] text-white transition-colors duration-[var(--duration-base)] hover:bg-[#ac9376]"
           >
             Register Interest
           </button>

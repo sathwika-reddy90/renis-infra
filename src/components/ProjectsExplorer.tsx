@@ -228,7 +228,7 @@ export default function ProjectsExplorer() {
                 />
               </label>
 
-              <div className="flex items-center gap-5">
+              <div className="flex items-center gap-5 max-sm:flex-wrap max-sm:gap-y-2">
                 <p className="whitespace-nowrap text-[0.72rem] uppercase tracking-[0.18em] text-muted">
                   {results.isPending ? "…" : `${total} ${total === 1 ? "Residence" : "Residences"}`}
                 </p>

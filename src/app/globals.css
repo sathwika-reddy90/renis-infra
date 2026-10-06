@@ -407,6 +407,71 @@ body::-webkit-scrollbar {
 }
 
 /*
+ * Landing hero on portrait screens. Neither full-height option works there:
+ * cover crops the banner's copy mid-headline, and the whole banner fitted to
+ * the width is a thin strip floating in a screen-tall empty field. So the
+ * banner becomes a band directly under the header and the section shrinks to
+ * it, letting the next section follow straight on. Portrait tablets show the
+ * whole 16:9 banner; phones frame its left (copy) 52% — headline, body copy,
+ * CTA and icon row all stay fully visible at about twice the size. The fixed
+ * curtain layer and its scroll effects are unchanged.
+ */
+.landing-hero {
+  --landing-header: 4.5rem;
+  --landing-band: 56.25vw;
+}
+@media (max-width: 639.98px) {
+  .landing-hero {
+    --landing-band: 108vw;
+  }
+}
+@media (min-width: 1024px) {
+  .landing-hero {
+    --landing-header: 5rem;
+  }
+}
+@media (max-aspect-ratio: 1/1) {
+  .landing-hero {
+    height: calc(var(--landing-header) + var(--landing-band));
+  }
+  .landing-hero-media {
+    top: var(--landing-header);
+    bottom: auto;
+    height: var(--landing-band);
+  }
+  .landing-hero .hero-banner {
+    object-fit: cover;
+    object-position: left center;
+  }
+}
+
+/*
+ * Featured-project panels on portrait screens. The renders are 16:9 with the
+ * project name baked in on the left third, so a full-height cover crop on a
+ * phone cuts the name mid-word and most of the building. Fit the whole render
+ * over the ink field instead; the pinned panel stack itself is unchanged.
+ */
+@media (max-aspect-ratio: 1/1) {
+  .showcase-media {
+    background-color: var(--color-ink);
+  }
+  .showcase-media img {
+    object-fit: contain;
+  }
+}
+
+/*
+ * Project pages show a sticky Call / WhatsApp / Enquire bar below md. Lift
+ * the floating chat and Daily Offers column above it so the bubbles never
+ * sit on top of the bar's buttons.
+ */
+@media (max-width: 767.98px) {
+  body:has(.mobile-action-bar) .floating-widget {
+    translate: 0 -4rem;
+  }
+}
+
+/*
  * Homepage type system, applied as a scope (project detail pages).
  *
  * The homepage sections set their faces inline: Inter (--font-nav) for body

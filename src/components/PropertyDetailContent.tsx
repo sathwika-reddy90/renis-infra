@@ -556,7 +556,7 @@ export default function PropertyDetailContent({ slug }: { slug: string }) {
 
       {/* Sticky mobile action bar */}
       <div
-        className="fixed inset-x-0 bottom-0 grid grid-cols-3 border-t border-line bg-white/95 backdrop-blur-md md:hidden"
+        className="mobile-action-bar fixed inset-x-0 bottom-0 grid grid-cols-3 border-t border-line bg-white/95 backdrop-blur-md md:hidden"
         style={{ zIndex: "var(--z-sticky)" }}
       >
         {phone && (

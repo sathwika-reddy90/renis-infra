@@ -38,7 +38,7 @@ export default function DailyOffersButton() {
         whileHover={{ scale: 1.08 }}
         whileTap={{ scale: 0.96 }}
         transition={{ duration: 0.3, ease: easeLux }}
-        className="group fixed bottom-[92px] right-6 z-[60] flex h-12 w-12 items-center justify-center rounded-full bg-gold shadow-[var(--shadow-lift)] transition-colors duration-[var(--duration-base)] hover:bg-gold-deep md:bottom-[104px] md:h-16 md:w-16"
+        className="floating-widget group fixed bottom-[92px] right-6 z-[60] flex h-12 w-12 items-center justify-center rounded-full bg-gold shadow-[var(--shadow-lift)] transition-colors duration-[var(--duration-base)] hover:bg-gold-deep md:bottom-[104px] md:h-16 md:w-16"
       >
         <BadgePercent size={24} className="text-white md:h-7 md:w-7" aria-hidden />
         <span

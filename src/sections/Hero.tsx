@@ -56,7 +56,7 @@ export default function Hero() {
             ref={(el) => {
               images.current[i] = el;
             }}
-            className="absolute inset-0 will-change-transform"
+            className="showcase-media absolute inset-0 will-change-transform"
           >
             <Image
               src={slide.featuredImage || "/images/placeholder-project.jpg"}

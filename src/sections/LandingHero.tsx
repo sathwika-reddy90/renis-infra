@@ -10,9 +10,8 @@ import { useSiteContent } from "@/lib/query/hooks";
  * Brand hero banner, hosted in the site's Supabase `uploads` bucket. This is
  * a fully composed 1920×1080 artwork — logo, headline, copy, CTA and icon
  * row are baked into the image itself — so the hero renders it as-is with no
- * overlay panel, no mirroring and no offset. On portrait screens the banner
- * letterboxes (object-contain) over the ink background so its text stays
- * readable instead of being cropped away.
+ * overlay panel, no mirroring and no offset. Portrait screens frame it as a
+ * band directly under the header instead — see `.landing-hero` in globals.css.
  */
 const HERO_IMAGE =
   "https://qoyyenhmwkcnvcbsultd.supabase.co/storage/v1/object/public/uploads/renies-hero-banner-v3.jpg";
@@ -61,7 +60,7 @@ export default function LandingHero() {
     <>
       <motion.div
         style={reduced ? undefined : { scale: imageScale, y: imageY }}
-        className="absolute inset-0 will-change-transform"
+        className="landing-hero-media absolute inset-0 will-change-transform"
       >
         <Image
           src={HERO_IMAGE}
@@ -85,14 +84,14 @@ export default function LandingHero() {
   // scroll-linked transforms — an ordinary full-bleed hero that scrolls away.
   if (reduced) {
     return (
-      <section data-hero-dark className="relative h-screen w-full overflow-hidden bg-ink">
+      <section data-hero-dark className="landing-hero relative h-screen w-full overflow-hidden bg-ink">
         {media}
       </section>
     );
   }
 
   return (
-    <section data-hero-dark className="relative h-screen w-full">
+    <section data-hero-dark className="landing-hero relative h-screen w-full">
       <motion.div style={{ visibility }} className="fixed inset-0 z-0 overflow-hidden bg-ink">
         {media}
       </motion.div>

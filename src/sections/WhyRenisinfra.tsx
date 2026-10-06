@@ -71,7 +71,7 @@ function WhyColumn({ heading, items }: { heading: React.ReactNode; items: WhyDem
         <span className="text-[15px] font-medium uppercase tracking-[0.22em] text-[#888888] [font-family:var(--font-nav),sans-serif] sm:text-[18px]">
           Why
         </span>
-        <h2 className="mt-3 whitespace-nowrap text-[32px] font-normal uppercase tracking-[0.094em] text-[#bda588] [font-family:var(--font-launch),sans-serif] sm:text-[clamp(30px,4.2vw,48px)] sm:tracking-[0.1em]">
+        <h2 className="mt-3 whitespace-nowrap text-[32px] font-normal uppercase tracking-[0.094em] text-[#bda588] [font-family:var(--font-launch),sans-serif] max-[360px]:text-[28px] sm:text-[clamp(28px,4.2vw,48px)] sm:tracking-[0.1em]">
           {heading}
         </h2>
       </Reveal>
