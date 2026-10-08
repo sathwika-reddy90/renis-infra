@@ -1,13 +1,63 @@
 "use client";
 
-import Image from "next/image";
+import type { CSSProperties } from "react";
+import Image, { getImageProps } from "next/image";
 import { useReducedMotion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import Container from "@/components/ui/Container";
 import Button from "@/components/ui/Button";
+import { cn } from "@/lib/cn";
 import { useCinematicScroll } from "@/lib/useCinematicScroll";
-import { heroProjects } from "@/lib/homeProjects";
+import { HERO_MOBILE_IMAGES, heroProjects, type MobileArt } from "@/lib/homeProjects";
 import { useProjects } from "@/lib/query/hooks";
+
+/** Upright phones get the portrait artwork. Must match `.has-mobile-art` in globals.css. */
+const MOBILE_ART_MEDIA = "(max-width: 767px) and (max-aspect-ratio: 3/4)";
+
+/**
+ * A panel's photograph. With portrait artwork available, a <picture> lets the
+ * browser fetch exactly one file — the portrait render on an upright phone,
+ * the existing desktop image everywhere else (same src, sizes and quality as
+ * before, so desktop is untouched).
+ */
+function SlideImage({
+  src,
+  mobile,
+  alt,
+  first,
+}: {
+  src: string;
+  mobile?: MobileArt;
+  alt: string;
+  first: boolean;
+}) {
+  const common = { fill: true, sizes: "100vw", quality: 90, className: "object-cover" };
+  if (!mobile) return <Image src={src} alt={alt} priority={first} {...common} />;
+
+  const {
+    props: { srcSet: mobileSrcSet },
+  } = getImageProps({ ...common, src: mobile.src, alt });
+  // `priority` would preload the desktop file on phones too; eager + high
+  // fetch priority fetches whichever source the browser actually picks.
+  const { props } = getImageProps({
+    ...common,
+    src,
+    alt,
+    ...(first ? ({ loading: "eager", fetchPriority: "high" } as const) : {}),
+  });
+
+  return (
+    <picture>
+      <source media={MOBILE_ART_MEDIA} srcSet={mobileSrcSet} sizes="100vw" />
+      {/* --art-focus is only read by the phone rule for `.has-mobile-art`. */}
+      <img
+        {...props}
+        alt={alt}
+        style={{ ...props.style, ...(mobile.focus ? { "--art-focus": mobile.focus } : {}) } as CSSProperties}
+      />
+    </picture>
+  );
+}
 
 /**
  * Pinned, scroll-scrubbed panel stack. This is the homepage's single
@@ -56,16 +106,16 @@ export default function Hero() {
             ref={(el) => {
               images.current[i] = el;
             }}
-            className="showcase-media absolute inset-0 will-change-transform"
+            className={cn(
+              "showcase-media absolute inset-0 will-change-transform",
+              HERO_MOBILE_IMAGES[slide.slug] && "has-mobile-art",
+            )}
           >
-            <Image
+            <SlideImage
               src={slide.featuredImage || "/images/placeholder-project.jpg"}
+              mobile={HERO_MOBILE_IMAGES[slide.slug]}
               alt={slide.title}
-              fill
-              priority={i === 0}
-              sizes="100vw"
-              quality={90}
-              className="object-cover"
+              first={i === 0}
             />
           </div>
           <div className="absolute inset-0 scrim-hero" />

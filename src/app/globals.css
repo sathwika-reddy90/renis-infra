@@ -446,6 +446,61 @@ body::-webkit-scrollbar {
 }
 
 /*
+ * Landing hero on phones (≤768px wide, portrait-shaped): its own composition
+ * rather than the banner squeezed in. The banner's copy half (baked-in text)
+ * moves off-screen and the picture fills the screen edge to edge from
+ * x = 960 of the 1920 artwork onwards — the lit curved terraces, dusk sky
+ * and water. Sizing the image to the screen's height with a 16:9 box and
+ * shifting it left by half its own width keeps that framing identical at
+ * every phone shape. MobileCopy (LandingHero.tsx) sets the copy as text over
+ * it, with gradients behind the copy only. Up to 4:5 the window never runs
+ * past the artwork's right edge; squarer screens keep the band above.
+ */
+.landing-hero-copy {
+  display: none;
+}
+@media (max-width: 768px) and (max-aspect-ratio: 4/5) {
+  .landing-hero {
+    height: auto;
+    min-height: 100svh;
+  }
+  .landing-hero-media {
+    top: 0;
+    bottom: 0;
+    height: auto;
+  }
+  .landing-hero .hero-banner {
+    left: 0 !important;
+    right: auto !important;
+    width: auto !important;
+    height: 100% !important;
+    max-width: none;
+    aspect-ratio: 16 / 9;
+    transform: translateX(-50%);
+  }
+  .landing-hero-copy {
+    display: block;
+    position: relative;
+    z-index: 1;
+  }
+  .landing-hero-copy__screen {
+    background: linear-gradient(
+      180deg,
+      rgb(11 23 48 / 0.86) 0%,
+      rgb(11 23 48 / 0.62) 18%,
+      rgb(11 23 48 / 0.3) 32%,
+      rgb(11 23 48 / 0) 46%,
+      rgb(11 23 48 / 0) 52%,
+      rgb(11 23 48 / 0.7) 70%,
+      rgb(11 23 48 / 0.92) 100%
+    );
+  }
+  .landing-hero-copy__features {
+    background: linear-gradient(180deg, rgb(11 23 48 / 0.92), var(--color-ink) 60%);
+  }
+}
+
+/*
  * Featured-project panels on portrait screens. The renders are 16:9 with the
  * project name baked in on the left third, so a full-height cover crop on a
  * phone cuts the name mid-word and most of the building. Fit the whole render
@@ -456,6 +511,29 @@ body::-webkit-scrollbar {
     background-color: var(--color-ink);
   }
   .showcase-media img {
+    object-fit: contain;
+  }
+}
+
+/*
+ * Panels with portrait artwork (HERO_MOBILE_IMAGES). On an upright phone the
+ * <picture> in Hero swaps in a 1080×2048 render, framed in the part of the
+ * panel below the fixed header (!important beats next/image's inline fill
+ * styles). Where that area is wider than the art, cover it — the trim falls
+ * mostly on the foreground; where it is narrower, fit it so the titles, which
+ * run nearly edge to edge, never lose letters. The first query must match
+ * MOBILE_ART_MEDIA in Hero.tsx.
+ */
+@media (max-width: 767px) and (max-aspect-ratio: 3/4) {
+  .showcase-media.has-mobile-art img {
+    top: 4.5rem !important;
+    height: calc(100% - 4.5rem) !important;
+    object-fit: cover;
+    object-position: center var(--art-focus, 25%);
+  }
+}
+@media (max-width: 767px) and (max-aspect-ratio: 12/25) {
+  .showcase-media.has-mobile-art img {
     object-fit: contain;
   }
 }
