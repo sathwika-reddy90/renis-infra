@@ -86,7 +86,7 @@ export default function PageHero({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.6, duration: 0.7 }}
-            className="mt-8 flex items-center justify-center gap-2 text-[0.72rem] uppercase tracking-[0.22em] text-white/60"
+            className="mt-8 flex flex-wrap items-center justify-center gap-2 text-[0.72rem] uppercase tracking-[0.22em] text-white/60"
           >
             {breadcrumb.map((c, i) => (
               <span key={c.label} className="flex items-center gap-2">

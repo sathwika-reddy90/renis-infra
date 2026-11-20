@@ -12,9 +12,10 @@ import Container from "@/components/ui/Container";
 import Button from "@/components/ui/Button";
 import { useScheduleVisit } from "@/components/ScheduleVisitContext";
 import { useProjects, useSiteContent } from "@/lib/query/hooks";
+import { PROJECT_CATEGORY_GROUPS, categoryHref } from "@/config/projectCategories";
 import type { Project } from "@/types/project";
 
-/** Status buckets for the projects mega-menu, in sales-funnel order. */
+/** Status buckets for the mobile drawer's Featured Projects, in sales-funnel order. */
 const MENU_GROUPS = ["New Launch", "Now Selling", "Ready to Move", "Coming Soon"] as const;
 
 /** Rendered until CMS nav loads, so the header is never empty on first paint. */
@@ -28,6 +29,8 @@ const FALLBACK_NAV = [
 ];
 
 const RENIS_PROJECT = { label: "Residences", href: "/renis-projects" };
+
+const PROJECTS_LINK = { label: "Projects", href: "/projects" };
 
 /** Media's dropdown items — Project Tours reuses the existing gallery page/data. */
 const MEDIA_LINKS = [
@@ -75,18 +78,36 @@ function withRenisProject(links: { label: string; href: string }[]) {
   return [...links.slice(0, after + 1), RENIS_PROJECT, ...links.slice(after + 1)];
 }
 
+/**
+ * The Projects dropdown hangs off the nav's /projects entry, so make sure the
+ * entry exists (right after Home) even if the CMS list ever drops it.
+ */
+function withProjects(links: { label: string; href: string }[]) {
+  if (links.some((l) => l.href === PROJECTS_LINK.href)) return links;
+  const home = links.findIndex((l) => l.href === "/");
+  return [...links.slice(0, home + 1), PROJECTS_LINK, ...links.slice(home + 1)];
+}
+
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [megaOpen, setMegaOpen] = useState(false);
+  /** Opened by click/keyboard rather than hover — stays open when the pointer leaves. */
+  const [megaPinned, setMegaPinned] = useState(false);
+  const [mobileProjectsOpen, setMobileProjectsOpen] = useState(false);
   const [mediaOpen, setMediaOpen] = useState(false);
   const [trackedPath, setTrackedPath] = useState<string | null>(null);
   const pathname = usePathname();
   const { openVisitModal } = useScheduleVisit();
   const { data: content } = useSiteContent();
   const { data: projects } = useProjects();
-  const navLinks = withRenisProject(content?.nav?.length ? content.nav : FALLBACK_NAV);
+  const navLinks = withRenisProject(
+    withProjects(content?.nav?.length ? content.nav : FALLBACK_NAV),
+  );
   const drawerRef = useRef<HTMLDivElement>(null);
+  const megaRootRef = useRef<HTMLDivElement>(null);
+  const megaTriggerRef = useRef<HTMLButtonElement>(null);
+  const megaPanelRef = useRef<HTMLDivElement>(null);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const mediaCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -110,6 +131,8 @@ export default function Navbar() {
     setTrackedPath(pathname);
     setOpen(false);
     setMegaOpen(false);
+    setMegaPinned(false);
+    setMobileProjectsOpen(false);
     setMediaOpen(false);
   }
 
@@ -131,6 +154,30 @@ export default function Navbar() {
     };
   }, [open]);
 
+  // Projects dropdown: a click outside it or Escape closes it. Escape hands
+  // focus back to the trigger when focus was inside.
+  useEffect(() => {
+    if (!megaOpen) return;
+    const onPointerDown = (e: PointerEvent) => {
+      if (megaRootRef.current?.contains(e.target as Node)) return;
+      setMegaOpen(false);
+      setMegaPinned(false);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      const hadFocus = megaRootRef.current?.contains(document.activeElement) ?? false;
+      setMegaOpen(false);
+      setMegaPinned(false);
+      if (hadFocus) megaTriggerRef.current?.focus();
+    };
+    document.addEventListener("pointerdown", onPointerDown);
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [megaOpen]);
+
   const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
 
   const grouped = MENU_GROUPS.map((status) => ({
@@ -138,18 +185,81 @@ export default function Navbar() {
     items: (projects ?? []).filter((p: Project) => p.status === status).slice(0, 4),
   })).filter((g) => g.items.length > 0);
 
-  /* Small delay on close so diagonal mouse travel into the panel doesn't drop it. */
+  /*
+   * Projects dropdown. Hover previews it; a click (or Enter/Space/arrow keys)
+   * pins it open until the trigger is clicked again, Escape is pressed, or the
+   * pointer/focus moves elsewhere. Small delay on close so diagonal mouse
+   * travel into the panel doesn't drop it.
+   */
   const openMega = () => {
     if (closeTimer.current) clearTimeout(closeTimer.current);
+    setMediaOpen(false);
     setMegaOpen(true);
   };
+  const closeMega = () => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    setMegaOpen(false);
+    setMegaPinned(false);
+  };
   const scheduleCloseMega = () => {
+    if (megaPinned) return;
     if (closeTimer.current) clearTimeout(closeTimer.current);
     closeTimer.current = setTimeout(() => setMegaOpen(false), 140);
+  };
+  const toggleMegaByClick = () => {
+    if (megaOpen && megaPinned) {
+      closeMega();
+    } else {
+      setMegaPinned(true);
+      openMega();
+    }
+  };
+
+  const megaItems = () =>
+    Array.from(megaPanelRef.current?.querySelectorAll<HTMLElement>("[data-mega-item]") ?? []);
+
+  /* Arrow keys open the panel from the trigger and move between its links. */
+  const onMegaKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    const { key } = e;
+    if (key !== "ArrowDown" && key !== "ArrowUp" && key !== "Home" && key !== "End") return;
+
+    if (e.target === megaTriggerRef.current) {
+      if (key !== "ArrowDown" && key !== "ArrowUp") return;
+      e.preventDefault();
+      setMegaPinned(true);
+      openMega();
+      // The panel mounts on the next commit.
+      requestAnimationFrame(() => {
+        const items = megaItems();
+        items[key === "ArrowUp" ? items.length - 1 : 0]?.focus();
+      });
+      return;
+    }
+
+    const items = megaItems();
+    const i = items.indexOf(e.target as HTMLElement);
+    if (i === -1) return;
+    e.preventDefault();
+    const next =
+      key === "Home"
+        ? 0
+        : key === "End"
+          ? items.length - 1
+          : key === "ArrowDown"
+            ? (i + 1) % items.length
+            : (i - 1 + items.length) % items.length;
+    items[next].focus();
+  };
+
+  /* Tabbing out of the trigger + panel closes it. */
+  const onMegaBlur = (e: React.FocusEvent<HTMLDivElement>) => {
+    const next = e.relatedTarget as Node | null;
+    if (next && !e.currentTarget.contains(next)) closeMega();
   };
 
   const openMedia = () => {
     if (mediaCloseTimer.current) clearTimeout(mediaCloseTimer.current);
+    closeMega();
     setMediaOpen(true);
   };
   const scheduleCloseMedia = () => {
@@ -209,38 +319,129 @@ export default function Navbar() {
           {/* Desktop nav */}
           <nav aria-label="Main" className="hidden items-center lg:flex">
             {toHeaderNav(navLinks).map((link) => {
-              const isProjects = link.href === "/projects";
-              const isMedia = link.href === "/gallery";
-              const showArrow = isProjects || isMedia;
-              return (
-                <div
-                  key={link.href}
-                  className="relative"
-                  onMouseEnter={
-                    isProjects && grouped.length > 0
-                      ? openMega
-                      : isMedia
-                        ? openMedia
-                        : undefined
-                  }
-                >
-                  <Link
-                    href={link.href}
-                    aria-expanded={
-                      isProjects && grouped.length > 0 ? megaOpen : isMedia ? mediaOpen : undefined
-                    }
-                    className={cn(
-                      "group relative flex items-center gap-1.5 px-[13px] py-[9px] text-[13px] font-medium uppercase tracking-[1.4px] text-white transition-opacity duration-[var(--duration-base)] hover:opacity-80",
-                    )}
+              if (link.href === "/projects") {
+                return (
+                  // Deliberately not `relative`: the panel anchors to the
+                  // fixed header so it spans the full width. Keeping it inside
+                  // this wrapper puts its links right after the trigger in tab
+                  // order.
+                  <div
+                    key={link.href}
+                    ref={megaRootRef}
+                    onMouseEnter={openMega}
+                    onMouseLeave={scheduleCloseMega}
+                    onKeyDown={onMegaKeyDown}
+                    onBlur={onMegaBlur}
                   >
-                    {link.label}
-                    {showArrow && (
+                    <button
+                      ref={megaTriggerRef}
+                      type="button"
+                      aria-expanded={megaOpen}
+                      aria-controls={megaOpen ? "projects-menu" : undefined}
+                      onClick={toggleMegaByClick}
+                      className="group relative flex cursor-pointer items-center gap-1.5 px-[13px] py-[9px] text-[13px] font-medium uppercase tracking-[1.4px] text-white transition-opacity duration-[var(--duration-base)] hover:opacity-80"
+                    >
+                      {link.label}
                       <ChevronDown
                         size={13}
                         aria-hidden
                         className={cn(
                           "transition-transform duration-[var(--duration-base)]",
-                          ((isProjects && megaOpen) || (isMedia && mediaOpen)) && "rotate-180",
+                          megaOpen && "rotate-180",
+                        )}
+                      />
+                    </button>
+
+                    {/* Projects dropdown */}
+                    <AnimatePresence>
+                      {megaOpen && (
+                        <motion.div
+                          id="projects-menu"
+                          ref={megaPanelRef}
+                          initial={{ opacity: 0, y: -8 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -8 }}
+                          transition={{ duration: 0.28, ease: easeLux }}
+                          className="absolute inset-x-0 top-full border-t border-white/10 bg-ink/98 backdrop-blur-md"
+                        >
+                          <Container className="grid grid-cols-3 gap-10 py-10">
+                            {PROJECT_CATEGORY_GROUPS.map((group) => (
+                              <div key={group.id}>
+                                <h3
+                                  id={`projects-menu-${group.id}`}
+                                  className="text-[0.68rem] uppercase tracking-[0.24em] text-gold"
+                                >
+                                  {group.label}
+                                </h3>
+                                <ul
+                                  aria-labelledby={`projects-menu-${group.id}`}
+                                  className="mt-5 space-y-3"
+                                >
+                                  {group.categories.map((category) => {
+                                    const href = categoryHref(category.slug);
+                                    const current = pathname === href;
+                                    return (
+                                      <li key={category.slug}>
+                                        <Link
+                                          href={href}
+                                          data-mega-item
+                                          aria-current={current ? "page" : undefined}
+                                          onClick={closeMega}
+                                          className={cn(
+                                            "block text-[0.9rem] transition-colors duration-[var(--duration-base)] hover:text-gold focus-visible:text-gold",
+                                            current ? "text-gold" : "text-white/70",
+                                          )}
+                                        >
+                                          {category.label}
+                                        </Link>
+                                      </li>
+                                    );
+                                  })}
+                                </ul>
+                              </div>
+                            ))}
+                          </Container>
+                          <div className="border-t border-white/10">
+                            <Container className="py-4">
+                              <Link
+                                href="/projects"
+                                data-mega-item
+                                onClick={closeMega}
+                                className="text-[0.75rem] uppercase tracking-[0.2em] text-gold hover:underline"
+                              >
+                                View all projects →
+                              </Link>
+                            </Container>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                );
+              }
+
+              const isMedia = link.href === "/gallery";
+              return (
+                <div
+                  key={link.href}
+                  className="relative"
+                  onMouseEnter={isMedia ? openMedia : undefined}
+                >
+                  <Link
+                    href={link.href}
+                    aria-expanded={isMedia ? mediaOpen : undefined}
+                    className={cn(
+                      "group relative flex items-center gap-1.5 px-[13px] py-[9px] text-[13px] font-medium uppercase tracking-[1.4px] text-white transition-opacity duration-[var(--duration-base)] hover:opacity-80",
+                    )}
+                  >
+                    {link.label}
+                    {isMedia && (
+                      <ChevronDown
+                        size={13}
+                        aria-hidden
+                        className={cn(
+                          "transition-transform duration-[var(--duration-base)]",
+                          mediaOpen && "rotate-180",
                         )}
                       />
                     )}
@@ -319,55 +520,6 @@ export default function Navbar() {
           </div>
         </Container>
 
-        {/* Projects mega-menu */}
-        <AnimatePresence>
-          {megaOpen && grouped.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: -8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.28, ease: easeLux }}
-              onMouseEnter={openMega}
-              className="absolute inset-x-0 top-full hidden border-t border-white/10 bg-ink/98 backdrop-blur-md lg:block"
-            >
-              <Container className="grid grid-cols-4 gap-10 py-10">
-                {grouped.map((group) => (
-                  <div key={group.status}>
-                    <h3 className="text-[0.68rem] uppercase tracking-[0.24em] text-gold">
-                      {group.status}
-                    </h3>
-                    <ul className="mt-5 space-y-3">
-                      {group.items.map((p) => (
-                        <li key={p.id}>
-                          <Link
-                            href={p.href}
-                            className="block text-[0.9rem] text-white/70 transition-colors duration-[var(--duration-base)] hover:text-gold"
-                          >
-                            {p.title}
-                            <span className="mt-0.5 block text-[0.75rem] text-white/40">
-                              {p.location}
-                            </span>
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </Container>
-              <div className="border-t border-white/10">
-                <Container className="py-4">
-                  <Link
-                    href="/projects"
-                    className="text-[0.75rem] uppercase tracking-[0.2em] text-gold hover:underline"
-                  >
-                    View all projects →
-                  </Link>
-                </Container>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
         {/* Reading progress */}
         <motion.div
           aria-hidden
@@ -393,19 +545,94 @@ export default function Navbar() {
               className="max-h-[calc(100vh-4rem)] overflow-y-auto bg-ink lg:hidden"
             >
               <Container className="flex flex-col gap-1 py-6">
-                {navLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    onClick={() => setOpen(false)}
-                    className={cn(
-                      "border-b border-white/10 py-3 text-sm font-medium tracking-[0.06em] transition-colors",
-                      isActive(link.href) ? "text-gold" : "text-white/80",
-                    )}
-                  >
-                    {link.label}
-                  </Link>
-                ))}
+                {navLinks.map((link) =>
+                  link.href === "/projects" ? (
+                    <div key={link.href} className="border-b border-white/10">
+                      <button
+                        type="button"
+                        aria-expanded={mobileProjectsOpen}
+                        aria-controls="mobile-projects-menu"
+                        onClick={() => setMobileProjectsOpen((o) => !o)}
+                        className={cn(
+                          "flex w-full cursor-pointer items-center justify-between py-3 text-left text-sm font-medium tracking-[0.06em] transition-colors",
+                          isActive(link.href) ? "text-gold" : "text-white/80",
+                        )}
+                      >
+                        {link.label}
+                        <ChevronDown
+                          size={16}
+                          aria-hidden
+                          className={cn(
+                            "transition-transform duration-[var(--duration-base)]",
+                            mobileProjectsOpen && "rotate-180",
+                          )}
+                        />
+                      </button>
+                      <AnimatePresence initial={false}>
+                        {mobileProjectsOpen && (
+                          <motion.div
+                            id="mobile-projects-menu"
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.3, ease: easeLux }}
+                            className="overflow-hidden"
+                          >
+                            <div className="space-y-5 pb-5 pt-1">
+                              {PROJECT_CATEGORY_GROUPS.map((group) => (
+                                <div key={group.id}>
+                                  <h3 className="text-[0.66rem] uppercase tracking-[0.24em] text-gold">
+                                    {group.label}
+                                  </h3>
+                                  <ul className="mt-2">
+                                    {group.categories.map((category) => {
+                                      const href = categoryHref(category.slug);
+                                      const current = pathname === href;
+                                      return (
+                                        <li key={category.slug}>
+                                          <Link
+                                            href={href}
+                                            aria-current={current ? "page" : undefined}
+                                            onClick={() => setOpen(false)}
+                                            className={cn(
+                                              "block py-2 text-[0.88rem]",
+                                              current ? "text-gold" : "text-white/65",
+                                            )}
+                                          >
+                                            {category.label}
+                                          </Link>
+                                        </li>
+                                      );
+                                    })}
+                                  </ul>
+                                </div>
+                              ))}
+                              <Link
+                                href="/projects"
+                                onClick={() => setOpen(false)}
+                                className="inline-block py-1 text-[0.72rem] uppercase tracking-[0.2em] text-gold"
+                              >
+                                View all projects →
+                              </Link>
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  ) : (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      onClick={() => setOpen(false)}
+                      className={cn(
+                        "border-b border-white/10 py-3 text-sm font-medium tracking-[0.06em] transition-colors",
+                        isActive(link.href) ? "text-gold" : "text-white/80",
+                      )}
+                    >
+                      {link.label}
+                    </Link>
+                  ),
+                )}
 
                 {grouped.length > 0 && (
                   <div className="mt-5">
