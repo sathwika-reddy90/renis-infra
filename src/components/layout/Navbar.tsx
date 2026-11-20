@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion, useScroll, useSpring } from "framer-motion";
@@ -305,14 +306,17 @@ export default function Navbar() {
               {open ? <X size={26} aria-hidden /> : <Menu size={26} aria-hidden />}
             </button>
             <Link href="/" className="flex items-center gap-3" aria-label="RENIESINFRA home">
-              <span className="flex items-baseline leading-none [font-family:var(--font-sans),sans-serif]">
-                <span className="text-[2.05rem] font-extrabold italic tracking-tight text-[#C9A878] max-[360px]:text-[1.75rem] lg:text-[2.35rem]">
-                  RENIES
-                </span>
-                <span className="ml-2 text-[1.2rem] font-extrabold italic tracking-tight text-white max-[360px]:text-[1.05rem] lg:text-[1.4rem]">
-                  infra
-                </span>
-              </span>
+              {/* Crest + wordmark. The tagline lives in the footer's full logo —
+                  at header height it would render too small to read. */}
+              <Image
+                src="/images/brand/reniesinfra-logo-compact.png"
+                alt="RENIESINFRA"
+                width={147}
+                height={64}
+                quality={90}
+                priority
+                className="h-14 w-auto max-[360px]:h-12 lg:h-16"
+              />
             </Link>
           </div>
 

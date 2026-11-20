@@ -57,14 +57,16 @@ export default function Footer() {
                 className="h-11 w-auto object-contain"
               />
             ) : (
-              <span className="flex items-baseline leading-none">
-                <span className="text-3xl font-extrabold italic tracking-tight text-[#C9A878]">
-                  RENIES
-                </span>
-                <span className="ml-2 text-xl font-extrabold italic tracking-tight text-white">
-                  infra
-                </span>
-              </span>
+              // Full brand logo (crest, wordmark and tagline) until a logo is
+              // uploaded in CMS Settings.
+              <Image
+                src="/images/brand/reniesinfra-logo.png"
+                alt="RENIESINFRA — Luxury Lifestyle Projects"
+                width={216}
+                height={112}
+                quality={90}
+                className="h-24 w-auto sm:h-28"
+              />
             )}
           </Link>
           <p className="mt-5 max-w-sm text-body-sm text-white/60">
