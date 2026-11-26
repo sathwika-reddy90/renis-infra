@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion, useScroll, useSpring } from "framer-motion";
@@ -11,6 +10,7 @@ import { startLenis, stopLenis } from "@/lib/lenis";
 import { easeLux } from "@/lib/motion";
 import Container from "@/components/ui/Container";
 import Button from "@/components/ui/Button";
+import BrandLogo from "@/components/layout/BrandLogo";
 import { useScheduleVisit } from "@/components/ScheduleVisitContext";
 import { useProjects, useSiteContent } from "@/lib/query/hooks";
 import { PROJECT_CATEGORY_GROUPS, categoryHref } from "@/config/projectCategories";
@@ -305,18 +305,8 @@ export default function Navbar() {
             >
               {open ? <X size={26} aria-hidden /> : <Menu size={26} aria-hidden />}
             </button>
-            <Link href="/" className="flex items-center gap-3" aria-label="RENIESINFRA home">
-              {/* Crest + wordmark. The tagline lives in the footer's full logo —
-                  at header height it would render too small to read. */}
-              <Image
-                src="/images/brand/reniesinfra-logo-compact.png"
-                alt="RENIESINFRA"
-                width={147}
-                height={64}
-                quality={90}
-                priority
-                className="h-14 w-auto max-[360px]:h-12 lg:h-16"
-              />
+            <Link href="/" className="flex items-center" aria-label="RENIS INFRA home">
+              <BrandLogo size="header" />
             </Link>
           </div>
 

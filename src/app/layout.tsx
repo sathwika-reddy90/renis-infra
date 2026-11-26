@@ -5,6 +5,7 @@ import {
   Great_Vibes,
   Inter,
   Libertinus_Sans,
+  Noto_Serif,
 } from "next/font/google";
 import "./globals.css";
 import Providers from "@/lib/query/Providers";
@@ -52,6 +53,14 @@ const launch = Libertinus_Sans({
   display: "swap",
 });
 
+// Brand logo face (BrandLogo) — the serif of the supplied logo artwork.
+const logo = Noto_Serif({
+  variable: "--font-logo",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "700"],
+  display: "swap",
+});
+
 const TITLE = "RENIESINFRA — Luxury Residences";
 const DESCRIPTION =
   "RENIESINFRA presents landmark luxury residences across Hyderabad's most sought-after addresses. Where architecture, craftsmanship and address meet.";
@@ -94,7 +103,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${display.variable} ${sans.variable} ${script.variable} ${nav.variable} ${launch.variable} h-full antialiased`}
+      className={`${display.variable} ${sans.variable} ${script.variable} ${nav.variable} ${launch.variable} ${logo.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-background text-ink">
         <Providers>{children}</Providers>

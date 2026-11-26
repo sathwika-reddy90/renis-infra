@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowUpRight, Mail, MapPin, Phone } from "lucide-react";
 import { Instagram, Facebook, Linkedin, Youtube } from "@/components/ui/SocialIcons";
 import Container from "@/components/ui/Container";
+import BrandLogo from "@/components/layout/BrandLogo";
 import { useProjects, useSiteContent, useSiteSettings } from "@/lib/query/hooks";
 import { CONTACT } from "@/config/company";
 
@@ -47,7 +48,7 @@ export default function Footer() {
       {/* Brand + social — logo upper-left, follow-us upper-right. */}
       <Container className="flex flex-col gap-8 pt-14 pb-8 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <Link href="/" className="inline-flex items-center" aria-label="RENIESINFRA home">
+          <Link href="/" className="inline-flex items-center" aria-label="RENIS INFRA home">
             {data?.logo ? (
               <Image
                 src={data.logo}
@@ -57,16 +58,8 @@ export default function Footer() {
                 className="h-11 w-auto object-contain"
               />
             ) : (
-              // Full brand logo (crest, wordmark and tagline) until a logo is
-              // uploaded in CMS Settings.
-              <Image
-                src="/images/brand/reniesinfra-logo.png"
-                alt="RENIESINFRA — Luxury Lifestyle Projects"
-                width={216}
-                height={112}
-                quality={90}
-                className="h-24 w-auto sm:h-28"
-              />
+              // Brand logo until a logo is uploaded in CMS Settings.
+              <BrandLogo size="footer" />
             )}
           </Link>
           <p className="mt-5 max-w-sm text-body-sm text-white/60">
