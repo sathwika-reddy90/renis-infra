@@ -48,10 +48,18 @@ const SIZES: Record<Size, { wordmark: string; renis: string; infra: string; tagl
       "flex-row items-center whitespace-nowrap gap-[0.4rem] md:max-lg:gap-[0.45rem] min-[1180px]:max-xl:gap-[0.45rem] xl:gap-[0.55rem]",
     renis:
       "mr-[-0.06em] font-bold leading-[0.74] tracking-[0.06em] text-[1.75rem] max-[360px]:text-[1.625rem] md:max-lg:text-[2.25rem] lg:max-[1180px]:text-[1.625rem] min-[1180px]:max-xl:text-[2.25rem] xl:text-[2.75rem]",
-    // translate-y: `items-center` lands INFRA ~0.08em high of RENIS's optical
-    // centre (measured); the nudge centres the letters exactly.
+    // translate-y sets INFRA slightly below the middle of RENIS's letters —
+    // about 3.4% of RENIS's size at every width (1.5px at 44px). The amount
+    // differs per range because `items-center` lands INFRA a little
+    // differently at each size (sub-pixel rounding of the trimmed line
+    // boxes); each value is measured. Translate moves the letters only, so
+    // the layout doesn't shift.
+    // `relative top-[0.125em]` then lowers INFRA a little further, to sit in
+    // the middle of RENIS as in the reference: 3px on desktop (24px INFRA),
+    // scaling with INFRA's size on smaller screens. Position-only — nothing
+    // around it moves.
     infra:
-      "mr-[-0.3em] translate-y-[0.08em] leading-[0.74] tracking-[0.3em] text-[0.6875rem] max-[360px]:text-[0.65rem] md:max-lg:text-[0.8125rem] lg:max-[1180px]:text-[0.65rem] min-[1180px]:max-xl:text-[0.8125rem] xl:text-[0.9375rem]",
+      "relative top-[0.125em] mr-[-0.2em] leading-[0.74] tracking-[0.2em] translate-y-[0.16em] text-[0.9375rem] max-[360px]:translate-y-[0.03em] max-[360px]:text-[0.875rem] md:max-lg:translate-y-[0.1em] md:max-lg:text-[1.25rem] lg:max-[1180px]:translate-y-[0.03em] lg:max-[1180px]:text-[0.875rem] min-[1180px]:max-xl:translate-y-[0.1em] min-[1180px]:max-xl:text-[1.25rem] xl:translate-y-[0.1em] xl:text-[1.5rem]",
     tagline:
       "mt-[0.3rem] pb-[0.1rem] font-normal text-[0.6rem] md:max-lg:pb-[0.16rem] md:max-lg:text-[0.65rem] min-[1180px]:max-xl:pb-[0.16rem] min-[1180px]:max-xl:text-[0.65rem] xl:pb-[0.21rem] xl:text-[0.75rem]",
   },
