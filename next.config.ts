@@ -7,7 +7,22 @@ import type { NextConfig } from "next";
  * mirrors `API_ORIGIN` in src/lib/api/dto.ts.
  */
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000/api";
-const BACKEND_ORIGIN = API_URL.replace(/\/api\/?$/, "");
+
+/*
+ * Local development only. When DEV_API_PROXY_TARGET is set (see
+ * .env.development.local), `next dev` forwards /api/* to that API — e.g. the
+ * deployed backend — server-to-server. The browser only ever calls its own
+ * origin, so the backend's CORS allow-list never has to include localhost.
+ * Ignored outside `next dev`, so builds and production are unaffected.
+ */
+const DEV_API_PROXY_TARGET =
+  process.env.NODE_ENV === "development"
+    ? process.env.DEV_API_PROXY_TARGET?.replace(/\/$/, "")
+    : undefined;
+
+// With the proxy on, NEXT_PUBLIC_API_URL is the dev server itself, so the
+// real backend origin (for /uploads and image hosts) comes from the target.
+const BACKEND_ORIGIN = (DEV_API_PROXY_TARGET ?? API_URL).replace(/\/api\/?$/, "");
 
 const nextConfig: NextConfig = {
   turbopack: {
@@ -51,6 +66,9 @@ const nextConfig: NextConfig = {
   // absolute one.
   async rewrites() {
     return [
+      ...(DEV_API_PROXY_TARGET
+        ? [{ source: "/api/:path*", destination: `${DEV_API_PROXY_TARGET}/:path*` }]
+        : []),
       {
         source: "/uploads/:path*",
         destination: `${BACKEND_ORIGIN}/uploads/:path*`,
