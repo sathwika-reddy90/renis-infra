@@ -305,7 +305,7 @@ export default function Navbar() {
             >
               {open ? <X size={26} aria-hidden /> : <Menu size={26} aria-hidden />}
             </button>
-            <Link href="/" className="flex items-center" aria-label="RENIS INFRA home">
+            <Link href="/" className="flex items-center" aria-label="RENIES INFRA home">
               <BrandLogo size="header" />
             </Link>
           </div>

@@ -1,13 +1,13 @@
 import { cn } from "@/lib/cn";
 
 /*
- * The RENIS INFRA logo, set in type rather than shipped as an image, so it
+ * The RENIES INFRA logo, set in type rather than shipped as an image, so it
  * stays sharp at every size and needs no request to paint.
  *
- *   header:  RENIS INFRA                 one line — large gold RENIS, small
+ *   header:  RENIES INFRA                 one line — large gold RENIES, small
  *            Luxury Lifestyle Projects   white INFRA centred on it; tagline below
  *
- *   footer:  RENIS                       stacked
+ *   footer:  RENIES                       stacked
  *            INFRA
  *            Luxury Lifestyle Projects
  *
@@ -38,9 +38,9 @@ const SIZES: Record<Size, { wordmark: string; renis: string; infra: string; tagl
   // arbitrary px breakpoints against its rem ones, so overlapping ranges
   // could resolve the wrong way round.
   //
-  // RENIS and INFRA are capitals only, so their line boxes are trimmed to
+  // RENIES and INFRA are capitals only, so their line boxes are trimmed to
   // about cap height (leading < 1): `items-center` then centres INFRA on
-  // RENIS's letters, not on the font's built-in space above and below them.
+  // RENIES's letters, not on the font's built-in space above and below them.
   // The tagline's bottom padding offsets its descenders (y, j) so the whole
   // mark centres optically on the menu text instead of sitting low.
   header: {
@@ -48,14 +48,14 @@ const SIZES: Record<Size, { wordmark: string; renis: string; infra: string; tagl
       "flex-row items-center whitespace-nowrap gap-[0.4rem] md:max-lg:gap-[0.45rem] min-[1180px]:max-xl:gap-[0.45rem] xl:gap-[0.55rem]",
     renis:
       "mr-[-0.06em] font-bold leading-[0.74] tracking-[0.06em] text-[1.75rem] max-[360px]:text-[1.625rem] md:max-lg:text-[2.25rem] lg:max-[1180px]:text-[1.625rem] min-[1180px]:max-xl:text-[2.25rem] xl:text-[2.75rem]",
-    // translate-y sets INFRA slightly below the middle of RENIS's letters —
-    // about 3.4% of RENIS's size at every width (1.5px at 44px). The amount
+    // translate-y sets INFRA slightly below the middle of RENIES's letters —
+    // about 3.4% of RENIES's size at every width (1.5px at 44px). The amount
     // differs per range because `items-center` lands INFRA a little
     // differently at each size (sub-pixel rounding of the trimmed line
     // boxes); each value is measured. Translate moves the letters only, so
     // the layout doesn't shift.
     // `relative top-[0.125em]` then lowers INFRA a little further, to sit in
-    // the middle of RENIS as in the reference: 3px on desktop (24px INFRA),
+    // the middle of RENIES as in the reference: 3px on desktop (24px INFRA),
     // scaling with INFRA's size on smaller screens. Position-only — nothing
     // around it moves.
     infra:
@@ -88,7 +88,7 @@ export default function BrandLogo({
       )}
     >
       <span className={cn("flex", s.wordmark)}>
-        <span className={cn("uppercase text-[#FEB625]", s.renis)}>RENIS</span>
+        <span className={cn("uppercase text-[#FEB625]", s.renis)}>RENIES</span>
         <span className={cn("uppercase text-white", s.infra)}>INFRA</span>
       </span>
       <span

@@ -24,7 +24,7 @@ async function organizationJsonLd() {
     "@type": "RealEstateAgent",
     name: settings?.siteName ?? "RENIESINFRA",
     url: SITE_URL,
-    logo: absoluteUrl(settings?.logo || "/images/brand/renis-infra-logo.png"),
+    logo: absoluteUrl(settings?.logo || "/images/brand/renies-infra-logo.png"),
     ...(settings?.phone ? { telephone: settings.phone } : {}),
     ...(settings?.email ? { email: settings.email } : {}),
     ...(settings?.address

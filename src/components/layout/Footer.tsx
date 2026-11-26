@@ -48,7 +48,7 @@ export default function Footer() {
       {/* Brand + social — logo upper-left, follow-us upper-right. */}
       <Container className="flex flex-col gap-8 pt-14 pb-8 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <Link href="/" className="inline-flex items-center" aria-label="RENIS INFRA home">
+          <Link href="/" className="inline-flex items-center" aria-label="RENIES INFRA home">
             {data?.logo ? (
               <Image
                 src={data.logo}
